@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
-        <title>JavaScript Compiler in Rust Blog</title>
+        <title>Writing a JavaScript Compiler in Rust Blog</title>
         <link>https://boshen.github.io/javascript-compiler-in-rust/blog</link>
-        <description>JavaScript Compiler in Rust Blog</description>
-        <lastBuildDate>Wed, 10 Aug 2022 00:00:00 GMT</lastBuildDate>
+        <description>Writing a JavaScript Compiler in Rust Blog</description>
+        <lastBuildDate>Wed, 10 Aug 2022 08:39:34 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
         <item>
-            <title><![CDATA[Test]]></title>
-            <link>https://boshen.github.io/javascript-compiler-in-rust/blog/2022/08/10/test</link>
-            <guid>/2022/08/10/test</guid>
-            <pubDate>Wed, 10 Aug 2022 00:00:00 GMT</pubDate>
+            <title><![CDATA[AST Explorer]]></title>
+            <link>https://boshen.github.io/javascript-compiler-in-rust/blog/astexplorer</link>
+            <guid>/astexplorer</guid>
+            <pubDate>Wed, 10 Aug 2022 08:39:34 GMT</pubDate>
+            <description><![CDATA[* AST Explorer]]></description>
+            <content:encoded><![CDATA[<ul><li><a href="https://astexplorer.net/" target="_blank" rel="noopener noreferrer">AST Explorer</a></li></ul>]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[The ECMAScript Specification]]></title>
+            <link>https://boshen.github.io/javascript-compiler-in-rust/blog/ecma-spec</link>
+            <guid>/ecma-spec</guid>
+            <pubDate>Wed, 10 Aug 2022 08:39:34 GMT</pubDate>
+            <description><![CDATA[* The ECMAScript® 2023 Language Specification]]></description>
+            <content:encoded><![CDATA[<ul><li><a href="https://tc39.es/ecma262/" target="_blank" rel="noopener noreferrer">The ECMAScript® 2023 Language Specification</a></li></ul>]]></content:encoded>
         </item>
     </channel>
 </rss>

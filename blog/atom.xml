@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://boshen.github.io/javascript-compiler-in-rust/blog</id>
-    <title>JavaScript Compiler in Rust Blog</title>
-    <updated>2022-08-10T00:00:00.000Z</updated>
+    <title>Writing a JavaScript Compiler in Rust Blog</title>
+    <updated>2022-08-10T08:39:34.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://boshen.github.io/javascript-compiler-in-rust/blog"/>
-    <subtitle>JavaScript Compiler in Rust Blog</subtitle>
+    <subtitle>Writing a JavaScript Compiler in Rust Blog</subtitle>
     <entry>
-        <title type="html"><![CDATA[Test]]></title>
-        <id>/2022/08/10/test</id>
-        <link href="https://boshen.github.io/javascript-compiler-in-rust/blog/2022/08/10/test"/>
-        <updated>2022-08-10T00:00:00.000Z</updated>
+        <title type="html"><![CDATA[AST Explorer]]></title>
+        <id>/astexplorer</id>
+        <link href="https://boshen.github.io/javascript-compiler-in-rust/blog/astexplorer"/>
+        <updated>2022-08-10T08:39:34.000Z</updated>
+        <summary type="html"><![CDATA[* AST Explorer]]></summary>
+        <content type="html"><![CDATA[<ul><li><a href="https://astexplorer.net/" target="_blank" rel="noopener noreferrer">AST Explorer</a></li></ul>]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[The ECMAScript Specification]]></title>
+        <id>/ecma-spec</id>
+        <link href="https://boshen.github.io/javascript-compiler-in-rust/blog/ecma-spec"/>
+        <updated>2022-08-10T08:39:34.000Z</updated>
+        <summary type="html"><![CDATA[* The ECMAScript® 2023 Language Specification]]></summary>
+        <content type="html"><![CDATA[<ul><li><a href="https://tc39.es/ecma262/" target="_blank" rel="noopener noreferrer">The ECMAScript® 2023 Language Specification</a></li></ul>]]></content>
     </entry>
 </feed>
