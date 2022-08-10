@@ -56,6 +56,7 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      metadata: [{name: 'keywords', content: 'rust, javascript, compiler, tutorial'}],
       colorMode: {
         defaultMode: 'dark',
       },
