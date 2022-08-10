@@ -72,7 +72,7 @@ const config = {
             position: 'left',
             label: 'Book',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
+          {to: '/blog', label: 'Tutorials', position: 'left'},
           {
             href: 'https://github.com/Boshen/javascript-compiler-in-rust',
             label: 'GitHub',
