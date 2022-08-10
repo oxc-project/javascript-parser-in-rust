@@ -44,7 +44,7 @@ fn read_next_token(&mut self) -> Token {
 
 ---
 
-## JavaScript Lexer
+## JavaScript
 
 A lexer written in Rust is acutally really boring, it feels like writing C code
 where you write long chained if statements and check for each `char` and then return the respective token.
@@ -68,3 +68,7 @@ But, the fun begins when you start writing it for JavaScript.
 ### Jump Table
 
 ### Unicode Identifier Start
+
+### Small Tokens
+
+### String Interning
