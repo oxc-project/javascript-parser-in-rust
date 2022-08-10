@@ -12,11 +12,14 @@ function HomepageHeader() {
       <div className="container">
         <h1 className="hero__title">{siteConfig.title}</h1>
         <p className="hero__subtitle">
-          This will be the book for you if you are: interested in learning Rust, JavaScript compiler technologies,
+          JavaScript, Rust and compilers are all hard to learn,
+          let's combine these three and challenge ourselves to write a JavaScript compiler in Rust.
+          <br></br>
+          This will be the book for you if you are interested in learning Rust, compiler technologies,
           or would like to contribute to swc or Rome in the near future.
           <br/><br/>
           The book will be a full tutorial on writing a JavaScript compiler in Rust.
-          And the tutorials will be on detailed topics.
+          And the tutorials will go down in rabbit hole on specific topics.
         </p>
         <div className={styles.buttons}>
           <Link
