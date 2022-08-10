@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'JavaScript Compiler in Rust',
+  title: 'Writing a JavaScript Compiler in Rust',
   tagline: '',
   url: 'https://boshen.github.io',
   baseUrl: '/javascript-compiler-in-rust/',
