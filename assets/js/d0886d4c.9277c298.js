@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkjavascript_compiler_in_rust=self.webpackChunkjavascript_compiler_in_rust||[]).push([[575],{1338:e=>{e.exports=JSON.parse('{"permalink":"javascript-compiler-in-rust/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);
