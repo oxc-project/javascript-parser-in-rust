@@ -1,4 +1,4 @@
 ---
-sidebar_position: 3
+id: lexer
 title: Lexer
 ---
