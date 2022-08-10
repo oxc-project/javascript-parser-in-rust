@@ -4,7 +4,7 @@
         <title>Writing a JavaScript Compiler in Rust Blog</title>
         <link>https://boshen.github.io/javascript-compiler-in-rust/blog</link>
         <description>Writing a JavaScript Compiler in Rust Blog</description>
-        <lastBuildDate>Wed, 10 Aug 2022 14:30:01 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 10 Aug 2022 15:21:50 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
@@ -12,7 +12,7 @@
             <title><![CDATA[AST Explorer]]></title>
             <link>https://boshen.github.io/javascript-compiler-in-rust/blog/astexplorer</link>
             <guid>/astexplorer</guid>
-            <pubDate>Wed, 10 Aug 2022 14:30:01 GMT</pubDate>
+            <pubDate>Wed, 10 Aug 2022 15:21:50 GMT</pubDate>
             <description><![CDATA[* AST Explorer]]></description>
             <content:encoded><![CDATA[<ul><li><a href="https://astexplorer.net/" target="_blank" rel="noopener noreferrer">AST Explorer</a></li></ul>]]></content:encoded>
         </item>
@@ -20,7 +20,7 @@
             <title><![CDATA[The ECMAScript Specification]]></title>
             <link>https://boshen.github.io/javascript-compiler-in-rust/blog/ecma-spec</link>
             <guid>/ecma-spec</guid>
-            <pubDate>Wed, 10 Aug 2022 14:30:01 GMT</pubDate>
+            <pubDate>Wed, 10 Aug 2022 15:21:50 GMT</pubDate>
             <description><![CDATA[The ECMAScript® 2023 Language Specification details everything about the JavaScript language, so anyone can implement their own JavaScript engine.]]></description>
             <content:encoded><![CDATA[<p><a href="https://tc39.es/ecma262/" target="_blank" rel="noopener noreferrer">The ECMAScript® 2023 Language Specification</a> details everything about the JavaScript language, so anyone can implement their own JavaScript engine.</p><p>For a compiler, we will study the following chapters:</p><ul><li><ol start="5"><li>Notational Conventions</li></ol></li><li><ol start="11"><li>ECMAScript Language: Source Text</li></ol></li><li><ol start="12"><li>ECMAScript Language: Lexical Grammar</li></ol></li><li>13 - 16 Expressions, Statments, Functions, Classes, Scripts and Modules</li><li>B Additional ECMAScript Features for Web Browsers</li><li>C The Strict Mode of ECMAScript</li></ul>]]></content:encoded>
         </item>

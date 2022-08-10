@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://boshen.github.io/javascript-compiler-in-rust/blog</id>
     <title>Writing a JavaScript Compiler in Rust Blog</title>
-    <updated>2022-08-10T14:30:01.000Z</updated>
+    <updated>2022-08-10T15:21:50.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://boshen.github.io/javascript-compiler-in-rust/blog"/>
     <subtitle>Writing a JavaScript Compiler in Rust Blog</subtitle>
@@ -10,7 +10,7 @@
         <title type="html"><![CDATA[AST Explorer]]></title>
         <id>/astexplorer</id>
         <link href="https://boshen.github.io/javascript-compiler-in-rust/blog/astexplorer"/>
-        <updated>2022-08-10T14:30:01.000Z</updated>
+        <updated>2022-08-10T15:21:50.000Z</updated>
         <summary type="html"><![CDATA[* AST Explorer]]></summary>
         <content type="html"><![CDATA[<ul><li><a href="https://astexplorer.net/" target="_blank" rel="noopener noreferrer">AST Explorer</a></li></ul>]]></content>
     </entry>
@@ -18,7 +18,7 @@
         <title type="html"><![CDATA[The ECMAScript Specification]]></title>
         <id>/ecma-spec</id>
         <link href="https://boshen.github.io/javascript-compiler-in-rust/blog/ecma-spec"/>
-        <updated>2022-08-10T14:30:01.000Z</updated>
+        <updated>2022-08-10T15:21:50.000Z</updated>
         <summary type="html"><![CDATA[The ECMAScript® 2023 Language Specification details everything about the JavaScript language, so anyone can implement their own JavaScript engine.]]></summary>
         <content type="html"><![CDATA[<p><a href="https://tc39.es/ecma262/" target="_blank" rel="noopener noreferrer">The ECMAScript® 2023 Language Specification</a> details everything about the JavaScript language, so anyone can implement their own JavaScript engine.</p><p>For a compiler, we will study the following chapters:</p><ul><li><ol start="5"><li>Notational Conventions</li></ol></li><li><ol start="11"><li>ECMAScript Language: Source Text</li></ol></li><li><ol start="12"><li>ECMAScript Language: Lexical Grammar</li></ol></li><li>13 - 16 Expressions, Statments, Functions, Classes, Scripts and Modules</li><li>B Additional ECMAScript Features for Web Browsers</li><li>C The Strict Mode of ECMAScript</li></ul>]]></content>
     </entry>
