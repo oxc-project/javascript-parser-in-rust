@@ -47,7 +47,23 @@ Let's define a starter lexer abstraction
 use std::str::Chars;
 
 struct Lexer<'a> {
+    /// Source Text
+    source: &'a str,
+
+    /// Length of the original input string, in UTF-8 bytes
+    source_length: usize,
+
     chars: Chars<'a>
+}
+
+impl<'a> Lexer<'a> {
+    pub fn new(source: &'a str) -> Self {
+        Self {
+            source,
+            source_length: source.len(),
+            chars: source.chars()
+        }
+    }
 }
 ```
 
@@ -55,18 +71,26 @@ struct Lexer<'a> {
 The lifetime `'a` here indicates the iterator has a reference to somewhere, in this case it references to a `&'a str`.
 :::
 
-To convert the source text to tokens, we need a simple loop, and test the return value of each `chars.next()` call.
+To convert the source text to tokens, just keep calling `chars.next()` and match on the returned `char`s.
+The final token will always be `Kind::Eof`.
 
 ```rust
 impl<'a> Lexer<'a> {
-    fn read_next_token(&mut self) -> Token {
-      while let Some(c) = self.chars.next() {
-        match c {
-          '+' => return Token::Plus,
-          _ => {}
+    fn read_next_kind(&mut self) -> Kind {
+        while let Some(c) = self.chars.next() {
+            match c {
+              '+' => return Kind::Plus,
+              _ => {}
+            }
         }
-      }
-      Token::Eof
+        Kind::Eof
+    }
+
+    fn read_next_token(&mut self) -> Token {
+        let start = self.source_length - self.current.chars.as_str().len();
+        let kind = self.read_next_kind();
+        let end = self.source_length - self.current.chars.as_str().len();
+        Token { kind, start, end }
     }
 }
 ```
@@ -83,13 +107,31 @@ But the fun begins when we start modifying it for JavaScript.
 Let's open up the [ECMAScript Language Specification](https://tc39.es/ecma262/) and re-learn JavaScript.
 
 :::caution
-I still remember the first time I opened up the specification and went into a corner
+I still remember the first time I opened up the specification and went into a little corner
 and cried for like five minutes because I couldn't understand what was going on.
-So please prepare yourself and read my [guide on reading the specification](/blog/ecma-spec).
+So head over to my [guide on reading the specification](/blog/ecma-spec) if you are getting lost.
 :::
 
+### Identifiers and Unicode
 
-### Identifiers: UTF-8 vs UTF-16
+We mostly code in ascii,
+but [Chapter 11 ECMAScript Language: Source Text](https://tc39.es/ecma262/#sec-ecmascript-language-source-code)
+states the source text should be in Unicode.
+And [Chapter 12.6 Names and Keywords](https://tc39.es/ecma262/#sec-names-and-keywords)
+states the identifiers are interpreted according to the Default Identifier Syntax given in Unicode Standard Annex #31.
+Specifcally,
+
+```
+UnicodeIDStart ::
+    any Unicode code point with the Unicode property “ID_Start”
+UnicodeIDContinue ::
+    any Unicode code point with the Unicode property “ID_Continue”
+```
+
+This means that we can write `var ಠ_ಠ` but not `var 🦀` because `ಠ_ಠ` has "ID_Start".
+
+I published the [unicode-id-start](https://crates.io/crates/unicode-id-start) for this exact purpose,
+and you can call `unicode_id_start::is_id_start(char)` and `unicode_id_start::is_id_continue(char)` in your lexer for checking unicode.
 
 ### LL(1)
 
