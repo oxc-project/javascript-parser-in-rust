@@ -9,7 +9,7 @@ const config = {
   title: 'JavaScript Compiler in Rust',
   tagline: '',
   url: 'https://boshen.github.io',
-  baseUrl: '/',
+  baseUrl: '/javascript-compiler-in-rust/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   // favicon: '',
