@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkjavascript_compiler_in_rust=self.webpackChunkjavascript_compiler_in_rust||[]).push([[535],{5641:e=>{e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Test","permalink":"/blog/2022/08/10/test"}]}')}}]);
