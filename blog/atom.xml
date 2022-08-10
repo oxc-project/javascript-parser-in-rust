@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://boshen.github.io/blog</id>
+    <id>https://boshen.github.io/javascript-compiler-in-rust/blog</id>
     <title>JavaScript Compiler in Rust Blog</title>
     <updated>2022-08-10T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://boshen.github.io/blog"/>
+    <link rel="alternate" href="https://boshen.github.io/javascript-compiler-in-rust/blog"/>
     <subtitle>JavaScript Compiler in Rust Blog</subtitle>
     <entry>
         <title type="html"><![CDATA[Test]]></title>
         <id>/2022/08/10/test</id>
-        <link href="https://boshen.github.io/blog/2022/08/10/test"/>
+        <link href="https://boshen.github.io/javascript-compiler-in-rust/blog/2022/08/10/test"/>
         <updated>2022-08-10T00:00:00.000Z</updated>
     </entry>
 </feed>

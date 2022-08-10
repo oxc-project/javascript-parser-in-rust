@@ -2,7 +2,7 @@
 <rss version="2.0">
     <channel>
         <title>JavaScript Compiler in Rust Blog</title>
-        <link>https://boshen.github.io/blog</link>
+        <link>https://boshen.github.io/javascript-compiler-in-rust/blog</link>
         <description>JavaScript Compiler in Rust Blog</description>
         <lastBuildDate>Wed, 10 Aug 2022 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
@@ -10,7 +10,7 @@
         <language>en</language>
         <item>
             <title><![CDATA[Test]]></title>
-            <link>https://boshen.github.io/blog/2022/08/10/test</link>
+            <link>https://boshen.github.io/javascript-compiler-in-rust/blog/2022/08/10/test</link>
             <guid>/2022/08/10/test</guid>
             <pubDate>Wed, 10 Aug 2022 00:00:00 GMT</pubDate>
         </item>
