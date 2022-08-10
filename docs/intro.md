@@ -17,4 +17,4 @@ so we can build better and faster tools for ourselves to enjoy.
 
 ❤️  🦀 ❤️
 
-This book will make references to a lot of the existing technologies, you can visit the [references](/blog/references) page for details.
+This book will make references to a lot of the existing technologies, you can visit the [references](/docs/references) page for details.

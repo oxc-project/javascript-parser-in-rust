@@ -8,6 +8,7 @@ const sidebars = {
     'ast',
     'lexer',
     'parser',
+    'references'
   ],
 };
 
