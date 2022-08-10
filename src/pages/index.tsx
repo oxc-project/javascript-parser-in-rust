@@ -1,5 +1,4 @@
 import React from 'react';
-import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
@@ -9,11 +8,11 @@ import styles from './index.module.css';
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
   return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>
+    <header className={styles.heroBanner}>
       <div className="container">
         <h1 className="hero__title">{siteConfig.title}</h1>
         <p className="hero__subtitle">
-          This will be the book for you if you are: terested in learning Rust, interested in learning compiler technologies,
+          This will be the book for you if you are: interested in learning Rust, JavaScript compiler technologies,
           or would like to contribute to swc or Rome in the near future.
           <br/><br/>
           The book will be a full tutorial on writing a JavaScript compiler in Rust.
