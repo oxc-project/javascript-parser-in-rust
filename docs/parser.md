@@ -4,6 +4,7 @@ title: Parser
 ---
 
 ## Dealing with errors
+
 Panic vs recoverable parser
 
 ## JavaScript

@@ -21,4 +21,5 @@ It is much nicer to work on the AST compared to the source text.
 ## Rust Optimizations
 
 ### Memory Arena
+
 Pain of dealing with lifetimes

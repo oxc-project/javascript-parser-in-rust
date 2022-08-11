@@ -121,7 +121,7 @@ And [Chapter 12.6 Names and Keywords](https://tc39.es/ecma262/#sec-names-and-key
 states the identifiers are interpreted according to the Default Identifier Syntax given in Unicode Standard Annex #31.
 Specifcally,
 
-```
+```markup
 UnicodeIDStart ::
     any Unicode code point with the Unicode property “ID_Start”
 UnicodeIDContinue ::
