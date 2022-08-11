@@ -12,12 +12,12 @@ it is 10% architectural decisions and 90% hard work on the fine-grained details.
 
 The architectural decisions will mostly affect two categories:
 
-* the performance of your compiler
-* how nice it is to consume your AST
+- the performance of your compiler
+- how nice it is to consume your AST
 
 ## Performance
 
-The key to a performant Rust program is to *make less momory allocations* and *use less cpu cycles*.
+The key to a performant Rust program is to _make less momory allocations_ and _use less cpu cycles_.
 
 It is mostly transparent when a momory allocation is made just by looking for heap allocated structs such as `Vec` or `Box`.
 Reasoning about their usage will give you a sense of how fast your program will be.

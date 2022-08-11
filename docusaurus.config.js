@@ -1,39 +1,41 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const lightCodeTheme = require("prism-react-renderer/themes/github");
+const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Write a JavaScript Compiler in Rust',
-  url: 'https://boshen.github.io',
-  baseUrl: '/javascript-compiler-in-rust/',
-  onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'throw',
-  onDuplicateRoutes: 'throw',
-  organizationName: 'Boshen', // Usually your GitHub org/user name.
-  projectName: 'javascript-compiler-in-rust', // Usually your repo name.
+  title: "Write a JavaScript Compiler in Rust",
+  url: "https://boshen.github.io",
+  baseUrl: "/javascript-compiler-in-rust/",
+  onBrokenLinks: "throw",
+  onBrokenMarkdownLinks: "throw",
+  onDuplicateRoutes: "throw",
+  organizationName: "Boshen", // Usually your GitHub org/user name.
+  projectName: "javascript-compiler-in-rust", // Usually your repo name.
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: "en",
+    locales: ["en"],
   },
   presets: [
     [
-      'classic',
+      "classic",
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/Boshen/javascript-compiler-in-rust/tree/main/docs/',
+          sidebarPath: require.resolve("./sidebars.js"),
+          editUrl:
+            "https://github.com/Boshen/javascript-compiler-in-rust/tree/main/docs/",
           showReadingTime: true,
         },
         blog: {
-          editUrl: 'https://github.com/Boshen/javascript-compiler-in-rust/tree/main/blog',
+          editUrl:
+            "https://github.com/Boshen/javascript-compiler-in-rust/tree/main/blog",
           showReadingTime: true,
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: require.resolve("./src/css/custom.css"),
         },
       }),
     ],
@@ -42,31 +44,33 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      metadata: [{name: 'keywords', content: 'rust, javascript, compiler, tutorial'}],
+      metadata: [
+        { name: "keywords", content: "rust, javascript, compiler, tutorial" },
+      ],
       colorMode: {
-        defaultMode: 'dark',
+        defaultMode: "dark",
       },
       navbar: {
-        title: 'Home',
+        title: "Home",
         items: [
           {
-            type: 'doc',
-            docId: 'intro',
-            position: 'left',
-            label: 'Book',
+            type: "doc",
+            docId: "intro",
+            position: "left",
+            label: "Book",
           },
-          {to: '/blog', label: 'Tutorials', position: 'left'},
+          { to: "/blog", label: "Tutorials", position: "left" },
           {
-            href: 'https://github.com/Boshen/javascript-compiler-in-rust',
-            label: 'GitHub',
-            position: 'right',
+            href: "https://github.com/Boshen/javascript-compiler-in-rust",
+            label: "GitHub",
+            position: "right",
           },
         ],
       },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ['rust']
+        additionalLanguages: ["rust"],
       },
     }),
 };
