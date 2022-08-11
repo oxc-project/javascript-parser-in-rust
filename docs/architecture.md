@@ -5,7 +5,10 @@ title: Architecture Overview
 
 For our book, we will be applying the standard compiler frontend phases:
 
-Source Text -> Token -> Lexer -> Parser -> AST
+```mermaid
+flowchart LR;
+    id[Source Text] --> Token --> Lexer --> Parser --> AST
+```
 
 Writing a JavaScript parser is actually really easy,
 it is 10% architectural decisions and 90% hard work on the fine-grained details.

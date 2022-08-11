@@ -95,6 +95,12 @@ impl<'a> Lexer<'a> {
 }
 ```
 
+### Peek
+
+```rust reference
+https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/lexer.rs#L1769-L1791
+```
+
 ---
 
 ## JavaScript
