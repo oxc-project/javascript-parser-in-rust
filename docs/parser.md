@@ -4,7 +4,7 @@ title: Parser
 ---
 
 The parser we are going to construct is called a recursive descent parser,
-it is a manual process of going down the grammar and build up the AST.
+it is a manual process of going down the grammar and building up the AST.
 
 The parser starts simple.
 

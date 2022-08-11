@@ -58,7 +58,7 @@ var binding_identifier = Initializer;
 
 **Parameters**
 
-The `[Return]` and `[In]` are parameters to the grammar.
+The `[Return]` and `[In]` are parameters of the grammar.
 
 For example
 
@@ -67,7 +67,7 @@ ScriptBody :
     StatementList[~Yield, ~Await, ~Return]
 ```
 
-means top level yield, await and return are not allow in scripts, but
+means top-level yield, await and return are not allowed in scripts, but
 
 ```markdup
 ModuleItem :
@@ -76,7 +76,7 @@ ModuleItem :
   StatementListItem[~Yield, +Await, ~Return]
 ```
 
-allows for top level return.
+allows for top-level return.
 
 ## Chapter 11 ECMAScript Language: Source Text
 
@@ -92,7 +92,7 @@ In html you write `<script type="module" src="main.mjs"></script>`.
 
 ## Chapter 12 ECMAScript Language: Lexical Grammar
 
-For more in depth explanation, you can read the V8 blog on [Understanding the ECMAScript spec](https://v8.dev/blog/understanding-ecmascript-part-3).
+For more in-depth explanation, you can read the V8 blog on [Understanding the ECMAScript spec](https://v8.dev/blog/understanding-ecmascript-part-3).
 
 ### [Chapter 12.9 Automatic Semicolon Insertion](https://tc39.es/ecma262/#sec-automatic-semicolon-insertion)
 

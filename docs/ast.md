@@ -4,21 +4,21 @@ title: Abstract Syntax Tree
 ---
 
 The parser in the following chapter is responsible for turning Tokens into an abstract syntax tree (AST).
-It is much nicer to work on the AST compared to the original source text.
+It is much nicer to work on the AST compared to the source text.
 
 All JavaScript toolings work on the AST level, for example:
 
-- A linter (e.g. eslint) checks the ast for errors
-- A formatter (e.g.prettier) prints the ast back to JavaScript text
-- A minifier (e.g. terser) transforms the ast
-- A bundler connects all import and export statements between asts from different files
+- A linter (e.g. eslint) checks the AST for errors
+- A formatter (e.g.prettier) prints the AST back to JavaScript text
+- A minifier (e.g. terser) transforms the AST
+- A bundler connects all import and export statements between ASTs from different files
 
-In this chapter we will make a high dive so we can have some ASTs to use.
+In this chapter, we will make a high dive so we can have some ASTs to use.
 
 ## Getting familiar with the AST
 
 To get ourselves comfortable with an AST, let's visit [ASTExplorer](https://astexplorer.net/) and see what it looks like.
-On the top panel, select JavaScript, and then `acorn`, type in `var a` and we will see a tree view and a json view.
+On the top panel, select JavaScript, and then `acorn`, type in `var a` and we will see a tree view and a JSON view.
 
 ```json
 {
@@ -132,17 +132,17 @@ pub struct YieldExpression {
 }
 ```
 
-The `Box` is needed because self referential structs are not allowed in Rust.
+The `Box` is needed because self-referential structs are not allowed in Rust.
 
 ## Rust Optimizations
 
 ### Memory allocations
 
 Back in the [Architecture Overview](/docs/architecture) chapter,
-I briefly mentioned that you need to look out for heap allocated structs such as `Vec` and `Box` because heap allocations are not cheap.
+I briefly mentioned that you need to look out for heap-allocated structs such as `Vec` and `Box` because heap allocations are not cheap.
 
 Take a look at the [real word implementation from swc](https://github.com/swc-project/swc/blob/main/crates/swc_ecma_ast/src/expr.rs),
-we can see that an AST can have lots `Box`s and `Vec`s, and also note that the `Statement` and `Expression` enums contain
+we can see that an AST can have lots of `Box`s and `Vec`s, and also note that the `Statement` and `Expression` enums contain
 a dozen of enum variants.
 
 ### Enum Size
@@ -150,7 +150,7 @@ a dozen of enum variants.
 The first optimization we are going to make is to reduce the size of the enums.
 
 It is known that the byte size of a Rust enum is the union of all its variants.
-For example the following enum will take up 56 bytes (1 byte for the tag, 48 bytes for the payload and 8 bytes for alignment padding)
+For example, the following enum will take up 56 bytes (1 byte for the tag, 48 bytes for the payload, and 8 bytes for alignment padding)
 
 ```rust
 enum Name {
@@ -206,8 +206,8 @@ fn no_bloat_enum_sizes() {
 #### Memory Arena
 
 Using the global memory allocator for the AST is actually not really efficient.
-Every `Box` and `Vec` are allocated on demand, and then dropped separately.
-What we would like to do is pre-allocate memory and drop in wholesale.
+Every `Box` and `Vec` are allocated on demand and then dropped separately.
+What we would like to do is pre-allocate memory and drop it in wholesale.
 
 :::info
 You can read more on this topic in [this blog post](https://manishearth.github.io/blog/2021/03/15/arenas-in-rust/)
@@ -246,6 +246,6 @@ pub struct YieldExpression<'a> {
 ```
 
 :::caution
-Please be cautious if you are not comfortable of dealing with lifetimes at this stage.
+Please be cautious if you are not comfortable dealing with lifetimes at this stage.
 Your program will work fine without a memory arena.
 :::

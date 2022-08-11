@@ -10,7 +10,7 @@ flowchart LR;
     id[Source Text] --> Token --> Lexer --> Parser --> AST
 ```
 
-Writing a JavaScript parser is actually really easy,
+Writing a JavaScript parser is fairly easy,
 it is 10% architectural decisions and 90% hard work on the fine-grained details.
 
 The architectural decisions will mostly affect two categories:
@@ -20,10 +20,10 @@ The architectural decisions will mostly affect two categories:
 
 ## Performance
 
-The key to a performant Rust program is to **make less momory allocations** and **use less cpu cycles**.
+The key to a performant Rust program is to **make less memory allocations** and **use fewer CPU cycles**.
 
-It is mostly transparent when a momory allocation is made just by looking for heap allocated structs such as `Vec` or `Box`.
+It is mostly transparent when a memory allocation is made just by looking for heap-allocated structs such as `Vec` or `Box`.
 Reasoning about their usage will give you a sense of how fast your program will be.
 
-With zero cost abstraction, we don't need to worry too much about abstractions causing slower performance.
-Becareful with your algorithmic complexities and you will be all good to go.
+With zero-cost abstraction, we don't need to worry too much about abstractions causing slower performance.
+Be careful with your algorithmic complexities and you will be all good to go.

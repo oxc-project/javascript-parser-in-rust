@@ -21,7 +21,7 @@ function HomepageHeader() {
         </p>
         <p className="hero__subtitle">
           The book will be a full tutorial on writing a JavaScript compiler in Rust.
-          And the tutorials will go down in rabbit holes on specific topics.
+          And the tutorials will go down rabbit holes on specific topics.
         </p>
         <div className={styles.buttons}>
           <Link
