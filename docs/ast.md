@@ -51,8 +51,10 @@ On the top panel, select JavaScript, and then `acorn`, type in `var a` and we wi
 }
 ```
 
-Since this is a tree, every object is a node, with a type name (e.g. `Program`, `VariableDeclaration`, `VariableDeclarator`, `Identifier`).
-`start` and `end` are the offsets from the source, which is from the lexer.
+Since this is a tree, every object is a node with a type name (e.g. `Program`, `VariableDeclaration`, `VariableDeclarator`, `Identifier`).
+`start` and `end` are the offsets from the source.
+
+## estree
 
 There exists a widely used specification called [estree](https://github.com/estree/estree),
 it defines [all the AST nodes](https://github.com/estree/estree/blob/master/es5.md) for JavaScript.
@@ -75,7 +77,7 @@ impl Node {
 ```
 
 Rust doesn't have inheritance, so we'll just keep it simple and use composition instead.
-The `var a` ast can be defined as
+AST for `var a` is defined as
 
 ```rust
 pub struct Program {
@@ -88,7 +90,6 @@ pub enum Statement {
 }
 
 pub struct VariableDeclaration {
-    #[serde(flatten)]
     pub node: Node,
     pub declarations: Vec<VariableDeclarator>,
 }
@@ -109,10 +110,10 @@ pub enum Expression {
 ```
 
 ::: info
-JavaScript grammar has a lot of annoyances, you can read the [grammar tutorial](/blog/grammar) for enjoyment.
+JavaScript grammar has a lot of annoyances, you can read the [grammar tutorial](/blog/grammar) for amusement.
 :::
 
-Statements and Expressions are enums because they will eventually contain a lot of other node types.
+`Statement`s and `Expression`s are enums because they will be expanded with a lot of other node types, for example:
 
 ```rust
 pub enum Expression {
@@ -138,9 +139,9 @@ The `Box` is needed because self referential structs are not allowed in Rust.
 ### Memory allocations
 
 Back in the [Architecture Overview](/docs/architecture) chapter,
-I mentioned that you need to look out for heap allocated structs such as `Vec` and `Box` because heap allocations are not cheap.
+I briefly mentioned that you need to look out for heap allocated structs such as `Vec` and `Box` because heap allocations are not cheap.
 
-By looking at the [real word AST implementation from swc](https://github.com/swc-project/swc/blob/main/crates/swc_ecma_ast/src/expr.rs),
+Take a look at the [real word implementation from swc](https://github.com/swc-project/swc/blob/main/crates/swc_ecma_ast/src/expr.rs),
 we can see that an AST can have lots `Box`s and `Vec`s, and also note that the `Statement` and `Expression` enums contain
 a dozen of enum variants.
 
@@ -148,8 +149,8 @@ a dozen of enum variants.
 
 The first optimization we are going to make is to reduce the size of the enums.
 
-The byte size of a Rust enum is the union of all its variants.
-The following enum will take up 56 bytes (1 byte for the tag, 48 bytes for the payload and 8 bytes for alignment padding)
+It is known that the byte size of a Rust enum is the union of all its variants.
+For example the following enum will take up 56 bytes (1 byte for the tag, 48 bytes for the payload and 8 bytes for alignment padding)
 
 ```rust
 enum Name {
@@ -163,11 +164,12 @@ enum Name {
 The above example is taken from [this blog post](https://adeschamps.github.io/enum-size)
 :::
 
-Now for the `Expression` enum, it can take up to more than 200 bytes in our current setup.
-These 200 bytes need to be accessed every time we do a `matches!(expr, Expression::AwaitExpression(_))` check,
-which is not very performant.
+As for the `Expression` and `Statement` enums, they can take up to more than 200 bytes with our current setup.
 
-A better approach would be to box the enum variants and only carry around 16 bytes.
+These 200 bytes need to be passed around, or accessed every time we do a `matches!(expr, Expression::AwaitExpression(_))` check,
+which is not very cache friendly for performance.
+
+A better approach would be to box the enum variants and only carry 16 bytes around.
 
 ```rust
 pub enum Expression {
@@ -187,7 +189,8 @@ pub struct YieldExpression {
 ```
 
 :::info
-You will often see a "no bloat enum sizes" test case in the Rust Compiler source code for ensuring small enum sizes.
+To make sure the enums are indeed 16 bytes, you can use `std::mem::size_of`.
+You will often see "no bloat enum sizes" test cases in the Rust Compiler source code for ensuring small enum sizes.
 
 ```rust
 #[test]
@@ -202,9 +205,9 @@ fn no_bloat_enum_sizes() {
 
 #### Memory Arena
 
-Using the global memory allocator for an AST is actually not really efficient.
+Using the global memory allocator for the AST is actually not really efficient.
 Every `Box` and `Vec` are allocated on demand, and then dropped separately.
-What we would like to do is pre-allocate and drop in wholesale.
+What we would like to do is pre-allocate memory and drop in wholesale.
 
 :::info
 You can read more on this topic in [this blog post](https://manishearth.github.io/blog/2021/03/15/arenas-in-rust/)
