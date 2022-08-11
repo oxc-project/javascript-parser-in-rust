@@ -18,12 +18,14 @@ The architectural decisions will mostly affect two categories:
 - the performance of your compiler
 - how nice it is to consume your AST
 
+Knowing all the options and trade-offs before building a compiler in Rust will make your whole journey much smoother.
+
 ## Performance
 
-The key to a performant Rust program is to **make less memory allocations** and **use fewer CPU cycles**.
+The key to a performant Rust program is to **allocate less memory** and **use fewer CPU cycles**.
 
-It is mostly transparent when a memory allocation is made just by looking for heap-allocated structs such as `Vec` or `Box`.
-Reasoning about their usage will give you a sense of how fast your program will be.
+It is mostly transparent where memory allocations are made just by looking for heap-allocated objects such as a `Vec` or a `Box`.
+Reasoning about their usage will give you a sense of how fast your program will be - the more you allocate, you slower your program will be.
 
-With zero-cost abstraction, we don't need to worry too much about abstractions causing slower performance.
+Rust gives us zero-cost abstraction for free, we don't need to worry too much about abstractions causing slower performance.
 Be careful with your algorithmic complexities and you will be all good to go.

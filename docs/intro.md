@@ -3,7 +3,7 @@ id: intro
 title: Introduction
 ---
 
-We are in the [The Third Age of JavaScript](https://www.swyx.io/js-third-age/),
+We are in [The Third Age of JavaScript](https://www.swyx.io/js-third-age/),
 the common trend right now is to author JavaScript in Rust or Go for their performance gains.
 
 But authoring JavaScript tools are hard, let alone writing them in Rust.
