@@ -154,7 +154,7 @@ Meaningless expect this one litter corner ... https://github.com/estree/estree/i
 
 Cover grammar will be your first painful experience while understanding JavaScript from a parser point of view.
 Read the [intro V8 blog post](https://v8.dev/blog/understanding-ecmascript-part-4) on this topic first,
-and I'll cover this in [this tutorial](/blog/cover-grammar).
+and I'll cover this in [this tutorial](/blog/grammar).
 
 ### Restricted Productions
 
