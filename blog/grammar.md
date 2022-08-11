@@ -27,7 +27,8 @@ They haven't updated it much in the past two years and they sent a strong messag
 >
 > - Do not write a JS parser.
 > - JavaScript has some syntactic horrors in it. But hey, you don't make the world's most widely used programming language by avoiding all mistakes. You do it by shipping a serviceable tool, in the right circumstances, for the right users.
->   :::
+
+:::
 
 ---
 
@@ -43,16 +44,16 @@ class is strict, but there is not scope ...
 
 ## Legacy Octal and Use Strict
 
-```
-'\01'
-'use strict';
+```javascript
+"\01";
+"use strict";
 ```
 
 is syntax error
 
 ## ES2016 non-simple parameter argument and strict mode
 
-```
+```javascript
 function foo({a}) {
     'use strict';
 }
@@ -87,7 +88,7 @@ you need about a dozen checks to make sure you are on a let declaration ...
 
 ### B.3.2 Block-Level Function Declarations Web Legacy Compatibility Semantics
 
-https://tc39.es/ecma262/#sec-block-level-function-declarations-web-legacy-compatibility-semantics
+[B.3.2 Block-Level Function Declarations Web Legacy Compatibility Semantics](https://tc39.es/ecma262/#sec-block-level-function-declarations-web-legacy-compatibility-semantics)
 
 ## Ambiguous Grammar
 
