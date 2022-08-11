@@ -14,10 +14,12 @@ function HomepageHeader() {
         <p className="hero__subtitle">
           JavaScript, Rust and compilers are all hard to learn,
           let's combine these three and challenge ourselves to write a JavaScript compiler in Rust.
-          <br/><br/>
+        </p>
+        <p className="hero__subtitle">
           This will be the book for you if you are interested in learning Rust, compiler technologies,
           or would like to contribute to swc or Rome in the near future.
-          <br/><br/>
+        </p>
+        <p className="hero__subtitle">
           The book will be a full tutorial on writing a JavaScript compiler in Rust.
           And the tutorials will go down in rabbit holes on specific topics.
         </p>
