@@ -4,7 +4,7 @@ title: Lexer
 ---
 
 The lexer, also known as tokenizer or scanner, is responsible for transforming source text to tokens.
-The tokens will later be consumed by the parser so we don't need to worry about whitespaces and comments in the original text.
+The tokens will later be consumed by the parser so we don't need to worry about whitespaces and comments from the original text.
 
 Let's start simple and transform a single `+` text into a token.
 
@@ -31,7 +31,8 @@ pub enum Kind {
 A single `+` will give you `[Token { kind: Kind::Plus, start: 0, end: 1 }, Token { kind: Kind::Eof, start: 1, end: 1 }]`
 
 To loop through the string, we can either keep track of an index and pretend that we are writing C code,
-or we can take a look at the [string documentation](https://doc.rust-lang.org/std/primitive.str.html#) and find ourself a `Chars` iterator to work with.
+or we can take a look at the [string documentation](https://doc.rust-lang.org/std/primitive.str.html#)
+and find our self a [`Chars`](https://doc.rust-lang.org/std/str/struct.Chars.html) iterator to work with.
 
 :::info
 The `Chars` iterator abstracts away the tracking index and boundary checking to make you feel really safe.
@@ -97,24 +98,50 @@ impl<'a> Lexer<'a> {
 
 ### Peek
 
+Moving on to tokenizing `++` and `+=`, we need a helper function called `peek`.
+
+```rust
+    fn peek(&self) -> Option<char> {
+        self.chars.clone().next()
+    }
+```
+
+:::info
+The `clone` is cheap here, if you dig into the [source code](https://doc.rust-lang.org/src/core/slice/iter.rs.html#148-152),
+
+```rust
+    fn clone(&self) -> Self {
+        Iter { ptr: self.ptr, end: self.end, _marker: self._marker }
+    }
+```
+
+you can see that it just copies the tracking index and the boundary.
+:::
+
+Equipped with `peek`, tokenizing `++` and `+=` are just a simple nested if statements.
+
+Here is a real world implementation from [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus):
+
 ```rust reference
 https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/lexer.rs#L1769-L1791
 ```
 
+The above logic applies for all operators, so let's expand our knowledge on lexing JavaScript.
+
 ---
 
-## JavaScript
+## Lexing JavaScript
 
-A lexer written in Rust is acutally really boring, it feels like writing C code
+A lexer written in Rust is really boring, it feels like writing C code
 where you write long chained if statements and check for each `char` and then return the respective token.
 
-But the fun begins when we start modifying it for JavaScript.
+The real fun begins when we start lexing for JavaScript.
 
 Let's open up the [ECMAScript Language Specification](https://tc39.es/ecma262/) and re-learn JavaScript.
 
 :::caution
 I still remember the first time I opened up the specification and went into a little corner
-and cried for like five minutes because I couldn't understand what was going on.
+and cried in agony because it feels like reading foreign text with jargons everywhere.
 So head over to my [guide on reading the specification](/blog/ecma-spec) if you are getting lost.
 :::
 
@@ -125,7 +152,7 @@ but [Chapter 11 ECMAScript Language: Source Text](https://tc39.es/ecma262/#sec-e
 states the source text should be in Unicode.
 And [Chapter 12.6 Names and Keywords](https://tc39.es/ecma262/#sec-names-and-keywords)
 states the identifiers are interpreted according to the Default Identifier Syntax given in Unicode Standard Annex #31.
-Specifcally,
+Specifically,
 
 ```markup
 UnicodeIDStart ::

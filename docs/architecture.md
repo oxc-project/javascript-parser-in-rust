@@ -20,7 +20,7 @@ The architectural decisions will mostly affect two categories:
 
 ## Performance
 
-The key to a performant Rust program is to _make less momory allocations_ and _use less cpu cycles_.
+The key to a performant Rust program is to **make less momory allocations** and **use less cpu cycles**.
 
 It is mostly transparent when a momory allocation is made just by looking for heap allocated structs such as `Vec` or `Box`.
 Reasoning about their usage will give you a sense of how fast your program will be.
