@@ -93,7 +93,7 @@ impl<'a> Lexer<'a> {
         Token { kind, start, end }
     }
 
-    /// Get the length offset from the source, in UTF-8 bytes
+    /// Get the length offset from the source text, in UTF-8 bytes
     fn offset(&self) -> usize {
         self.source.len() - self.current.chars.as_str().len()
     }
@@ -138,7 +138,7 @@ This is one advantage of having constant grammar in Rust.
 
 ## Peek
 
-To tokenize multi-character operators such as `++` or `+=`, a helper function called `peek` is needed:
+To tokenize multi-character operators such as `++` or `+=`, a helper function `peek` is required:
 
 ```rust
     fn peek(&self) -> Option<char> {
@@ -158,7 +158,15 @@ https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/
 
 :::
 
-Equipped with `peek`, tokenizing `++` and `+=` are just simple nested if statements.
+The difference between `peek` and `chars.next()` is the former will always return the **same** next `char`,
+while the later will move forward and return a different `char`.
+
+To demonstrate, consider the string `abc`:
+
+- repeated `peek()` call returns `Some(a)`, `Some(a)`, `Some(a)`
+- repeated `chars.next()` call returns `Some('a')`, `Some('b')`, `Some('c')`, `None`.
+
+Equipped with `peek`, tokenizing `++` and `+=` are just nested if statements.
 
 Here is a real-world implementation from [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus):
 
@@ -210,6 +218,42 @@ This means that we can write `var ಠ_ಠ` but not `var 🦀`,
 
 I published the [unicode-id-start](https://crates.io/crates/unicode-id-start) for this exact purpose,
 and you can call `unicode_id_start::is_id_start(char)` and `unicode_id_start::is_id_continue(char)` in your lexer for checking Unicode.
+
+### Keywords
+
+All the [keywords](https://tc39.es/ecma262/#sec-keywords-and-reserved-words) such as `if`, `while` and `for`
+need to be tokenized and interpreted as a whole.
+They need to be added to the token kind enum so we don't have to make string comparisons in the parser.
+
+```rust
+pub enum Kind {
+    Identifier,
+    If,
+    While,
+    For
+}
+```
+
+:::caution
+`undefined` is not a keyword, it is unnecessary to add it here.
+:::
+
+Tokenizing keywords will just be matching the identifier from above.
+
+```rust
+    fn match_keyword(&self, ident: &str) -> Kind {
+        // all keywords have 1 <= length <= 10
+        if ident.len() == 1 || ident.len() > 10 {
+            return Kind::Identifier;
+        }
+        match ident {
+            "if" => Kind::If,
+            "while" => Kind::While,
+            "for" => Kind::For,
+            _ => Kind::Identifier
+        }
+    }
+```
 
 ---
 
