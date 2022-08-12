@@ -30,16 +30,16 @@ pub enum Kind {
 }
 ```
 
-A single `+` will give you `[Token { kind: Kind::Plus, start: 0, end: 1 }, Token { kind: Kind::Eof, start: 1, end: 1 }]`
+A single `+` will give us `[Token { kind: Kind::Plus, start: 0, end: 1 }, Token { kind: Kind::Eof, start: 1, end: 1 }]`
 
 To loop through the string, we can either keep track of an index and pretend that we are writing C code,
 or we can take a look at the [string documentation](https://doc.rust-lang.org/std/primitive.str.html#)
 and find ourselves a [`Chars`](https://doc.rust-lang.org/std/str/struct.Chars.html) iterator to work with.
 
 :::info
-The `Chars` iterator abstracts away the tracking index and boundary checking to make you feel safe.
+The `Chars` iterator abstracts away the tracking index and boundary checking to make us feel truly safe.
 
-It gives you an `Option<char>` when you call `chars.next()`.
+It gives us an `Option<char>` when we call `chars.next()`.
 But please note that a `char` is not a 0-255 ASCII value,
 it is a utf8 Unicode point value with the range of 0 to 0x10FFFF.
 :::
@@ -129,7 +129,7 @@ All the above code will get compiled into a single data access, so `.as_str().le
 Zero cost abstraction indeed!
 
 :::info
-If you are navigating the source code, searching for a definition is simply looking for
+When navigating the source code, searching for a definition is simply looking for
 `fn function_name`, `struct struct_name`, `enum enum_name` etc.
 This is one advantage of having constant grammar in Rust.
 :::
@@ -149,7 +149,7 @@ To tokenize multi-character operators such as `++` or `+=`, a helper function `p
 We don't want to advance the original `chars` iterator so we clone the iterator and advance the index.
 
 :::info
-The `clone` is cheap if you dig into the [source code](https://doc.rust-lang.org/src/core/slice/iter.rs.html#148-152),
+The `clone` is cheap if we dig into the [source code](https://doc.rust-lang.org/src/core/slice/iter.rs.html#148-152),
 it just copies the tracking and boundary index.
 
 ```rust reference
@@ -163,7 +163,7 @@ while the later will move forward and return a different `char`.
 
 To demonstrate, consider the string `abc`:
 
-- repeated `peek()` call returns `Some(a)`, `Some(a)`, `Some(a)`
+- repeated `peek()` call returns `Some(a)`, `Some(a)`, `Some(a)`, ...
 - repeated `chars.next()` call returns `Some('a')`, `Some('b')`, `Some('c')`, `None`.
 
 Equipped with `peek`, tokenizing `++` and `+=` are just nested if statements.
@@ -174,14 +174,14 @@ Here is a real-world implementation from [jsparagus](https://github.com/mozilla-
 https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/lexer.rs#L1769-L1791
 ```
 
-The above logic applies to all operators, so let's expand our knowledge on lexing JavaScript.
+The above logic applies to all operators, so let us expand our knowledge on lexing JavaScript.
 
 ---
 
 ## Lexing JavaScript
 
 A lexer written in Rust is rather boring, it feels like writing C code
-where you write long chained if statements and check for each `char` and then return the respective token.
+where we write long chained if statements and check for each `char` and then return the respective token.
 
 The real fun begins when we start lexing for JavaScript.
 
@@ -190,7 +190,7 @@ Let's open up the [ECMAScript Language Specification](https://tc39.es/ecma262/) 
 :::caution
 I still remember the first time I opened up the specification and went into a little corner
 and cried in agony because it feels like reading foreign text with jargons everywhere.
-So head over to my [guide on reading the specification](/blog/ecma-spec) if you ever get lost.
+So head over to my [guide on reading the specification](/blog/ecma-spec) if things don't make sense.
 :::
 
 ### Identifiers and Unicode
@@ -216,8 +216,8 @@ UnicodeIDContinue ::
 This means that we can write `var ಠ_ಠ` but not `var 🦀`,
 `ಠ_ಠ` has the Unicode property "ID_Start" while `🦀` does not.
 
-I published the [unicode-id-start](https://crates.io/crates/unicode-id-start) for this exact purpose,
-and you can call `unicode_id_start::is_id_start(char)` and `unicode_id_start::is_id_continue(char)` in your lexer for checking Unicode.
+I published the [unicode-id-start](https://crates.io/crates/unicode-id-start) for this exact purpose.
+`unicode_id_start::is_id_start(char)` and `unicode_id_start::is_id_continue(char)` can be called to check Unicode.
 
 ### Keywords
 
@@ -292,7 +292,7 @@ and save it with `token.value = TokenValue::String(s)`.
 When we tokenized a number `1.23`, we get a token with `Token { start: 0, end: 3 }`.
 To convert it to Rust `f64`, we can use the string [`parse`](https://doc.rust-lang.org/std/primitive.str.html#method.parse)
 method by calling `self.source[token.start..token.end].parse::<f64>()`, and then save the value into `token.value`.
-For binary, octal and integers, you can learn their parsing techniques from [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/numeric_value.rs).
+For binary, octal and integers, an example of their parsing techniques can be found in [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/numeric_value.rs).
 
 ---
 
