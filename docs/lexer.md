@@ -3,6 +3,8 @@ id: lexer
 title: Lexer
 ---
 
+## Token
+
 The lexer, also known as tokenizer or scanner, is responsible for transforming source text into tokens.
 The tokens will later be consumed by the parser so we don't need to worry about whitespaces and comments from the original text.
 
@@ -51,9 +53,7 @@ struct Lexer<'a> {
     /// Source Text
     source: &'a str,
 
-    /// Length of the original input string, in UTF-8 bytes
-    source_length: usize,
-
+    /// The remaining characters
     chars: Chars<'a>
 }
 
@@ -61,7 +61,6 @@ impl<'a> Lexer<'a> {
     pub fn new(source: &'a str) -> Self {
         Self {
             source,
-            source_length: source.len(),
             chars: source.chars()
         }
     }
@@ -88,17 +87,58 @@ impl<'a> Lexer<'a> {
     }
 
     fn read_next_token(&mut self) -> Token {
-        let start = self.source_length - self.current.chars.as_str().len();
+        let start = self.offset();
         let kind = self.read_next_kind();
-        let end = self.source_length - self.current.chars.as_str().len();
+        let end = self.offset();
         Token { kind, start, end }
+    }
+
+    /// Get the length offset from the source, in UTF-8 bytes
+    fn offset(&self) -> usize {
+        self.source.len() - self.current.chars.as_str().len()
     }
 }
 ```
 
-### Peek
+---
 
-Moving on to tokenizing `++` and `+=`, we need a helper function called `peek`.
+The `.len()` and `.as_str().len()` method calls inside `fn offset` feel like O(n), so let's dig deeper.
+
+[`.as_str()`](https://doc.rust-lang.org/src/core/str/iter.rs.html#112) returns a pointer to a string slice
+
+```rust reference
+https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/str/iter.rs#L112-L114
+```
+
+A [slice](https://doc.rust-lang.org/std/slice/index.html) is a view into a block of memory represented as a pointer and a length.
+The `.len()` method returns the meta data stored inside the slice
+
+```rust reference
+https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/str/mod.rs#L157-L159
+```
+
+```rust reference
+https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/str/mod.rs#L323-L325
+```
+
+```rust reference
+https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/slice/mod.rs#L129-L138
+```
+
+All the above code will get compiled into a single data access, so `.as_str().len()` is actually O(1).
+Zero cost abstraction indeed!
+
+:::info
+If you are navigating the source code, searching for a definition is simply looking for
+`fn function_name`, `struct struct_name`, `enum enum_name` etc.
+This is one advantage of having constant grammar in Rust.
+:::
+
+---
+
+## Peek
+
+To tokenize multi-character operators such as `++` or `+=`, a helper function called `peek` is needed:
 
 ```rust
     fn peek(&self) -> Option<char> {
@@ -106,16 +146,16 @@ Moving on to tokenizing `++` and `+=`, we need a helper function called `peek`.
     }
 ```
 
+We don't want to advance the original `chars` iterator so we clone the iterator and advance the index.
+
 :::info
 The `clone` is cheap if you dig into the [source code](https://doc.rust-lang.org/src/core/slice/iter.rs.html#148-152),
+it just copies the tracking and boundary index.
 
-```rust
-    fn clone(&self) -> Self {
-        Iter { ptr: self.ptr, end: self.end, _marker: self._marker }
-    }
+```rust reference
+https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/slice/iter.rs#L148-L152
 ```
 
-you can see that it just copies the tracking index and the boundary.
 :::
 
 Equipped with `peek`, tokenizing `++` and `+=` are just simple nested if statements.
@@ -142,7 +182,7 @@ Let's open up the [ECMAScript Language Specification](https://tc39.es/ecma262/) 
 :::caution
 I still remember the first time I opened up the specification and went into a little corner
 and cried in agony because it feels like reading foreign text with jargons everywhere.
-So head over to my [guide on reading the specification](/blog/ecma-spec) if you are getting lost.
+So head over to my [guide on reading the specification](/blog/ecma-spec) if you ever get lost.
 :::
 
 ### Identifiers and Unicode
@@ -152,34 +192,111 @@ but [Chapter 11 ECMAScript Language: Source Text](https://tc39.es/ecma262/#sec-e
 states the source text should be in Unicode.
 And [Chapter 12.6 Names and Keywords](https://tc39.es/ecma262/#sec-names-and-keywords)
 states the identifiers are interpreted according to the Default Identifier Syntax given in Unicode Standard Annex #31.
-Specifically,
+In detail:
 
 ```markup
+IdentifierStartChar ::
+    UnicodeIDStart
+IdentifierPartChar ::
+    UnicodeIDContinue
 UnicodeIDStart ::
     any Unicode code point with the Unicode property “ID_Start”
 UnicodeIDContinue ::
     any Unicode code point with the Unicode property “ID_Continue”
 ```
 
-This means that we can write `var ಠ_ಠ` but not `var 🦀` because `ಠ_ಠ` has "ID_Start".
+This means that we can write `var ಠ_ಠ` but not `var 🦀`,
+`ಠ_ಠ` has the Unicode property "ID_Start" while `🦀` does not.
 
 I published the [unicode-id-start](https://crates.io/crates/unicode-id-start) for this exact purpose,
 and you can call `unicode_id_start::is_id_start(char)` and `unicode_id_start::is_id_continue(char)` in your lexer for checking Unicode.
 
-### LL(1)
+---
 
-### Re-lex
+### Token Value
 
-### Strict Mode
+We often need to compare numbers and strings in later stages of the compiler,
+but they are in plain source text right now.
+Let's convert them to Rust types so they are easier to work with.
+
+```rust
+pub enum Kind {
+    // highlight-next-line
+    Number,
+    // highlight-next-line
+    String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Token {
+    // highlight-next-line
+    pub value: TokenValue,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum TokenValue {
+    None,
+    Number(f64),
+    String(String),
+}
+```
+
+When we tokenized a string `"foo"`, we get a token with `Token { start: 0, end: 2 }`.
+To convert it to Rust string, call `let s = self.source[token.start..token.end].to_string()`
+and save it with `token.value = TokenValue::String(s)`.
+
+When we tokenized a number `1.23`, we get a token with `Token { start: 0, end: 3 }`.
+To convert it to Rust `f64`, we can use the string [`parse`](https://doc.rust-lang.org/std/primitive.str.html#method.parse)
+method by calling `self.source[token.start..token.end].parse::<f64>()`, and then save the value into `token.value`.
+For binary, octal and integers, you can learn their parsing techniques from [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/numeric_value.rs).
 
 ---
 
 ## Rust Optimizations
 
-### Jump Table
+### Smaller Tokens
 
-### Unicode Identifier Start
+It is tempting to put the token values inside the `Kind` enum and aim for simpler and safer code:
 
-### Small Tokens
+```rust
+pub enum Kind {
+    Number(f64),
+    String(String),
+}
+```
+
+But it is known that the byte size of a Rust enum is the union of all its variants.
+This enum packs a lot of bytes compared to the original enum, which has only 1 byte.
+There will be heavy usages of this `Kind` enum in the parser,
+dealing with a 1 byte enum will obviously be faster than a multi-byte enum.
 
 ### String Interning
+
+It is not performant to use `String` in compilers, mainly due to:
+
+- `String` is a heap allocated object
+- String comparison is an O(n) operation
+
+[String Interning](https://en.wikipedia.org/wiki/String_interning) solves this problem by
+storing only one copy of each distinct string value with a unique identifier in a cache.
+There will only be one heap allocation per distinct string, and string comparisons becomes O(1).
+
+There are lots of string interning libraries on [crates.io](https://crates.io/search?q=string%20interning)
+with different props and cons.
+
+A starting point is to use [`string-cache`](https://crates.io/crates/string_cache),
+it has an `Atom` type and a compile time `atom!("string")` interface.
+
+Our `TokenValue` becomes
+
+```rust
+#[derive(Debug, Clone, PartialEq)]
+pub enum TokenValue {
+    None,
+    Number(f64),
+    // highlight-next-line
+    String(Atom),
+}
+```
+
+and string comparison becomes `matches!(token, TokenValue::String(atom!("string")))`.

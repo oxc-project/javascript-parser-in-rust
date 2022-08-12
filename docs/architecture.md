@@ -29,3 +29,7 @@ Reasoning about their usage will give you a sense of how fast your program will 
 
 Rust gives us zero-cost abstraction for free, we don't need to worry too much about abstractions causing slower performance.
 Be careful with your algorithmic complexities and you will be all good to go.
+
+If you are unsure about the performance of an API,
+don't be afraid to click the "source" button on the Rust documentation and read the source code,
+the source code is easy to understand most of the time.
