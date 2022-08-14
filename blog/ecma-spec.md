@@ -15,13 +15,18 @@ For our compiler, we will study the following chapters:
 - Annex B: Additional ECMAScript Features for Web Browsers
 - Annex C: The Strict Mode of ECMAScript
 
+For navigaton inside the specification:
+
+- Anything clickable has a permanent link, they are shown on the url as anchors, for example `#sec-identifiers`
+- Hovering over things may show a tooltip, clicking on `References` shows all its references
+
 ## Notational Conventions
 
 [Chapter 5.1.5 Grammar Notation](https://tc39.es/ecma262/#sec-grammar-notation) is the section we need to read.
 
 The things to note here are:
 
-**Recursion**
+### Recursion
 
 This is how lists are presented in the grammar.
 
@@ -40,7 +45,8 @@ a, b = 1, c = 2
           ^___^ AssignmentExpression
 ```
 
-**Optional**
+### Optional
+
 The `_opt_` suffix for optional syntax. For example,
 
 ```markup
@@ -56,7 +62,7 @@ var binding_identifier = Initializer;
                        ______________ Initializer_opt
 ```
 
-**Parameters**
+### Parameters
 
 The `[Return]` and `[In]` are parameters of the grammar.
 

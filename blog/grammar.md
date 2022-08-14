@@ -2,9 +2,14 @@
 title: Grammar
 ---
 
+JavaScript has one of the most challenging grammar to parse,
+this tutorial details all the sweat and tears I had while learning it.
+
+<!--truncate-->
+
 ## LL(1) Grammar
 
-According to wikipedia,
+According to [Wikipedia](https://en.wikipedia.org/wiki/LL_grammar),
 
 > an LL grammar is a context-free grammar that can be parsed by an LL parser, which parses the input from Left to right
 
@@ -36,9 +41,22 @@ What we have learned so far is that a JavaScript parser can only be written by h
 so let's learn all the quirks in the grammar before we shoot ourselves in the foot.
 
 The list below starts simple and will become difficult to grasp,
-so please take your time.
+so please take grab a coffee and take your time.
 
-### Binding Identifier vs Identifier Reference
+### Identifiers
+
+```markup
+13.1 Identifiers
+
+Syntax
+
+IdentifierReference[Yield, Await] :
+BindingIdentifier[Yield, Await] :
+LabelIdentifier[Yield, Await] :
+```
+
+`estree` and some ASTs do not distinguish the above identifiers,
+and the specification does not explain them in plain text.
 
 ## Class and strict mode
 
