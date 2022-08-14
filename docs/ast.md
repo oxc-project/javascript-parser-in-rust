@@ -139,7 +139,7 @@ JavaScript grammar has a lot of nuisances, read the [grammar tutorial](/blog/gra
 
 ## Rust Optimizations
 
-### Memory allocations
+### Memory Allocations
 
 Back in the [Overview](./overview) chapter,
 I briefly mentioned that we need to look out for heap-allocated structs such as `Vec` and `Box` because heap allocations are not cheap.
