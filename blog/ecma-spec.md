@@ -8,14 +8,14 @@ title: The ECMAScript Specification
 
 For our compiler, we will study the following chapters:
 
-- Chapter 5 Notational Conventions
-- Chapter 11 ECMAScript Language: Source Text
-- Chapter 12 ECMAScript Language: Lexical Grammar
-- Chapter 13 - 16 Expressions, Statements, Functions, Classes, Scripts and Modules
-- Chapter B Additional ECMAScript Features for Web Browsers
-- Chapter C The Strict Mode of ECMAScript
+- Chapter 5: Notational Conventions
+- Chapter 11: ECMAScript Language: Source Text
+- Chapter 12: ECMAScript Language: Lexical Grammar
+- Chapter 13 - 16: Expressions, Statements, Functions, Classes, Scripts and Modules
+- Annex B: Additional ECMAScript Features for Web Browsers
+- Annex C: The Strict Mode of ECMAScript
 
-## Chapter 5 Notational Conventions
+## Notational Conventions
 
 [Chapter 5.1.5 Grammar Notation](https://tc39.es/ecma262/#sec-grammar-notation) is the section we need to read.
 
@@ -78,7 +78,7 @@ ModuleItem :
 
 allows for top-level return.
 
-## Chapter 11 ECMAScript Language: Source Text
+## Source Text
 
 [Chapter 11.2 Types of Source Code](https://tc39.es/ecma262/#sec-types-of-source-code) tells us that
 there is a huge distinction between script code and module code.
@@ -90,11 +90,11 @@ In html we write `<script src="javascript.js"></script>`.
 **Module Code** is automatically strict.
 In html we write `<script type="module" src="main.mjs"></script>`.
 
-## Chapter 12 ECMAScript Language: Lexical Grammar
+## ECMAScript Language: Lexical Grammar
 
 For more in-depth explanation, read the V8 blog on [Understanding the ECMAScript spec](https://v8.dev/blog/understanding-ecmascript-part-3).
 
-### [Chapter 12.9 Automatic Semicolon Insertion](https://tc39.es/ecma262/#sec-automatic-semicolon-insertion)
+### [Automatic Semicolon Insertion](https://tc39.es/ecma262/#sec-automatic-semicolon-insertion)
 
 This section describes all the rules where we can omit a semicolon while writing JavaScript.
 All the explanation boils down to
@@ -136,7 +136,7 @@ The author of jsparagus made a rant about this [here](https://github.com/mozilla
 
 :::
 
-## Chapter 13 - 16 Expressions, Statements, Functions, Classes, Scripts and Modules
+## Expressions, Statements, Functions, Classes, Scripts and Modules
 
 ### Identifiers
 
