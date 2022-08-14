@@ -3,7 +3,7 @@ id: ast
 title: Abstract Syntax Tree
 ---
 
-The parser in the following chapter is responsible for turning Tokens into an abstract syntax tree (AST).
+The parser in the upcoming chapter is responsible for turning Tokens into an abstract syntax tree (AST).
 It is much nicer to work on the AST compared to the source text.
 
 All JavaScript toolings work on the AST level, for example:
@@ -13,7 +13,7 @@ All JavaScript toolings work on the AST level, for example:
 - A minifier (e.g. terser) transforms the AST
 - A bundler connects all import and export statements between ASTs from different files
 
-In this chapter, we will make a high dive so we can have some ASTs to use.
+In this chapter, let's construct a JavaScript AST by using Rust structs and enums.
 
 ## Getting familiar with the AST
 
@@ -56,27 +56,30 @@ Since this is a tree, every object is a node with a type name (e.g. `Program`, `
 
 ## estree
 
-There exists a widely used specification called [estree](https://github.com/estree/estree),
-it defines [all the AST nodes](https://github.com/estree/estree/blob/master/es5.md) for JavaScript.
+[estree](https://github.com/estree/estree) is a community standard grammar specification for JavaScript,
+it defines [all the AST nodes](https://github.com/estree/estree/blob/master/es5.md) so different tools
+can be compatible with each other.
 
-Let's start with the basic building blocks and define the AST nodes in Rust.
+The basic building block for any AST node is the `Node`:
 
 ```rust
 #[derive(Debug, Default, Clone, Copy, Serialize, PartialEq, Eq)]
 pub struct Node {
+    /// Start offset in source
     pub start: usize,
+
+    /// End offset in source
     pub end: usize,
 }
 
 impl Node {
-    #[must_use]
     pub fn new(start: usize, end: usize) -> Self {
         Self { start, end }
     }
 }
 ```
 
-Rust doesn't have inheritance, so we'll just keep it simple and use composition instead.
+Rust does not have inheritance, so we'll just keep it simple and use composition instead.
 AST for `var a` is defined as
 
 ```rust
@@ -109,10 +112,6 @@ pub enum Expression {
 }
 ```
 
-::: info
-JavaScript grammar has a lot of annoyances, you can read the [grammar tutorial](/blog/grammar) for amusement.
-:::
-
 `Statement`s and `Expression`s are enums because they will be expanded with a lot of other node types, for example:
 
 ```rust
@@ -134,12 +133,16 @@ pub struct YieldExpression {
 
 The `Box` is needed because self-referential structs are not allowed in Rust.
 
+:::info
+JavaScript grammar has a lot of nuisances, read the [grammar tutorial](/blog/grammar) for amusement.
+:::
+
 ## Rust Optimizations
 
 ### Memory allocations
 
-Back in the [Architecture Overview](/docs/architecture) chapter,
-I briefly mentioned that you need to look out for heap-allocated structs such as `Vec` and `Box` because heap allocations are not cheap.
+Back in the [Overview](./overview) chapter,
+I briefly mentioned that we need to look out for heap-allocated structs such as `Vec` and `Box` because heap allocations are not cheap.
 
 Take a look at the [real word implementation from swc](https://github.com/swc-project/swc/blob/main/crates/swc_ecma_ast/src/expr.rs),
 we can see that an AST can have lots of `Box`s and `Vec`s, and also note that the `Statement` and `Expression` enums contain
@@ -189,8 +192,8 @@ pub struct YieldExpression {
 ```
 
 :::info
-To make sure the enums are indeed 16 bytes, you can use `std::mem::size_of`.
-You will often see "no bloat enum sizes" test cases in the Rust Compiler source code for ensuring small enum sizes.
+To make sure the enums are indeed 16 bytes, we can use `std::mem::size_of`.
+"no bloat enum sizes" test cases can often be seen in the Rust Compiler source code for ensuring small enum sizes.
 
 ```rust
 #[test]
@@ -210,7 +213,7 @@ Every `Box` and `Vec` are allocated on demand and then dropped separately.
 What we would like to do is pre-allocate memory and drop it in wholesale.
 
 :::info
-You can read more on this topic in [this blog post](https://manishearth.github.io/blog/2021/03/15/arenas-in-rust/)
+More on this topic can be ready at [this blog post](https://manishearth.github.io/blog/2021/03/15/arenas-in-rust/)
 :::
 
 [`bumpalo`](https://docs.rs/bumpalo/latest/bumpalo/) is a very good candidate for our use case, according to its documentation:
@@ -246,6 +249,6 @@ pub struct YieldExpression<'a> {
 ```
 
 :::caution
-Please be cautious if you are not comfortable dealing with lifetimes at this stage.
-Your program will work fine without a memory arena.
+Please be cautious if we are not comfortable dealing with lifetimes at this stage.
+Our program will work fine without a memory arena.
 :::
