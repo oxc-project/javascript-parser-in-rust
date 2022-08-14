@@ -128,12 +128,6 @@ https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/
 All the above code will get compiled into a single data access, so `.as_str().len()` is actually O(1).
 Zero cost abstraction indeed!
 
-:::info
-When navigating the source code, searching for a definition is simply looking for
-`fn function_name`, `struct struct_name`, `enum enum_name` etc.
-This is one advantage of having constant grammar in Rust.
-:::
-
 ---
 
 ## Peek
