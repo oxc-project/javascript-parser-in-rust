@@ -17,7 +17,7 @@ For our compiler, we will study the following chapters:
 
 ## Chapter 5 Notational Conventions
 
-[Chapter 5.1.5 Grammar Notation](https://tc39.es/ecma262/#sec-grammar-notation) is the section you need to read.
+[Chapter 5.1.5 Grammar Notation](https://tc39.es/ecma262/#sec-grammar-notation) is the section we need to read.
 
 The things to note here are:
 
@@ -85,18 +85,18 @@ there is a huge distinction between script code and module code.
 And there is a `use strict` mode that makes the grammar saner by disallowing old JavaScript behaviors.
 
 **Script Code** is not strict, `use strict` need to be inserted at the top of the file to make script code strict.
-In html you write `<script src="javascript.js"></script>`.
+In html we write `<script src="javascript.js"></script>`.
 
 **Module Code** is automatically strict.
-In html you write `<script type="module" src="main.mjs"></script>`.
+In html we write `<script type="module" src="main.mjs"></script>`.
 
 ## Chapter 12 ECMAScript Language: Lexical Grammar
 
-For more in-depth explanation, you can read the V8 blog on [Understanding the ECMAScript spec](https://v8.dev/blog/understanding-ecmascript-part-3).
+For more in-depth explanation, read the V8 blog on [Understanding the ECMAScript spec](https://v8.dev/blog/understanding-ecmascript-part-3).
 
 ### [Chapter 12.9 Automatic Semicolon Insertion](https://tc39.es/ecma262/#sec-automatic-semicolon-insertion)
 
-This section describes all the rules that you need can omit a semicolon while writing JavaScript.
+This section describes all the rules where we can omit a semicolon while writing JavaScript.
 All the explanation boils down to
 
 ```rust
@@ -113,7 +113,7 @@ All the explanation boils down to
     }
 ```
 
-and in parser code
+The `asi` function need to be manually called where applicable, for example in the end of statement:
 
 ```rust
     fn parse_debugger_statement(&mut self) -> Result<Statement<'a>> {
@@ -142,22 +142,10 @@ The author of jsparagus made a rant about this [here](https://github.com/mozilla
 
 Distinguish between an identifier reference and binding identifier.
 
-### Expressions
-
-Pratt parsing.
-
-### Parenthesized Expression
-
-Meaningless expect this one litter corner ... https://github.com/estree/estree/issues/194
-
 ### Cover Grammar
 
-Cover grammar will be your first painful experience while understanding JavaScript from a parser point of view.
-Read the [intro V8 blog post](https://v8.dev/blog/understanding-ecmascript-part-4) on this topic first,
-and I'll cover this in [this tutorial](/blog/grammar).
+Cover grammar is going to be our most painful experience while understanding JavaScript from the parser point of view.
+Read the [V8 blog post](https://v8.dev/blog/understanding-ecmascript-part-4) on this topic first,
+and I'll cover this in the [grammar tutorial](./blog/grammar).
 
-### Restricted Productions
-
-Parse `/` and templates.
-
-### Arrow functions
+## Annex B

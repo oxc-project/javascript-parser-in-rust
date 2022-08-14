@@ -38,6 +38,8 @@ so let's learn all the quirks in the grammar before we shoot ourselves in the fo
 The list below starts simple and will become difficult to grasp,
 so please take your time.
 
+### Binding Identifier vs Identifier Reference
+
 ## Class and strict mode
 
 class is strict, but there is not scope ...
@@ -62,6 +64,10 @@ function foo({a}) {
 is syntax error
 
 but ... if you are writing a transpiler, e.g. TypeScript, this is not syntax if you are targeting es5.
+
+### Parenthesized Expression
+
+Meaningless expect this one litter corner ... https://github.com/estree/estree/issues/194
 
 ## FunctionDeclarations in IfStatement Statement Clauses
 

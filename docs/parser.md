@@ -6,7 +6,7 @@ title: Parser
 The parser we are going to construct is called a recursive descent parser,
 it is a manual process of going down the grammar and building up the AST.
 
-The parser starts simple.
+The parser starts simple, it holds the source code, the lexer, and the current token consumed from the lexer.
 
 ```rust
 pub struct Parser<'a> {
@@ -15,7 +15,7 @@ pub struct Parser<'a> {
 
     lexer: Lexer<'a>,
 
-    /// Current Token
+    /// Current Token consumed from the lexer
     cur_token: Token,
 
     /// The end range of the previous token
@@ -46,7 +46,7 @@ impl<'a> Parser<'a> {
 ## Helper functions
 
 The current token `cur_token: Token` holds the current token returned from the lexer.
-We'll make the parser code cleaner by adding some helper functions for navigating and inspecting the token.
+We'll make the parser code cleaner by adding some helper functions for navigating and inspecting this token.
 
 ```rust
 impl<'a> Parser<'a> {
@@ -109,7 +109,6 @@ The `DebuggerStatement` is the most simple statement to parse, so let's try and 
 ```rust
 impl<'a> Parser<'a> {
     pub fn parse(&mut self) -> Program {
-        // highlight-next-line
         let stmt = self.parse_debugger_statement();
         let body = vec![stmt];
         Ok(Program {
@@ -152,8 +151,6 @@ and the only punctuation it can have are round brackets, so we can still return 
 
 Most JavaScript parsers out there are partially recoverable, so we'll do the same and build a partially recoverable parser.
 
-## JavaScript
-
-### Binding Identifier vs Identifier Reference
+## Pratt parsing.
 
 ## Rust Optimizations
