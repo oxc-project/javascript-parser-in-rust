@@ -138,11 +138,11 @@ Quoting from the dragon book
 > Most programming language specifications do not describe how a compiler should respond to errors; error handling is left to the compiler designer.
 > Planning the error handling right from the start can both simplify the structure of a compiler and improve its handling of errors.
 
-A fully recoverable parser can construct an AST no matter what you throw at it.
-for tools such as linter or formatter, one would wish for a fully recoverable parser so you can act on part of the program.
+A fully recoverable parser can construct an AST no matter what we throw at it.
+For tools such as linter or formatter, one would wish for a fully recoverable parser so we can act on part of the program.
 
 ::: info
-The [Rome](https://github.com/rome/tools) parser is a fully recoverable parser, it will construct an AST no matter what you throw at it.
+The [Rome](https://github.com/rome/tools) parser is a fully recoverable parser.
 :::
 
 A panicking parser will abort if there is any grammar mismatch, and a partially recoverable parser will recover from deterministic grammars.
