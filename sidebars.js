@@ -4,7 +4,7 @@
 const sidebars = {
   tutorialSidebar: [
     "intro",
-    "architecture",
+    "overview",
     "lexer",
     "ast",
     "parser",

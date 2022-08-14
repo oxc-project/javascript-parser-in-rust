@@ -1,6 +1,6 @@
 ---
-id: architecture
-title: Architecture Overview
+id: overview
+title: Overview
 ---
 
 For our book, we will be applying the standard compiler frontend phases:
