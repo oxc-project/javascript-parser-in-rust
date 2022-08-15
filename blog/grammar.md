@@ -426,18 +426,32 @@ As an exercise, try and follow the grammar for `/=/ / /=/`.
 
 Read the [V8 blog post](https://v8.dev/blog/understanding-ecmascript-part-4) on this topic first.
 
-To summarize, the specification states the following in various places:
+To summarize, the specification states the following three cover grammars:
+
+#### CoverParenthesizedExpressionAndArrowParameterList
 
 ```markup
+PrimaryExpression[Yield, Await] :
+    CoverParenthesizedExpressionAndArrowParameterList[?Yield, ?Await]
+
 When processing an instance of the production
 PrimaryExpression[Yield, Await] : CoverParenthesizedExpressionAndArrowParameterList[?Yield, ?Await]
-the interpretation of CoverParenthesizedExpressionAndArrowParameterList is refined using the following grammar:
+    the interpretation of CoverParenthesizedExpressionAndArrowParameterList is refined using the following grammar:
 
 ParenthesizedExpression[Yield, Await] :
-( Expression[+In, ?Yield, ?Await] )
+    ( Expression[+In, ?Yield, ?Await] )
 ```
 
-This is essentially:
+```markup
+ArrowFunction[In, Yield, Await] :
+    ArrowParameters[?Yield, ?Await] [no LineTerminator here] => ConciseBody[?In]
+
+ArrowParameters[Yield, Await] :
+    BindingIdentifier[?Yield, ?Await]
+    CoverParenthesizedExpressionAndArrowParameterList[?Yield, ?Await]
+```
+
+These definitions defines:
 
 ```javascript
 let foo = (a, b, c); // SequenceExpression
@@ -445,12 +459,61 @@ let bar = (a, b, c) => {}; // ArrowExpression
           ^^^^^^^^^ CoverParenthesizedExpressionAndArrowParameterList
 ```
 
-There is a caveat here. If we were to build a scope tree in the parser,
-i.e. create a scope for arrow expression during parsing, but do not create one for sequence expression,
-it is not obvious on how to do this. Luckily, esbuild solved this problem by creating a temporary scope first,
-and then drop it if it is not a ArrowExpression.
+The easiest but more cumbersome approach to solve this problem is to define a intermediate struct that holds this AST node,
+then write two converter functions to convert it to either a SequenceExpression or a ArrowParameters node.
 
-Stated in its [architecture document](https://github.com/evanw/esbuild/blob/master/docs/architecture.md#symbols-and-scopes):
+A more complicated approach is to try and parse this as a ArrowParameters first, but rewind and reparse if it does not reach `=>`.
+But this is the only applicable approach if TypeScript is being parsed here.
+
+There is another caveat here. When building the scope tree in the parser,
+i.e. create a scope for arrow expression during parsing, but do not create one for sequence expression,
+it is not obvious on how to do this. Luckily, [esbuild](https://github.com/evanw/esbuild) solved this problem by creating a temporary scope first,
+and then drop it if it is not an ArrowExpression.
+
+This is stated in its [architecture document](https://github.com/evanw/esbuild/blob/master/docs/architecture.md#symbols-and-scopes):
+
+> This is mostly pretty straightforward except for a few places where the parser has pushed a scope and is in the middle of parsing a declaration only to discover that it's not a declaration after all. This happens in TypeScript when a function is forward-declared without a body, and in JavaScript when it's ambiguous whether a parenthesized expression is an arrow function or not until we reach the => token afterwards. This would be solved by doing three passes instead of two so we finish parsing before starting to set up scopes and declare symbols, but we're trying to do this in just two passes. So instead we call popAndDiscardScope() or popAndFlattenScope() instead of popScope() to modify the scope tree later if our assumptions turn out to be incorrect.
+
+#### CoverCallExpressionAndAsyncArrowHead
+
+```markup
+CallExpression :
+    CoverCallExpressionAndAsyncArrowHead
+
+When processing an instance of the production
+CallExpression : CoverCallExpressionAndAsyncArrowHead
+the interpretation of CoverCallExpressionAndAsyncArrowHead is refined using the following grammar:
+
+CallMemberExpression[Yield, Await] :
+    MemberExpression[?Yield, ?Await] Arguments[?Yield, ?Await]
+```
+
+```markup
+AsyncArrowFunction[In, Yield, Await] :
+    CoverCallExpressionAndAsyncArrowHead[?Yield, ?Await] [no LineTerminator here] => AsyncConciseBody[?In]
+
+CoverCallExpressionAndAsyncArrowHead[Yield, Await] :
+    MemberExpression[?Yield, ?Await] Arguments[?Yield, ?Await]
+
+When processing an instance of the production
+AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
+the interpretation of CoverCallExpressionAndAsyncArrowHead is refined using the following grammar:
+
+AsyncArrowHead :
+    async [no LineTerminator here] ArrowFormalParameters[~Yield, +Await]
+```
+
+These definitions defines:
+
+```javascript
+    async (a, b, c); // CallExpression
+    async (a, b, c) => {} // AsyncArrowFunction
+    ^^^^^^^^^^^^^^^ CoverCallExpressionAndAsyncArrowHead
+```
+
+This looks strange because `async` is not a keyword. These two `async`s are function names.
+
+#### CoverInitializedName
 
 ```markup
 In certain contexts, ObjectLiteral is used as a cover grammar for a more restricted secondary grammar. The CoverInitializedName production is necessary to fully cover these secondary grammars. However, use of this production results in an early Syntax Error in normal contexts where an actual ObjectLiteral is expected.
