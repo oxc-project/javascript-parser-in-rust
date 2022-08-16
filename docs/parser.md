@@ -137,27 +137,6 @@ for example parsing the `while` statement in swc:
 https://github.com/swc-project/swc/blob/554b459e26b24202f66c3c58a110b3f26bbd13cd/crates/swc_ecma_parser/src/parser/stmt.rs#L952-L970
 ```
 
-## Dealing with errors
-
-Quoting from the [Dragon Book](https://www.amazon.com/Compilers-Principles-Techniques-Tools-2nd/dp/0321486811)
-
-> Most programming language specifications do not describe how a compiler should respond to errors; error handling is left to the compiler designer.
-> Planning the error handling right from the start can both simplify the structure of a compiler and improve its handling of errors.
-
-A fully recoverable parser can construct an AST no matter what we throw at it.
-For tools such as linter or formatter, one would wish for a fully recoverable parser so we can act on part of the program.
-
-A panicking parser will abort if there is any grammar mismatch, and a partially recoverable parser will recover from deterministic grammars.
-
-For example, given a grammatically incorrect while statement `while true {}`, we know it is missing round brackets,
-and the only punctuation it can have are round brackets, so we can still return a valid AST and indicate its missing brackets.
-
-Most JavaScript parsers out there are partially recoverable, so we'll do the same and build a partially recoverable parser.
-
-:::info
-The [Rome](https://github.com/rome/tools) parser is a fully recoverable parser.
-:::
-
 ## Parsing Expressions
 
 ### Recursive Descent

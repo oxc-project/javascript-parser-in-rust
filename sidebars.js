@@ -8,6 +8,7 @@ const sidebars = {
     "lexer",
     "ast",
     "parser",
+    "errors",
     "semantics_analysis",
     "typescript",
     "references",
