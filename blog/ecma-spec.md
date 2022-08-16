@@ -144,14 +144,7 @@ The author of jsparagus made a rant about this [here](https://github.com/mozilla
 
 ## Expressions, Statements, Functions, Classes, Scripts and Modules
 
-### Identifiers
-
-Distinguish between an identifier reference and binding identifier.
-
-### Cover Grammar
-
-Cover grammar is going to be our most painful experience while understanding JavaScript from the parser point of view.
-Read the [V8 blog post](https://v8.dev/blog/understanding-ecmascript-part-4) on this topic first,
-and I'll cover this in the [grammar tutorial](./blog/grammar).
+It takes a while to understand the syntactic grammar, then apply them to writing a parser.
+More in-depth content can be found in [the grammar tutorial](./blog/grammar).
 
 ## Annex B
