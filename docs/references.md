@@ -20,4 +20,8 @@ title: References
 
 - [estree](https://github.com/estree/estree)
 - [swc_ecma_ast](https://github.com/swc-project/swc/tree/main/crates/swc_ecma_ast/src)
-- [babel ast][https://github.com/babel/babel/blob/main/packages/babel-types/src/ast-types/generated/index.ts]
+- [babel ast](https://github.com/babel/babel/blob/main/packages/babel-types/src/ast-types/generated/index.ts)
+
+## Rust
+
+- [The Rust Performance Book](https://nnethercote.github.io/perf-book/introduction.html).

@@ -139,8 +139,8 @@ https://github.com/swc-project/swc/blob/554b459e26b24202f66c3c58a110b3f26bbd13cd
 
 ## Parsing Expressions
 
-### Recursive Descent
+The grammar for expressions is deeply nested and recursive,
+which may cause stack overflow on long expressions (for example in [this TypeScript test](https://github.com/microsoft/TypeScript/blob/main/tests/cases/compiler/binderBinaryExpressionStressJs.ts)),
 
-### Pratt Parsing
-
-## Rust Optimizations
+To avoid recursion, we can use a technique called "Pratt Parsing". A more in-depth tutorial can be found [here](https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html), written by the author of Rust-Analyzer.
+And a Rust version here in [Rome](https://github.com/rome/tools/blob/5a059c0413baf1d54436ac0c149a829f0dfd1f4d/crates/rome_js_parser/src/syntax/expr.rs#L442).

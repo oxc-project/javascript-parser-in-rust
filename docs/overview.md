@@ -30,6 +30,10 @@ Reasoning about their usage will give us a sense of how fast our program will be
 Rust gives us the power of zero-cost, we don't need to worry too much about abstractions causing slower performance.
 Be careful with our algorithmic complexities and we will be all good to go.
 
+:::info
+You should also read [The Rust Performance Book](https://nnethercote.github.io/perf-book/introduction.html).
+:::
+
 ## Rust Source Code
 
 Whenever the performance of an API cannot be deduced,
