@@ -20,11 +20,11 @@ Context-free and the (1) in LL(1) means a tree can be constructed by just peekin
 
 LL Grammars are of particular interest in academia because we are lazy human beings and we want to write programs that generate parsers automatically so we don't need to write parsers by hand.
 
-Unfortunately most industrial programming languages do not have a nice LL(1) grammar,
+Unfortunately, most industrial programming languages do not have a nice LL(1) grammar,
 and this applies to JavaScript too.
 
 :::info
-Mozilla started the [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus) project a few years ago,
+Mozilla started the [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus) project a few years ago
 and wrote a [LALR parser generator in Python](https://github.com/mozilla-spidermonkey/jsparagus/tree/master/jsparagus).
 They haven't updated it much in the past two years and they sent a strong message at the end of [js-quirks.md](https://github.com/mozilla-spidermonkey/jsparagus/blob/master/js-quirks.md)
 
@@ -37,7 +37,7 @@ They haven't updated it much in the past two years and they sent a strong messag
 
 ---
 
-What we have learned so far is that a JavaScript parser can only be written by hand,
+The only practical way to parse JavaScript is to write a recursive descent parser by hand because of the nature of its grammar,
 so let's learn all the quirks in the grammar before we shoot ourselves in the foot.
 
 The list below starts simple and will become difficult to grasp,
@@ -45,7 +45,7 @@ so please take grab a coffee and take your time.
 
 ## Identifiers
 
-There are three type of identifiers defined in `#sec-identifiers`,
+There are three types of identifiers defined in `#sec-identifiers`,
 
 ```markup
 IdentifierReference[Yield, Await] :
@@ -57,9 +57,9 @@ LabelIdentifier[Yield, Await] :
 and the specification does not explain them in plain text.
 
 `BindingIdentifier`s are declarations and `IdentifierReference`s are references to binding identifiers.
-For example in `var foo = bar`, `foo` is binding identifier and `bar` is identifier reference if we their grammar:
+For example in `var foo = bar`, `foo` is a `BindingIdentifier` and `bar` is a `IdentifierReference` in the grammar:
 
-```markdup
+```markup
 VariableDeclaration[In, Yield, Await] :
     BindingIdentifier[?Yield, ?Await] Initializer[?In, ?Yield, ?Await] opt
 
@@ -67,7 +67,7 @@ Initializer[In, Yield, Await] :
     = AssignmentExpression[?In, ?Yield, ?Await]
 ```
 
-follow `AssignmentExpression` all the way into `PrimaryExpression` we get
+follow `AssignmentExpression` into `PrimaryExpression` we get
 
 ```markup
 PrimaryExpression[Yield, Await] :
@@ -96,7 +96,7 @@ ECMAScript Class is born after strict mode, so they decided that everything insi
 It is stated as such in `#sec-class-definitions` with just a `Node: A class definition is always strict mode code.`
 
 It is easy to declare strict mode by associating it with function scopes, but a `class` declaration does not have a scope,
-we need do keep an extra state just for parsing classes.
+we need to keep an extra state just for parsing classes.
 
 ```rust reference
 https://github.com/swc-project/swc/blob/f9c4eff94a133fa497778328fa0734aa22d5697c/crates/swc_ecma_parser/src/parser/class_and_fn.rs#L85
@@ -124,8 +124,8 @@ But, this becomes impossible when mixed with directives:
 https://github.com/tc39/test262/blob/747bed2e8aaafe8fdf2c65e8a10dd7ae64f66c47/test/language/literals/string/legacy-octal-escape-sequence-prologue-strict.js#L16-L19
 ```
 
-`use strict` is declared after the escaped legacy octal, yet the syntax error need to be thrown.
-Fortunately no real code uses directives with legacy octals ... unless you want to pass the test262 case from above.
+`use strict` is declared after the escaped legacy octal, yet the syntax error needs to be thrown.
+Fortunately, no real code uses directives with legacy octals ... unless you want to pass the test262 case from above.
 
 ---
 
@@ -135,7 +135,7 @@ Identical function parameters is allowed in non-strict mode `function foo(a, a) 
 and we can forbid this by adding `use strict`: `function foo(a, a) { "use strict" }`.
 Later on in es6, other grammars were added to function parameters, for example `function foo({ a }, b = c) {}`.
 
-Now what happens if we write the following where "01" is a strict mode error?
+Now, what happens if we write the following where "01" is a strict mode error?
 
 ```javaScript
 function foo(value=(function() { return "\01" }())) {
@@ -156,7 +156,7 @@ It is a Syntax Error if FunctionBodyContainsUseStrict of FunctionBody is true an
 
 Chrome throws this error with a mysterious message "Uncaught SyntaxError: Illegal 'use strict' directive in function with non-simple parameter list".
 
-More in depth explanation is described in [this blog post](https://humanwhocodes.com/blog/2016/10/the-ecmascript-2016-change-you-probably-dont-know/) by the author of ESLint.
+A more in-depth explanation is described in [this blog post](https://humanwhocodes.com/blog/2016/10/the-ecmascript-2016-change-you-probably-dont-know/) by the author of ESLint.
 
 :::info
 
@@ -175,7 +175,7 @@ function foo(a, b) {
 
 ## Parenthesized Expression
 
-Parenthesized expressions are supposed to not have any semantic meanings.
+Parenthesized expressions are supposed to not have any semantic meanings?
 For instance the AST for `((x))` can just be a single `IdentifierReference`, not `ParenthesizedExpression` -> `ParenthesizedExpression` -> `IdentifierReference`.
 And this is the case for JavaScript grammar.
 
@@ -224,18 +224,18 @@ else function bar() {}
 
 We probably have never ever written a single line of labelled statement, but it is actually legit in modern JavaScript and not banned by strict mode.
 
-The following syntax is correct, it returns a labelled statement.
+The following syntax is correct, it returns a labelled statement (not object literal).
 
-```
-const foo => { foo: bar }
+```javascript
+const foo = (bar) => ({ baz: quaz });
 ```
 
 ---
 
 ## `let` is not a keyword
 
-`let` is not a keyword so it is allowed to appear anywhere, unless the grammar explicitly states `let` is not allowed in such positions.
-Parsers need to peek the token after the `let` token and decide what it needs to be parsed into, e.g.:
+`let` is not a keyword so it is allowed to appear anywhere unless the grammar explicitly states `let` is not allowed in such positions.
+Parsers need to peek at the token after the `let` token and decide what it needs to be parsed into, e.g.:
 
 ```javascript
 let a;
@@ -260,7 +260,7 @@ If we have parsed to `for (let`, we need to check the peeking token is:
 - not `in` to disallow `for (let in)`
 - is `{`, `[` or an identifier to allow `for (let {} = foo)`, `for (let [] = foo)` and `for (let bar = foo)`
 
-Once reached the `of` or `in` keyword, the right hand side expression need to be passed with the correct [+In] context to disallow
+Once reached the `of` or `in` keyword, the right-hand side expression needs to be passed with the correct [+In] context to disallow
 the two `in` expression in `#prod-RelationalExpression`:
 
 ```
@@ -288,8 +288,8 @@ It boils down to
 https://github.com/acornjs/acorn/blob/11735729c4ebe590e406f952059813f250a4cbd1/acorn/src/scope.js#L30-L35
 ```
 
-The name of a `FunctionDeclaration` need to be treated the same as a `var` declaration if its inside a function declaration.
-This code snippet errors with re-declaration error since `bar` is inside a block scope:
+The name of a `FunctionDeclaration` needs to be treated the same as a `var` declaration if its inside a function declaration.
+This code snippet errors with a re-declaration error since `bar` is inside a block scope:
 
 ```javascript
 function foo() {
@@ -300,7 +300,7 @@ function foo() {
 }
 ```
 
-meanwhile the following does not error because it is inside a function scope, function `bar` is treated as a var declaration:
+meanwhile, the following does not error because it is inside a function scope, function `bar` is treated as a var declaration:
 
 ```javascript
 function foo() {
@@ -318,7 +318,7 @@ namely `[In]`, `[Return]`, `[Yield]`, `[Await]` and `[Default]`.
 
 It is best to keep a context during parsing, for example in Rome:
 
-```rust references
+```rust reference
 https://github.com/rome/tools/blob/5a059c0413baf1d54436ac0c149a829f0dfd1f4d/crates/rome_js_parser/src/state.rs#L404-L425
 ```
 
@@ -342,15 +342,15 @@ a /= / regex /;
 /=/ / /=/;
 ```
 
-It is almost impossible isn't it? Let's break these down and follow the grammar.
+It is almost impossible, isn't it? Let's break these down and follow the grammar.
 
-The first thing we need to understand is that, the syntactic grammar drives the lexical grammar as stated in `#sec-ecmascript-language-lexical-grammar`
+The first thing we need to understand is that the syntactic grammar drives the lexical grammar as stated in `#sec-ecmascript-language-lexical-grammar`
 
 > There are several situations where the identification of lexical input elements is sensitive to the syntactic grammar context that is consuming the input elements.
 
-This means that, the parser is responsible for telling the lexer which token to return next.
-The above example indicates that the lexer need to either return a `/` token, or a `RegExp` token.
-For getting the correct `/` r `RegExp` token, the specification says:
+This means that the parser is responsible for telling the lexer which token to return next.
+The above example indicates that the lexer needs to return either a `/` token or a `RegExp` token.
+For getting the correct `/` or `RegExp` token, the specification says:
 
 > The InputElementRegExp goal symbol is used in all syntactic grammar contexts where a RegularExpressionLiteral is permitted ...
 > In all other contexts, InputElementDiv is used as the lexical goal symbol.
@@ -375,7 +375,7 @@ InputElementRegExp ::
     RegularExpressionLiteral <-------- the `RegExp` token
 ```
 
-So whenever the grammar reaches `RegularExpressionLiteral`, `/` need to be tokenized as a `RegExp` token (and throw an error if it does not have a matching `/`).
+This means whenever the grammar reaches `RegularExpressionLiteral`, `/` need to be tokenized as a `RegExp` token (and throw an error if it does not have a matching `/`).
 All other cases we'll tokenize `/` as a slash token.
 
 Let's walk through an example:
@@ -390,10 +390,8 @@ a / / regex /
 This statement does not match any other start of `Statement`,
 so it'll go down the `ExpressionStatement` route:
 
-`ExpressionStatement` --> `Expression` --> `AssignmentExpression` -->
-keep on following the first item ... -->
-`MultiplicativeExpression` -->
-... -->
+`ExpressionStatement` --> `Expression` --> `AssignmentExpression` --> ... -->
+`MultiplicativeExpression` --> ... -->
 `MemberExpression` --> `PrimaryExpression` --> `IdentifierReference`.
 
 We stopped at `IdentifierReference` and not `RegularExpressionLiteral`,
@@ -402,7 +400,7 @@ The first slash is a `DivPunctuator` token.
 
 Since this is a `DivPunctuator` token,
 the grammar `MultiplicativeExpression: MultiplicativeExpression MultiplicativeOperator ExponentiationExpression` is matched,
-the right hand side is expected to be an `ExponentiationExpression`.
+the right-hand side is expected to be an `ExponentiationExpression`.
 
 Now we are at the second slash in `a / /`.
 By following `ExponentiationExpression`,
@@ -459,20 +457,22 @@ let bar = (a, b, c) => {}; // ArrowExpression
           ^^^^^^^^^ CoverParenthesizedExpressionAndArrowParameterList
 ```
 
-The easiest but more cumbersome approach to solve this problem is to define a intermediate struct that holds this AST node,
-then write two converter functions to convert it to either a SequenceExpression or a ArrowParameters node.
+The easiest but more cumbersome approach to solving this problem is to define an intermediate struct that holds this AST node,
+then write two converter functions to convert it to either a `SequenceExpression` or a `ArrowParameters` node.
 
-A more complicated approach is to try and parse this as a ArrowParameters first, but rewind and reparse if it does not reach `=>`.
-But this is the only applicable approach if TypeScript is being parsed here.
+A more complicated approach is to try and parse this as a `ArrowParameters` first, but rewind and re-parse if it does not reach `=>`.
+This is the only applicable approach if TypeScript is being parsed here.
 
 There is another caveat here. When building the scope tree in the parser,
-i.e. create a scope for arrow expression during parsing, but do not create one for sequence expression,
-it is not obvious on how to do this. Luckily, [esbuild](https://github.com/evanw/esbuild) solved this problem by creating a temporary scope first,
-and then drop it if it is not an ArrowExpression.
+i.e. create the scope for arrow expression during parsing, but do not create one for sequence expression,
+it is not obvious how to do this. Luckily, [esbuild](https://github.com/evanw/esbuild) solved this problem by creating a temporary scope first,
+and then dropping it if it is not an `ArrowExpression`.
 
 This is stated in its [architecture document](https://github.com/evanw/esbuild/blob/master/docs/architecture.md#symbols-and-scopes):
 
 > This is mostly pretty straightforward except for a few places where the parser has pushed a scope and is in the middle of parsing a declaration only to discover that it's not a declaration after all. This happens in TypeScript when a function is forward-declared without a body, and in JavaScript when it's ambiguous whether a parenthesized expression is an arrow function or not until we reach the => token afterwards. This would be solved by doing three passes instead of two so we finish parsing before starting to set up scopes and declare symbols, but we're trying to do this in just two passes. So instead we call popAndDiscardScope() or popAndFlattenScope() instead of popScope() to modify the scope tree later if our assumptions turn out to be incorrect.
+
+---
 
 #### CoverCallExpressionAndAsyncArrowHead
 
@@ -503,36 +503,60 @@ AsyncArrowHead :
     async [no LineTerminator here] ArrowFormalParameters[~Yield, +Await]
 ```
 
-These definitions defines:
+These definitions define:
 
 ```javascript
-    async (a, b, c); // CallExpression
-    async (a, b, c) => {} // AsyncArrowFunction
-    ^^^^^^^^^^^^^^^ CoverCallExpressionAndAsyncArrowHead
+async (a, b, c); // CallExpression
+async (a, b, c) => {} // AsyncArrowFunction
+^^^^^^^^^^^^^^^ CoverCallExpressionAndAsyncArrowHead
 ```
 
 This looks strange because `async` is not a keyword. These two `async`s are function names.
 
+---
+
 #### CoverInitializedName
 
 ```markup
-In certain contexts, ObjectLiteral is used as a cover grammar for a more restricted secondary grammar. The CoverInitializedName production is necessary to fully cover these secondary grammars. However, use of this production results in an early Syntax Error in normal contexts where an actual ObjectLiteral is expected.
+13.2.5 Object Initializer
+
+ObjectLiteral[Yield, Await] :
+    ...
+
+PropertyDefinition[Yield, Await] :
+    CoverInitializedName[?Yield, ?Await]
+
+Note 3: In certain contexts, ObjectLiteral is used as a cover grammar for a more restricted secondary grammar.
+The CoverInitializedName production is necessary to fully cover these secondary grammars. However, use of this production results in an early Syntax Error in normal contexts where an actual ObjectLiteral is expected.
+
+13.2.5.1 Static Semantics: Early Errors
+
+In addition to describing an actual object initializer the ObjectLiteral productions are also used as a cover grammar for ObjectAssignmentPattern and may be recognized as part of a CoverParenthesizedExpressionAndArrowParameterList. When ObjectLiteral appears in a context where ObjectAssignmentPattern is required the following Early Error rules are not applied. In addition, they are not applied when initially parsing a CoverParenthesizedExpressionAndArrowParameterList or CoverCallExpressionAndAsyncArrowHead.
+
+PropertyDefinition : CoverInitializedName
+    I* t is a Syntax Error if any source text is matched by this production.
 ```
 
-```markup
+```makrup
+13.15.1 Static Semantics: Early Errors
+
 AssignmentExpression : LeftHandSideExpression = AssignmentExpression
 If LeftHandSideExpression is an ObjectLiteral or an ArrayLiteral, the following Early Error rules are applied:
-* LeftHandSideExpression must cover an AssignmentPattern.
+    * LeftHandSideExpression must cover an AssignmentPattern.
 ```
 
----
+These definitions define:
 
-## Arrow functions
+```javascript
+({ prop = value } = {}); // ObjectAssignmentPattern
+({ prop = value }); // ObjectLiteral with SyntaxError
+```
 
----
+Parsers need to parse `ObjectLiteral` with `CoverInitializedName`,
+and throw the syntax error if it does not reach `=` for `ObjectAssignmentPattern`.
 
-## Object Patter vs Object binding
+As an exercise, which one of the following `=` should throw a syntax error?
 
----
-
-## Assignment target pattern
+```javascript
+let { x = 1 } = { x = 1 } = { x = 1 }
+```
