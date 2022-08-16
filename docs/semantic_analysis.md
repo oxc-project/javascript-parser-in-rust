@@ -47,10 +47,6 @@ An example in Rome checking for the `yield` keyword:
 https://github.com/rome/tools/blob/5a059c0413baf1d54436ac0c149a829f0dfd1f4d/crates/rome_js_parser/src/syntax/expr.rs#L1368-L1377
 ```
 
-## AST Check
-
-TODO
-
 ## Scope
 
 For declaration errors:
@@ -165,3 +161,7 @@ We can use the [Visitor Pattern](https://rust-unofficial.github.io/patterns/patt
 to separate the traversal process from the operations performed on each object.
 
 Upon visit, we can call `enter_scope` and `leave_scope` accordingly to build the scope tree.
+
+## Control Flow Graph (TODO)
+
+For checking unreachable code and various rules ...

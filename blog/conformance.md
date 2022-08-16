@@ -2,6 +2,8 @@
 title: Conformance Tests
 ---
 
+This article details three github repositories for testing our parser against JavaScript and TypeScript grammar.
+
 <!--truncate-->
 
 ## Test262
