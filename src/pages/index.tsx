@@ -17,10 +17,10 @@ function HomepageHeader() {
         </p>
         <p className="hero__subtitle">
           This will be the book for you if you are interested in learning Rust, compiler technologies,
-          or would like to contribute to swc or Rome in the near future.
+          or would like to contribute to <a href="https://swc.rs" target="__blank">swc</a> or <a href="https://rome.tools" target="__blank">Rome</a> in the near future.
         </p>
         <p className="hero__subtitle">
-          The book will be a full tutorial on writing a JavaScript compiler in Rust.
+          The book will be a full walkthrough on writing a JavaScript compiler in Rust.
           And the tutorials will go down rabbit holes on specific topics.
         </p>
         <div className={styles.buttons}>

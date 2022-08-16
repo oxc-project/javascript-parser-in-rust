@@ -3,7 +3,7 @@ id: overview
 title: Overview
 ---
 
-For our book, we will be applying the standard compiler frontend phases:
+For our book, standard compiler frontend phases will be applied:
 
 ```markup
 Source Text --> Token --> Lexer --> Parser --> AST
@@ -26,7 +26,7 @@ The key to a performant Rust program is to **allocate less memory** and **use fe
 It is mostly transparent where memory allocations are made just by looking for heap-allocated objects such as a `Vec`, `Box` or `String`.
 Reasoning about their usage will give us a sense of how fast our program will be - the more we allocate, the slower our program will be.
 
-Rust gives us the power of zero-cost, we don't need to worry too much about abstractions causing slower performance.
+Rust gives us the power of zero-cost abstractions, we don't need to worry too much about abstractions causing slower performance.
 Be careful with our algorithmic complexities and we will be all good to go.
 
 :::info
@@ -35,7 +35,7 @@ You should also read [The Rust Performance Book](https://nnethercote.github.io/p
 
 ## Rust Source Code
 
-Whenever the performance of an API cannot be deduced,
+Whenever the performance of an function call cannot be deduced,
 do not be afraid to click the "source" button on the Rust documentation and read the source code,
 they are easy to understand most of the time.
 

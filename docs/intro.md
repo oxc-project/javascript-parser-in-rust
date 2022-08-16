@@ -4,7 +4,7 @@ title: Introduction
 ---
 
 We are in [The Third Age of JavaScript](https://www.swyx.io/js-third-age/),
-the common trend right now is to author JavaScript in Rust or Go for their performance gains.
+the common trend right now is to author JavaScript tools in Rust or Go for their performance gains.
 
 But authoring JavaScript tools are hard, let alone writing them in Rust.
 I have struggled a lot when learning these technologies,

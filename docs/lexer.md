@@ -100,8 +100,6 @@ impl<'a> Lexer<'a> {
 }
 ```
 
----
-
 The `.len()` and `.as_str().len()` method calls inside `fn offset` feel like O(n), so let's dig deeper.
 
 [`.as_str()`](https://doc.rust-lang.org/src/core/str/iter.rs.html#112) returns a pointer to a string slice
@@ -127,8 +125,6 @@ https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/
 
 All the above code will get compiled into a single data access, so `.as_str().len()` is actually O(1).
 Zero cost abstraction indeed!
-
----
 
 ## Peek
 
@@ -170,9 +166,7 @@ https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/
 
 The above logic applies to all operators, so let us expand our knowledge on lexing JavaScript.
 
----
-
-## Lexing JavaScript
+## JavaScript
 
 A lexer written in Rust is rather boring, it feels like writing C code
 where we write long chained if statements and check for each `char` and then return the respective token.
@@ -186,6 +180,14 @@ I still remember the first time I opened up the specification and went into a li
 and cried in agony because it feels like reading foreign text with jargons everywhere.
 So head over to my [guide on reading the specification](/blog/ecma-spec) if things don't make sense.
 :::
+
+### Whitespace
+
+TODO
+
+### Comments
+
+TODO
 
 ### Identifiers and Unicode
 
@@ -249,8 +251,6 @@ fn match_keyword(&self, ident: &str) -> Kind {
 }
 ```
 
----
-
 ### Token Value
 
 We often need to compare numbers and strings in later stages of the compiler,
@@ -287,8 +287,6 @@ When we tokenized a number `1.23`, we get a token with `Token { start: 0, end: 3
 To convert it to Rust `f64`, we can use the string [`parse`](https://doc.rust-lang.org/std/primitive.str.html#method.parse)
 method by calling `self.source[token.start..token.end].parse::<f64>()`, and then save the value into `token.value`.
 For binary, octal and integers, an example of their parsing techniques can be found in [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/numeric_value.rs).
-
----
 
 ## Rust Optimizations
 
