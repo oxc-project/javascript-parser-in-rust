@@ -3,7 +3,6 @@
 
 const lightCodeTheme = require("prism-react-renderer/themes/github");
 const darkCodeTheme = require("prism-react-renderer/themes/dracula");
-const mdxMermaid = require("mdx-mermaid");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -28,13 +27,11 @@ const config = {
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl:
             "https://github.com/Boshen/javascript-compiler-in-rust/tree/main/docs/",
-          remarkPlugins: [mdxMermaid],
         },
         blog: {
           editUrl:
             "https://github.com/Boshen/javascript-compiler-in-rust/tree/main/blog",
           showReadingTime: true,
-          remarkPlugins: [mdxMermaid],
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),

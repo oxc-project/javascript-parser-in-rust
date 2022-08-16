@@ -5,9 +5,8 @@ title: Overview
 
 For our book, we will be applying the standard compiler frontend phases:
 
-```mermaid
-flowchart LR;
-    id[Source Text] --> Token --> Lexer --> Parser --> AST
+```markup
+Source Text --> Token --> Lexer --> Parser --> AST
 ```
 
 Writing a JavaScript parser is fairly easy,
