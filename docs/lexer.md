@@ -107,7 +107,7 @@ The `.len()` and `.as_str().len()` method calls inside `fn offset` feel like O(n
 [`.as_str()`](https://doc.rust-lang.org/src/core/str/iter.rs.html#112) returns a pointer to a string slice
 
 ```rust reference
-https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/str/iter.rs#L112-L114
+https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/str/iter.rs#L112-L115
 ```
 
 A [slice](https://doc.rust-lang.org/std/slice/index.html) is a view into a block of memory represented as a pointer and a length.
@@ -135,9 +135,9 @@ Zero cost abstraction indeed!
 To tokenize multi-character operators such as `++` or `+=`, a helper function `peek` is required:
 
 ```rust
-    fn peek(&self) -> Option<char> {
-        self.chars.clone().next()
-    }
+fn peek(&self) -> Option<char> {
+    self.chars.clone().next()
+}
 ```
 
 We don't want to advance the original `chars` iterator so we clone the iterator and advance the index.
@@ -235,18 +235,18 @@ pub enum Kind {
 Tokenizing keywords will just be matching the identifier from above.
 
 ```rust
-    fn match_keyword(&self, ident: &str) -> Kind {
-        // all keywords have 1 <= length <= 10
-        if ident.len() == 1 || ident.len() > 10 {
-            return Kind::Identifier;
-        }
-        match ident {
-            "if" => Kind::If,
-            "while" => Kind::While,
-            "for" => Kind::For,
-            _ => Kind::Identifier
-        }
+fn match_keyword(&self, ident: &str) -> Kind {
+    // all keywords have 1 <= length <= 10
+    if ident.len() == 1 || ident.len() > 10 {
+        return Kind::Identifier;
     }
+    match ident {
+        "if" => Kind::If,
+        "while" => Kind::While,
+        "for" => Kind::For,
+        _ => Kind::Identifier
+    }
+}
 ```
 
 ---

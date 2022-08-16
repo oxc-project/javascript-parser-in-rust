@@ -37,7 +37,7 @@ do not be afraid to click the "source" button on the Rust documentation and read
 they are easy to understand most of the time.
 
 :::info
-When navigating the source code, searching for a definition is simply looking for
+When navigating the Rust source code, searching for a definition is simply looking for
 `fn function_name`, `struct struct_name`, `enum enum_name` etc.
 This is one advantage of having constant grammar in Rust (compared to JavaScript 😉).
 :::
