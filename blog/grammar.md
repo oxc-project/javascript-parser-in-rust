@@ -457,8 +457,8 @@ let bar = (a, b, c) => {}; // ArrowExpression
           ^^^^^^^^^ CoverParenthesizedExpressionAndArrowParameterList
 ```
 
-The easiest but more cumbersome approach to solving this problem is to define an intermediate struct that holds this AST node,
-then write two converter functions to convert it to either a `SequenceExpression` or a `ArrowParameters` node.
+The easiest but more cumbersome approach to solving this problem is to parse it as a `Vec<Expression>` first,
+then write a converter function to convert it to `ArrowParameters` node, i.e. each individual `Expression` need to be converted to a `BindingIdentifier`.
 
 A more complicated approach is to try and parse this as a `ArrowParameters` first, but rewind and re-parse if it does not reach `=>`.
 This is the only applicable approach if TypeScript is being parsed here.

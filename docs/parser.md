@@ -3,8 +3,8 @@ id: parser
 title: Parser
 ---
 
-The parser we are going to construct is called a recursive descent parser,
-it is a manual process of going down the grammar and building up the AST.
+The parser we are going to construct is called a [recursive descent parser](https://en.wikipedia.org/wiki/Recursive_descent_parser),
+it is the manual process of going down the grammar and building up the AST.
 
 The parser starts simple, it holds the source code, the lexer, and the current token consumed from the lexer.
 
@@ -144,3 +144,51 @@ which may cause stack overflow on long expressions (for example in [this TypeScr
 
 To avoid recursion, we can use a technique called "Pratt Parsing". A more in-depth tutorial can be found [here](https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html), written by the author of Rust-Analyzer.
 And a Rust version here in [Rome](https://github.com/rome/tools/blob/5a059c0413baf1d54436ac0c149a829f0dfd1f4d/crates/rome_js_parser/src/syntax/expr.rs#L442).
+
+## Cover Grammar
+
+Detailed in [cover grammar](/blog/grammar#cover-grammar), there are times when we need to convert an `Expression` to a `BindingIdentifier`. Dynamic languages such as JavaScript can simply rewrite the node type:
+
+```javascript reference
+https://github.com/acornjs/acorn/blob/11735729c4ebe590e406f952059813f250a4cbd1/acorn/src/lval.js#L11-L26
+```
+
+But in Rust, we need to do a struct to struct transformation. A nice and clean way to do this is to use an trait.
+
+```rust
+pub trait CoverGrammar<'a, T>: Sized {
+    fn cover(value: T, p: &mut Parser<'a>) -> Result<Self>;
+}
+```
+
+The trait accepts `T` as the input type, and `Self` and the output type, so we can define the following:
+
+```rust
+impl<'a> CoverGrammar<'a, Expression<'a>> for BindingPattern<'a> {
+    fn cover(expr: Expression<'a>, p: &mut Parser<'a>) -> Result<Self> {
+        match expr {
+            Expression::Identifier(ident) => Self::cover(ident.unbox(), p),
+            Expression::ObjectExpression(expr) => Self::cover(expr.unbox(), p),
+            Expression::ArrayExpression(expr) => Self::cover(expr.unbox(), p),
+            _ => Err(()),
+        }
+    }
+}
+
+impl<'a> CoverGrammar<'a, ObjectExpression<'a>> for BindingPattern<'a> {
+    fn cover(obj_expr: ObjectExpression<'a>, p: &mut Parser<'a>) -> Result<Self> {
+        ...
+        BindingIdentifier::ObjectPattern(ObjectPattern { .. })
+    }
+}
+
+impl<'a> CoverGrammar<'a, ArrayExpression<'a>> for BindingPattern<'a> {
+    fn cover(expr: ArrayExpression<'a>, p: &mut Parser<'a>) -> Result<Self> {
+        ...
+        BindingIdentifier::ArrayPattern(ArrayPattern { .. })
+    }
+}
+```
+
+Then for anywhere we need to convert an `Expression` to `BindingPattern`,
+call `BindingPattern::cover(expression)`.
