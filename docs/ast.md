@@ -255,4 +255,37 @@ Our program will work fine without a memory arena.
 
 ## Serde Serialization
 
-TODO
+[serde](https://serde.rs/) can be used serialize the AST to JSON. Some techniques are needed to make it `estree` compatible.
+Here are some examples:
+
+```rust
+use serde::Serialize;
+
+#[derive(Debug, Clone, Serialize, PartialEq)]
+#[serde(tag = "type")]
+#[cfg_attr(feature = "estree", serde(rename = "Identifier"))]
+pub struct IdentifierReference {
+    #[serde(flatten)]
+    pub node: Node,
+    pub name: Atom,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq, Hash)]
+#[serde(tag = "type")]
+#[cfg_attr(feature = "estree", serde(rename = "Identifier"))]
+pub struct BindingIdentifier {
+    #[serde(flatten)]
+    pub node: Node,
+    pub name: Atom,
+}
+
+#[derive(Debug, Serialize, PartialEq)]
+#[serde(untagged)]
+pub enum Expression<'a> {
+    ...
+}
+```
+
+- `serde(tag = "type")` is used to make the struct name a "type" field, i.e. `{ "type" : "..." }`
+- `cfg_attr` + `serde(rename)` is used to rename different struct names to the same name, since `estree` does not distinguish different identifiers
+- `serde(untagged)` on the enum is used to not create an extra json object for the enum
