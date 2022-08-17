@@ -12,7 +12,7 @@ function HomepageHeader() {
       <div className="container">
         <h1 className="hero__title">{siteConfig.title}</h1>
         <p className="hero__subtitle">
-          JavaScript, Rust and parsers are all hard to learn,
+          Rust, JavaScript, and parsers are all hard to learn,
           let's combine these three and challenge ourselves to write a JavaScript parser in Rust.
         </p>
         <p className="hero__subtitle">
@@ -21,7 +21,7 @@ function HomepageHeader() {
         </p>
         <p className="hero__subtitle">
           The book will cover all the basic topics of writing a JavaScript parser in rust.
-          And the tutorials will explain some topics in more depth.
+          The tutorials will explain some topics in more depth.
         </p>
         <div className={styles.buttons}>
           <Link
