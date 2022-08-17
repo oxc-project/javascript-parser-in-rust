@@ -3,7 +3,7 @@ id: overview
 title: Overview
 ---
 
-For our book, standard compiler frontend phases will be applied:
+For our book, standard compiler front-end phases will be applied:
 
 ```markup
 Source Text --> Token --> Lexer --> Parser --> AST
@@ -14,10 +14,10 @@ it is 10% architectural decisions and 90% hard work on the fine-grained details.
 
 The architectural decisions will mostly affect two categories:
 
-- the performance of our compiler
+- the performance of our parser
 - how nice it is to consume our AST
 
-Knowing all the options and trade-offs before building a compiler in Rust will make our whole journey much smoother.
+Knowing all the options and trade-offs before building a parser in Rust will make our whole journey much smoother.
 
 ## Performance
 

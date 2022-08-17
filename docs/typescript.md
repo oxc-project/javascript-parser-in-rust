@@ -5,7 +5,7 @@ title: TypeScript
 
 So you are done with JavaScript and you want to challenge parsing TypeScript?
 The bad news is that there is no specification,
-but the good news is that the TypeScript compiler is in [a single file](https://github.com/microsoft/TypeScript/blob/main/src/compiler/parser.ts) 🙃.
+but the good news is that the TypeScript parser is in [a single file](https://github.com/microsoft/TypeScript/blob/main/src/compiler/parser.ts) 🙃.
 
 ## JSX vs TSX
 

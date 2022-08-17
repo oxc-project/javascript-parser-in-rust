@@ -253,7 +253,7 @@ fn match_keyword(&self, ident: &str) -> Kind {
 
 ### Token Value
 
-We often need to compare numbers and strings in later stages of the compiler,
+We often need to compare numbers and strings in later stages of the compiler phases,
 but they are in plain source text right now.
 Let's convert them to Rust types so they are easier to work with.
 

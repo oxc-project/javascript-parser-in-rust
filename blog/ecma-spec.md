@@ -6,7 +6,7 @@ title: The ECMAScript Specification
 
 <!--truncate-->
 
-For our compiler, we will study the following chapters:
+The following chapters need to be studied for our parser:
 
 - Chapter 5: Notational Conventions
 - Chapter 11: ECMAScript Language: Source Text
@@ -15,9 +15,9 @@ For our compiler, we will study the following chapters:
 - Annex B: Additional ECMAScript Features for Web Browsers
 - Annex C: The Strict Mode of ECMAScript
 
-For navigaton inside the specification:
+For navigation inside the specification:
 
-- Anything clickable has a permanent link, they are shown on the url as anchors, for example `#sec-identifiers`
+- Anything clickable has a permanent link, they are shown on the URL as anchors, for example `#sec-identifiers`
 - Hovering over things may show a tooltip, clicking on `References` shows all its references
 
 ## Notational Conventions

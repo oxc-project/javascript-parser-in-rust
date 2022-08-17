@@ -6,14 +6,14 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Write a JavaScript Compiler in Rust",
+  title: "Write a JavaScript Parser in Rust",
   url: "https://boshen.github.io",
-  baseUrl: "/javascript-compiler-in-rust/",
+  baseUrl: "/javascript-parser-in-rust/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "throw",
   onDuplicateRoutes: "throw",
   organizationName: "Boshen", // Usually your GitHub org/user name.
-  projectName: "javascript-compiler-in-rust", // Usually your repo name.
+  projectName: "javascript-parser-in-rust", // Usually your repo name.
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
@@ -26,11 +26,11 @@ const config = {
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl:
-            "https://github.com/Boshen/javascript-compiler-in-rust/tree/main/docs/",
+            "https://github.com/Boshen/javascript-parser-in-rust/tree/main/docs/",
         },
         blog: {
           editUrl:
-            "https://github.com/Boshen/javascript-compiler-in-rust/tree/main/blog",
+            "https://github.com/Boshen/javascript-parser-in-rust/tree/main/blog",
           showReadingTime: true,
         },
         theme: {
@@ -60,7 +60,7 @@ const config = {
           },
           { to: "/blog", label: "Tutorials", position: "left" },
           {
-            href: "https://github.com/Boshen/javascript-compiler-in-rust",
+            href: "https://github.com/Boshen/javascript-parser-in-rust",
             label: "GitHub",
             position: "right",
           },
