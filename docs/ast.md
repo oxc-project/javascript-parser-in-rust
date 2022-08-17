@@ -164,7 +164,7 @@ enum Name {
 ```
 
 :::note
-The above example is taken from [this blog post](https://adeschamps.github.io/enum-size)
+This example is taken from [this blog post](https://adeschamps.github.io/enum-size)
 :::
 
 As for the `Expression` and `Statement` enums, they can take up to more than 200 bytes with our current setup.
@@ -193,7 +193,7 @@ pub struct YieldExpression {
 
 :::info
 To make sure the enums are indeed 16 bytes, we can use `std::mem::size_of`.
-"no bloat enum sizes" test cases can often be seen in the Rust Compiler source code for ensuring small enum sizes.
+"no bloat enum sizes" test cases can often be seen in the Rust compiler source code for ensuring small enum sizes.
 
 ```rust
 #[test]
@@ -213,7 +213,7 @@ Every `Box` and `Vec` are allocated on demand and then dropped separately.
 What we would like to do is pre-allocate memory and drop it in wholesale.
 
 :::info
-More on this topic can be ready at [this blog post](https://manishearth.github.io/blog/2021/03/15/arenas-in-rust/)
+[This blog post](https://manishearth.github.io/blog/2021/03/15/arenas-in-rust/) explains memory arena in more detail.
 :::
 
 [`bumpalo`](https://docs.rs/bumpalo/latest/bumpalo/) is a very good candidate for our use case, according to its documentation:
@@ -288,4 +288,4 @@ pub enum Expression<'a> {
 
 - `serde(tag = "type")` is used to make the struct name a "type" field, i.e. `{ "type" : "..." }`
 - `cfg_attr` + `serde(rename)` is used to rename different struct names to the same name, since `estree` does not distinguish different identifiers
-- `serde(untagged)` on the enum is used to not create an extra json object for the enum
+- `serde(untagged)` on the enum is used to not create an extra JSON object for the enum
