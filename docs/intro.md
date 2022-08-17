@@ -10,7 +10,7 @@ But authoring JavaScript tools are challenging, let alone writing them in Rust.
 I have struggled a lot when learning these technologies,
 and I wish fewer people to take the same struggling journey.
 
-I want to make my own contribution to the community by writing this book,
+I want to make my own contribution to the community by writing this guide,
 so you don't have to take the same struggling journey as I had.
 
 There are only a handful of developers on the Rust side, and I would like to see you here and join us,

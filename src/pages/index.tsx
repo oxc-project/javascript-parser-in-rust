@@ -16,11 +16,11 @@ function HomepageHeader() {
           let's combine these three and challenge ourselves to write a JavaScript parser in Rust.
         </p>
         <p className="hero__subtitle">
-          This will be the book for you if you are interested in learning Rust, parsers,
+          This will be the guide for you if you are interested in learning Rust, parsers,
           or would like to contribute to <a href="https://swc.rs" target="__blank">swc</a> or <a href="https://rome.tools" target="__blank">Rome</a> in the near future.
         </p>
         <p className="hero__subtitle">
-          The book will cover all the basic topics of writing a JavaScript parser in rust.
+          The guide will cover all the basic topics of writing a JavaScript parser in rust.
           The tutorials will explain some topics in more depth.
         </p>
         <div className={styles.buttons}>
@@ -28,7 +28,7 @@ function HomepageHeader() {
             className="button button--secondary button--lg"
             style={{marginRight: "20px"}}
             to="/docs/intro">
-            Read the Book
+            Read the Guide
           </Link>
           <Link
             className="button button--secondary button--lg"

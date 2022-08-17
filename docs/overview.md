@@ -3,7 +3,7 @@ id: overview
 title: Overview
 ---
 
-For our book, standard compiler front-end phases will be applied:
+For this guide, the standard compiler front-end phases will be applied:
 
 ```markup
 Source Text --> Token --> Lexer --> Parser --> AST
