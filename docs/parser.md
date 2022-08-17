@@ -192,3 +192,22 @@ impl<'a> CoverGrammar<'a, ArrayExpression<'a>> for BindingPattern<'a> {
 
 Then for anywhere we need to convert an `Expression` to `BindingPattern`,
 call `BindingPattern::cover(expression)`.
+
+## Lists
+
+There are lots of places where we need to parse a list separated by a punctuation, for example `[a, b, c]` or `{a, b, c}`.
+
+The code for parsing lists are all similar, we can use the [template method pattern](https://en.wikipedia.org/wiki/Template_method_pattern)
+to avoid duplication by using traits.
+
+```rust reference
+https://github.com/rome/tools/blob/85ddb4b2c622cac9638d5230dcefb6cf571677f8/crates/rome_js_parser/src/parser/parse_lists.rs#L131-L157
+```
+
+This pattern can also prevent us from infinite loops, specifically `progress.assert_progressing(p);`.
+
+Implementation details can then be provided for different lists, for example:
+
+```rust reference
+https://github.com/rome/tools/blob/85ddb4b2c622cac9638d5230dcefb6cf571677f8/crates/rome_js_parser/src/syntax/expr.rs#L1543-L1580
+```
