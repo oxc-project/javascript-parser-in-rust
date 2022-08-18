@@ -18,7 +18,7 @@ let foo = <string> bar;
 It is a syntax error if this is `tsx` (Unterminated JSX),
 but it is correct "VariableDeclaration" with `TSTypeAssertion`.
 
-## Peek for more tokens
+## Peek for more tokens (Lookahead)
 
 In certain places, the parser need to peek more than one token to determine the correct grammar.
 
@@ -36,3 +36,7 @@ For `type A` at the first `{`, we need to peek 5 tokens (`readonly`, `[`, `a`, `
 it is a `TSIndexSignature` and not a `TSPropertySignature`.
 
 To make this possible and efficient, the lexer requires a buffer for storing multiple tokens.
+
+## Arrow Expressions
+
+TODO: use lookahead instead of cover grammar

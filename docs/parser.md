@@ -19,7 +19,7 @@ pub struct Parser<'a> {
     cur_token: Token,
 
     /// The end range of the previous token
-    prev_node_end: usize,
+    prev_token_end: usize,
 }
 
 impl<'a> Parser<'a> {
@@ -56,7 +56,7 @@ impl<'a> Parser<'a> {
     }
 
     fn finish_node(&self, node: Node) -> Node {
-        Node::new(node.start, self.prev_node_end)
+        Node::new(node.start, self.prev_token_end)
     }
 
     fn cur_token(&self) -> &Token {
@@ -96,7 +96,7 @@ impl<'a> Parser<'a> {
     /// Move to the next token
     fn advance(&mut self) {
         let token = self.lexer.next_token();
-        self.prev_node_end = self.cur_token.end;
+        self.prev_token_end = self.cur_token.end;
         self.cur_token = token;
     }
 }
@@ -111,17 +111,18 @@ impl<'a> Parser<'a> {
     pub fn parse(&mut self) -> Program {
         let stmt = self.parse_debugger_statement();
         let body = vec![stmt];
-        Ok(Program {
+        Program {
             node: Node {
                 start: 0,
                 end: self.source.len(),
             }
             body,
-        })
+        }
     }
 
     fn parse_debugger_statement(&mut self) -> Statement {
         let node = self.start_node();
+        // TODO: check the token returned from lexer is `Kind::Debugger`
         self.bump_any();
         Statement::DebuggerStatement {
             node: self.finish_node(node),
@@ -144,6 +145,25 @@ which may cause stack overflow on long expressions (for example in [this TypeScr
 
 To avoid recursion, we can use a technique called "Pratt Parsing". A more in-depth tutorial can be found [here](https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html), written by the author of Rust-Analyzer.
 And a Rust version here in [Rome](https://github.com/rome/tools/blob/5a059c0413baf1d54436ac0c149a829f0dfd1f4d/crates/rome_js_parser/src/syntax/expr.rs#L442).
+
+## Lists
+
+There are lots of places where we need to parse a list separated by a punctuation, for example `[a, b, c]` or `{a, b, c}`.
+
+The code for parsing lists are all similar, we can use the [template method pattern](https://en.wikipedia.org/wiki/Template_method_pattern)
+to avoid duplication by using traits.
+
+```rust reference
+https://github.com/rome/tools/blob/85ddb4b2c622cac9638d5230dcefb6cf571677f8/crates/rome_js_parser/src/parser/parse_lists.rs#L131-L157
+```
+
+This pattern can also prevent us from infinite loops, specifically `progress.assert_progressing(p);`.
+
+Implementation details can then be provided for different lists, for example:
+
+```rust reference
+https://github.com/rome/tools/blob/85ddb4b2c622cac9638d5230dcefb6cf571677f8/crates/rome_js_parser/src/syntax/expr.rs#L1543-L1580
+```
 
 ## Cover Grammar
 
@@ -192,22 +212,3 @@ impl<'a> CoverGrammar<'a, ArrayExpression<'a>> for BindingPattern<'a> {
 
 Then for anywhere we need to convert an `Expression` to `BindingPattern`,
 call `BindingPattern::cover(expression)`.
-
-## Lists
-
-There are lots of places where we need to parse a list separated by a punctuation, for example `[a, b, c]` or `{a, b, c}`.
-
-The code for parsing lists are all similar, we can use the [template method pattern](https://en.wikipedia.org/wiki/Template_method_pattern)
-to avoid duplication by using traits.
-
-```rust reference
-https://github.com/rome/tools/blob/85ddb4b2c622cac9638d5230dcefb6cf571677f8/crates/rome_js_parser/src/parser/parse_lists.rs#L131-L157
-```
-
-This pattern can also prevent us from infinite loops, specifically `progress.assert_progressing(p);`.
-
-Implementation details can then be provided for different lists, for example:
-
-```rust reference
-https://github.com/rome/tools/blob/85ddb4b2c622cac9638d5230dcefb6cf571677f8/crates/rome_js_parser/src/syntax/expr.rs#L1543-L1580
-```

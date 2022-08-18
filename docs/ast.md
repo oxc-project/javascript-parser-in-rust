@@ -60,7 +60,7 @@ Since this is a tree, every object is a node with a type name (e.g. `Program`, `
 it defines [all the AST nodes](https://github.com/estree/estree/blob/master/es5.md) so different tools
 can be compatible with each other.
 
-The basic building block for any AST node is the `Node`:
+The basic building block for any AST node is the `Node` type:
 
 ```rust
 #[derive(Debug, Default, Clone, Copy, Serialize, PartialEq, Eq)]
@@ -79,7 +79,6 @@ impl Node {
 }
 ```
 
-Rust does not have inheritance, so composition is used instead.
 AST for `var a` is defined as
 
 ```rust
@@ -111,6 +110,8 @@ pub struct BindingIdentifier {
 pub enum Expression {
 }
 ```
+
+Rust does not have inheritance, so `Node` is added to each struct (this is called "composition over Inheritance").
 
 `Statement`s and `Expression`s are enums because they will be expanded with a lot of other node types, for example:
 
@@ -191,9 +192,7 @@ pub struct YieldExpression {
 }
 ```
 
-:::info
-To make sure the enums are indeed 16 bytes, we can use `std::mem::size_of`.
-"no bloat enum sizes" test cases can often be seen in the Rust compiler source code for ensuring small enum sizes.
+To make sure the enums are indeed 16 bytes on 64-bit systems, we can use `std::mem::size_of`.
 
 ```rust
 #[test]
@@ -204,7 +203,32 @@ fn no_bloat_enum_sizes() {
 }
 ```
 
-:::
+"no bloat enum sizes" test cases can often be seen in the Rust compiler source code for ensuring small enum sizes.
+
+```rust reference
+https://github.com/rust-lang/rust/blob/9c20b2a8cc7588decb6de25ac6a7912dcef24d65/compiler/rustc_ast/src/ast.rs#L3033-L3042
+```
+
+To find other large types, we can run
+
+```bash
+RUSTFLAGS=-Zprint-type-sizes cargo +nightly build -p name_of_the_crate --release
+```
+
+and see
+
+```markup
+print-type-size type: `ast::js::Statement`: 16 bytes, alignment: 8 bytes
+print-type-size     discriminant: 8 bytes
+print-type-size     variant `BlockStatement`: 8 bytes
+print-type-size         field `.0`: 8 bytes
+print-type-size     variant `BreakStatement`: 8 bytes
+print-type-size         field `.0`: 8 bytes
+print-type-size     variant `ContinueStatement`: 8 bytes
+print-type-size         field `.0`: 8 bytes
+print-type-size     variant `DebuggerStatement`: 8 bytes
+print-type-size         field `.0`: 8 bytes
+```
 
 #### Memory Arena
 
@@ -251,9 +275,11 @@ pub struct YieldExpression<'a> {
 :::caution
 Please be cautious if we are not comfortable dealing with lifetimes at this stage.
 Our program will work fine without a memory arena.
+
+Code in the following chapters does not demonstrate the use of a memory arena for simplicity.
 :::
 
-## Serde Serialization
+## JSON Serialization
 
 [serde](https://serde.rs/) can be used serialize the AST to JSON. Some techniques are needed to make it `estree` compatible.
 Here are some examples:

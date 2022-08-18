@@ -324,6 +324,10 @@ https://github.com/rome/tools/blob/5a059c0413baf1d54436ac0c149a829f0dfd1f4d/crat
 
 And toggle and check these flags accordingly by following the grammar.
 
+## Assignment Target
+
+// TODO
+
 ---
 
 :::caution
@@ -461,7 +465,7 @@ The easiest but more cumbersome approach to solving this problem is to parse it 
 then write a converter function to convert it to `ArrowParameters` node, i.e. each individual `Expression` need to be converted to a `BindingIdentifier`.
 
 A more complicated approach is to try and parse this as a `ArrowParameters` first, but rewind and re-parse if it does not reach `=>`.
-This is the only applicable approach if TypeScript is being parsed here.
+This is a better approach if TypeScript is being parsed here.
 
 There is another caveat here. When building the scope tree in the parser,
 i.e. create the scope for arrow expression during parsing, but do not create one for sequence expression,
@@ -511,7 +515,7 @@ async (a, b, c) => {} // AsyncArrowFunction
 ^^^^^^^^^^^^^^^ CoverCallExpressionAndAsyncArrowHead
 ```
 
-This looks strange because `async` is not a keyword. These two `async`s are function names.
+This looks strange because `async` is not a keyword. The first `async` is a function name.
 
 ---
 

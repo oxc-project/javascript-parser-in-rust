@@ -71,6 +71,10 @@ pub fn parse_paren_expression(&mut self, ctx: Context) -> Result<Expression> {
 }
 ```
 
+### Lexer Errors
+
+// TODO
+
 ### Fancy Error Report
 
 [`miette`](https://docs.rs/miette/latest/miette) is one of the nicest error reporting crate out there,
@@ -97,3 +101,5 @@ pub fn main() -> Result<()> {
     })
 }
 ```
+
+TODO: expand on how to work with miette?

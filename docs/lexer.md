@@ -95,7 +95,7 @@ impl<'a> Lexer<'a> {
 
     /// Get the length offset from the source text, in UTF-8 bytes
     fn offset(&self) -> usize {
-        self.source.len() - self.current.chars.as_str().len()
+        self.source.len() - self.chars.as_str().len()
     }
 }
 ```
@@ -124,7 +124,6 @@ https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/
 ```
 
 All the above code will get compiled into a single data access, so `.as_str().len()` is actually O(1).
-Zero cost abstraction indeed!
 
 ## Peek
 
@@ -212,7 +211,7 @@ UnicodeIDContinue ::
 This means that we can write `var ಠ_ಠ` but not `var 🦀`,
 `ಠ_ಠ` has the Unicode property "ID_Start" while `🦀` does not.
 
-I published the [unicode-id-start](https://crates.io/crates/unicode-id-start) for this exact purpose.
+I published the [unicode-id-start](https://crates.io/crates/unicode-id-start) crate for this exact purpose.
 `unicode_id_start::is_id_start(char)` and `unicode_id_start::is_id_continue(char)` can be called to check Unicode.
 
 ### Keywords
@@ -259,6 +258,7 @@ Let's convert them to Rust types so they are easier to work with.
 
 ```rust
 pub enum Kind {
+    // ...existing code omitted
     // highlight-next-line
     Number,
     // highlight-next-line
@@ -267,6 +267,7 @@ pub enum Kind {
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Token {
+    // ...existing code omitted
     // highlight-next-line
     pub value: TokenValue,
 }
