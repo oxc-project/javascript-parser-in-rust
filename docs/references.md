@@ -2,19 +2,21 @@
 title: References
 ---
 
-## Parsers written in Rust / Go
+## Parsers (in active development)
 
-- [swc](https://swc.rs)
-- [Rome](https://rome.tools)
-- [esbuild](https://esbuild.github.io)
-- [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus)
-- [ratel](https://github.com/ratel-rust/ratel-core)
-- [boa](https://github.com/lastmjs/boa-azle)
-
-## Parsers written in JavaScript
-
-- [acorn](https://babeljs.io)
-- [babel](https://github.com/acornjs/acorn)
+- Rust
+  - [swc](https://swc.rs)
+  - [Rome](https://rome.tools)
+  - [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus)
+  - [ratel](https://github.com/ratel-rust/ratel-core)
+  - [boa](https://github.com/lastmjs/boa-azle)
+- JavaScript
+  - [acorn](https://babeljs.io)
+  - [babel](https://github.com/acornjs/acorn)
+- Go
+  - [esbuild](https://esbuild.github.io)
+- C++
+  - [quick-lint-js](https://github.com/quick-lint/quick-lint-js)
 
 ## AST
 
