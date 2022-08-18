@@ -461,15 +461,13 @@ let bar = (a, b, c) => {}; // ArrowExpression
           ^^^^^^^^^ CoverParenthesizedExpressionAndArrowParameterList
 ```
 
-The easiest but more cumbersome approach to solving this problem is to parse it as a `Vec<Expression>` first,
-then write a converter function to convert it to `ArrowParameters` node, i.e. each individual `Expression` need to be converted to a `BindingIdentifier`.
+A simple but cumbersome approach to solving this problem is to parse it as a `Vec<Expression>` first,
+then write a converter function to convert it to `ArrowParameters` node, i.e. each individual `Expression` need to be converted to a `BindingPattern`.
 
-A more complicated approach is to try and parse this as a `ArrowParameters` first, but rewind and re-parse if it does not reach `=>`.
-This is a better approach if TypeScript is being parsed here.
-
-There is another caveat here. When building the scope tree in the parser,
-i.e. create the scope for arrow expression during parsing, but do not create one for sequence expression,
-it is not obvious how to do this. Luckily, [esbuild](https://github.com/evanw/esbuild) solved this problem by creating a temporary scope first,
+It should be noted that, if we are building the scope tree within the parser,
+i.e. create the scope for arrow expression during parsing,
+but do not create one for a sequence expression,
+it is not obvious how to do this. [esbuild](https://github.com/evanw/esbuild) solved this problem by creating a temporary scope first,
 and then dropping it if it is not an `ArrowExpression`.
 
 This is stated in its [architecture document](https://github.com/evanw/esbuild/blob/master/docs/architecture.md#symbols-and-scopes):

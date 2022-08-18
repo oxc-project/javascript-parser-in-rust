@@ -18,11 +18,13 @@ let foo = <string> bar;
 It is a syntax error if this is `tsx` (Unterminated JSX),
 but it is correct "VariableDeclaration" with `TSTypeAssertion`.
 
-## Peek for more tokens (Lookahead)
+## Lookahead
 
-In certain places, the parser need to peek more than one token to determine the correct grammar.
+In certain places, the parser need to lookahead and peek more than one token to determine the correct grammar.
 
-For example to parse TSIndexSignature, considier the following two cases:
+### TSIndexSignature
+
+For example, to parse `TSIndexSignature`, consider the following two cases:
 
 ```typescript
 type A = { readonly [a: number]: string }
@@ -32,11 +34,37 @@ type B = { [a]: string }
            ^_________^ TSPropertySignature
 ```
 
-For `type A` at the first `{`, we need to peek 5 tokens (`readonly`, `[`, `a`, `:` and `number`) in order to make sure
+For `type A` on the first `{`, we need to peek 5 tokens (`readonly`, `[`, `a`, `:` and `number`) in order to make sure
 it is a `TSIndexSignature` and not a `TSPropertySignature`.
 
 To make this possible and efficient, the lexer requires a buffer for storing multiple tokens.
 
-## Arrow Expressions
+### Arrow Expressions
 
-TODO: use lookahead instead of cover grammar
+Discussed in [/blog/grammar#cover-grammar],
+we need to convert from `Expression`s to `BindingPattern`s when the `=>` token is found after a SequenceExpression.
+
+But this approach does not work really well for TypeScript as each item inside the `()` can have TypeScript syntax, there are just too many cases to cover.
+
+```typescript
+<x>a, b as c, d!;
+(a?: b = {} as c!) => {};
+```
+
+Different parsers take different approaches:
+
+#### TypeScript
+
+TODO
+
+#### Rome
+
+TODO
+
+#### swc
+
+TODO
+
+#### esbuild
+
+- TODO
