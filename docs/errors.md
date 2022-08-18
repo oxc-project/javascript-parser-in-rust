@@ -89,7 +89,7 @@ Add `miette` to your `Cargo.toml`
 miette = { version = "5", features = ["fancy"] }
 ```
 
-For separation of concern, we can wrap our `Result` with `miette`:
+We can wrap our `Error` with `miette` and not modify the `Result` type defined in our parser:
 
 ```rust
 pub fn main() -> Result<()> {
@@ -101,5 +101,3 @@ pub fn main() -> Result<()> {
     })
 }
 ```
-
-TODO: expand on how to work with miette?

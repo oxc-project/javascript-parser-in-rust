@@ -6,7 +6,7 @@ title: Lexer
 ## Token
 
 The lexer, also known as tokenizer or scanner, is responsible for transforming source text into tokens.
-The tokens will later be consumed by the parser so we don't need to worry about whitespaces and comments from the original text.
+The tokens will later be consumed by the parser so we don't have to worry about whitespaces and comments from the original text.
 
 Let's start simple and transform a single `+` text into a token.
 
@@ -30,7 +30,14 @@ pub enum Kind {
 }
 ```
 
-A single `+` will give us `[Token { kind: Kind::Plus, start: 0, end: 1 }, Token { kind: Kind::Eof, start: 1, end: 1 }]`
+A single `+` gives us
+
+```
+[
+    Token { kind: Kind::Plus, start: 0, end: 1 },
+    Token { kind: Kind::Eof,  start: 1, end: 1 }
+]
+```
 
 To loop through the string, we can either keep track of an index and pretend that we are writing C code,
 or we can take a look at the [string documentation](https://doc.rust-lang.org/std/primitive.str.html#)
@@ -180,13 +187,10 @@ and cried in agony because it feels like reading foreign text with jargons every
 So head over to my [guide on reading the specification](/blog/ecma-spec) if things don't make sense.
 :::
 
-### Whitespace
-
-TODO
-
 ### Comments
 
-TODO
+Comments have no semantic meaning, they can be skipped if we are writing a runtime,
+but they need to be taken into consideration if we are writing a linter or a bundler.
 
 ### Identifiers and Unicode
 
@@ -200,19 +204,26 @@ In detail:
 ```markup
 IdentifierStartChar ::
     UnicodeIDStart
+
 IdentifierPartChar ::
     UnicodeIDContinue
+
 UnicodeIDStart ::
     any Unicode code point with the Unicode property “ID_Start”
+
 UnicodeIDContinue ::
     any Unicode code point with the Unicode property “ID_Continue”
 ```
 
 This means that we can write `var ಠ_ಠ` but not `var 🦀`,
-`ಠ_ಠ` has the Unicode property "ID_Start" while `🦀` does not.
+`ಠ` has the Unicode property "ID_Start" while `🦀` does not.
+
+:::info
 
 I published the [unicode-id-start](https://crates.io/crates/unicode-id-start) crate for this exact purpose.
 `unicode_id_start::is_id_start(char)` and `unicode_id_start::is_id_continue(char)` can be called to check Unicode.
+
+:::
 
 ### Keywords
 
@@ -237,7 +248,7 @@ Tokenizing keywords will just be matching the identifier from above.
 
 ```rust
 fn match_keyword(&self, ident: &str) -> Kind {
-    // all keywords have 1 <= length <= 10
+    // all keywords are 1 <= length <= 10
     if ident.len() == 1 || ident.len() > 10 {
         return Kind::Identifier;
     }
@@ -252,22 +263,34 @@ fn match_keyword(&self, ident: &str) -> Kind {
 
 ### Token Value
 
-We often need to compare numbers and strings in later stages of the compiler phases,
-but they are in plain source text right now.
-Let's convert them to Rust types so they are easier to work with.
+We often need to compare identifiers, numbers and strings in later stages of the compiler phases,
+for example testing against identifiers inside a linter,
+
+These values are currently in plain source text,
+let's convert them to Rust types so they are easier to work with.
 
 ```rust
 pub enum Kind {
-    // ...existing code omitted
-    // highlight-next-line
+    Eof, // end of file
+    Plus,
+    // highlight-start
+    Identifier,
     Number,
-    // highlight-next-line
     String,
+    // highlight-end
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Token {
-    // ...existing code omitted
+    /// Token Type
+    pub kind: Kind,
+
+    /// Start offset in source
+    pub start: usize,
+
+    /// End offset in source
+    pub end: usize,
+
     // highlight-next-line
     pub value: TokenValue,
 }
@@ -280,8 +303,14 @@ pub enum TokenValue {
 }
 ```
 
-When we tokenized a string `"foo"`, we get a token with `Token { start: 0, end: 2 }`.
-To convert it to Rust string, call `let s = self.source[token.start..token.end].to_string()`
+When an identifier `foo` or string `"bar"` is tokenized , we get
+
+```markup
+Token { kind: Kind::Identifier, start: 0, end: 2, value: TokenValue::String("foo") }
+Token { kind: Kind::String, start: 0, end: 4, value: TokenValue::String("bar") }
+```
+
+To convert them to Rust strings, call `let s = self.source[token.start..token.end].to_string()`
 and save it with `token.value = TokenValue::String(s)`.
 
 When we tokenized a number `1.23`, we get a token with `Token { start: 0, end: 3 }`.
@@ -314,17 +343,17 @@ It is not performant to use `String` in compilers, mainly due to:
 - `String` is a heap allocated object
 - String comparison is an O(n) operation
 
-[String Interning](https://en.wikipedia.org/wiki/String_interning) solves this problem by
+[String Interning](https://en.wikipedia.org/wiki/String_interning) solves these problems by
 storing only one copy of each distinct string value with a unique identifier in a cache.
-There will only be one heap allocation per distinct string, and string comparisons becomes O(1).
+There will only be one heap allocation per distinct identifier or string, and string comparisons become O(1).
 
 There are lots of string interning libraries on [crates.io](https://crates.io/search?q=string%20interning)
 with different props and cons.
 
-A starting point is to use [`string-cache`](https://crates.io/crates/string_cache),
+A sufficient starting point is to use [`string-cache`](https://crates.io/crates/string_cache),
 it has an `Atom` type and a compile time `atom!("string")` interface.
 
-Our `TokenValue` becomes
+With `string-cache`, `TokenValue` becomes
 
 ```rust
 #[derive(Debug, Clone, PartialEq)]
@@ -336,4 +365,4 @@ pub enum TokenValue {
 }
 ```
 
-and string comparison becomes `matches!(token, TokenValue::String(atom!("string")))`.
+and string comparison becomes `matches!(value, TokenValue::String(atom!("string")))`.

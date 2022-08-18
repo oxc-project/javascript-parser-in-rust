@@ -122,7 +122,7 @@ impl<'a> Parser<'a> {
 
     fn parse_debugger_statement(&mut self) -> Statement {
         let node = self.start_node();
-        // TODO: check the token returned from lexer is `Kind::Debugger`
+        // NOTE: the token returned from the lexer is `Kind::Debugger`, we'll fix this later.
         self.bump_any();
         Statement::DebuggerStatement {
             node: self.finish_node(node),
