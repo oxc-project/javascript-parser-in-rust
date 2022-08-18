@@ -71,7 +71,14 @@ pub fn parse_paren_expression(&mut self, ctx: Context) -> Result<Expression> {
 }
 ```
 
-### Lexer Errors
+:::note
+
+For completeness, the lexer function `read_next_token` should also return `Result`
+when an unexpected `char` is found when lexing.
+
+:::
+
+### The `Error` Trait
 
 // TODO
 
