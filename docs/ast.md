@@ -154,7 +154,7 @@ a dozen of enum variants.
 The first optimization we are going to make is to reduce the size of the enums.
 
 It is known that the byte size of a Rust enum is the union of all its variants.
-For example, the following enum will take up 56 bytes (1 byte for the tag, 48 bytes for the payload, and 8 bytes for alignment padding)
+For example, the following enum will take up 56 bytes (1 byte for the tag, 48 bytes for the payload, and 8 bytes for alignment).
 
 ```rust
 enum Name {
