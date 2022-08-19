@@ -80,7 +80,65 @@ when an unexpected `char` is found when lexing.
 
 ### The `Error` Trait
 
-// TODO
+To return specific errors, we need to fill in the `Err` part of `Result`:
+
+```rust
+pub type Result<T> = std::result::Result<T, SyntaxError>;
+                                            ^^^^^^^^^^^
+#[derive(Debug)]
+pub enum SyntaxError {
+    UnexpectedToken(String),
+    AutoSemicolonInsertion(String),
+    UnterminatedMultiLineComment(String),
+}
+```
+
+We call it `SyntaxError` because all "early error"s defined in the grammar section of the ECMAScript specification are syntax errors.
+
+To make this a proper `Error`, it needs to implement the [`Error` Trait](https://doc.rust-lang.org/std/error/trait.Error.html). For cleaner code, we can use macros from the [`thiserror`](thiserror) crate:
+
+```rust
+#[derive(Debug, Error)]
+pub enum SyntaxError {
+    #[error("Unexpected Token")]
+    UnexpectedToken,
+
+    #[error("Expected a semicolon or an implicit semicolon after a statement, but found none")]
+    AutoSemicolonInsertion,
+
+    #[error("Unterminated multi-line comment")]
+    UnterminatedMultiLineComment,
+}
+```
+
+We can then add an `expect` helper function for throwing an error if the token does not match:
+
+```rust
+/// Expect a `Kind` or return error
+pub fn expect(&mut self, kind: Kind) -> Result<()> {
+    if self.at(kind) {
+        return Err(SyntaxError::UnExpectedToken);
+    }
+    self.advance(kind);
+    Ok(())
+}
+```
+
+The `parse_debugger_statement` can now use the `expect` function for proper error management:
+
+```rust
+fn parse_debugger_statement(&mut self) -> Result<Statement> {
+    let node = self.start_node();
+    self.expect(Kind::Debugger)?;
+    Ok(Statement::DebuggerStatement {
+        node: self.finish_node(node),
+    })
+}
+```
+
+Notice the `?` after the `expect`,
+it is a syntactic sugar called the ["question mark operator"](https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html#a-shortcut-for-propagating-errors-the--operator) for making the
+function return early if the `expect` function returns a `Err`.
 
 ### Fancy Error Report
 
