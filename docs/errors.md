@@ -95,7 +95,7 @@ pub enum SyntaxError {
 
 We call it `SyntaxError` because all "early error"s defined in the grammar section of the ECMAScript specification are syntax errors.
 
-To make this a proper `Error`, it needs to implement the [`Error` Trait](https://doc.rust-lang.org/std/error/trait.Error.html). For cleaner code, we can use macros from the [`thiserror`](thiserror) crate:
+To make this a proper `Error`, it needs to implement the [`Error` Trait](https://doc.rust-lang.org/std/error/trait.Error.html). For cleaner code, we can use macros from the [`thiserror`](https://docs.rs/thiserror/latest/thiserror) crate:
 
 ```rust
 #[derive(Debug, Error)]
