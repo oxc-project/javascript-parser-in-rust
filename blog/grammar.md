@@ -324,9 +324,132 @@ https://github.com/rome/tools/blob/5a059c0413baf1d54436ac0c149a829f0dfd1f4d/crat
 
 And toggle and check these flags accordingly by following the grammar.
 
-## Assignment Target
+## AssignmentPattern vs BindingPattern
 
-// TODO
+In `estree`, the left hand side of an `AssignmentExpression` is a `Pattern`:
+
+```markup
+extend interface AssignmentExpression {
+    left: Pattern;
+}
+```
+
+and the left hand side of a `VariableDeclarator` is a `Pattern`:
+
+```markup
+interface VariableDeclarator <: Node {
+    type: "VariableDeclarator";
+    id: Pattern;
+    init: Expression | null;
+}
+```
+
+A `Pattern` can be a `Identifier`, `ObjectPattern`, `ArrayPattern`:
+
+```markup
+interface Identifier <: Expression, Pattern {
+    type: "Identifier";
+    name: string;
+}
+
+interface ObjectPattern <: Pattern {
+    type: "ObjectPattern";
+    properties: [ AssignmentProperty ];
+}
+
+interface ArrayPattern <: Pattern {
+    type: "ArrayPattern";
+    elements: [ Pattern | null ];
+}
+```
+
+But from the specification perspective, we have the following JavaScript:
+
+```javascript
+// AssignmentExpression:
+{ foo } = bar;
+  ^^^ IdentifierReference
+[ foo ] = bar;
+  ^^^ IdentifierReference
+
+// VariableDeclarator
+var { foo } = bar;
+      ^^^ BindingIdentifier
+var [ foo ] = bar;
+      ^^^ BindingIdentifier
+```
+
+This starts to become confusing because we now have a situation where we cannot directly distinguish whether the `Identifier` is a `BindingIdentifier` or a `IdentifierReference`
+inside a `Pattern`:
+
+```rust
+enum Pattern {
+    Identifier, // Is this a `BindingIdentifier` or a `IdentifierReference`?
+    ArrayPattern,
+    ObjectPattern,
+}
+```
+
+This will lead to all sorts of unnecessary code further down the parser pipeline.
+For example, when setting up the scope for semantic analysis, we need to inspect the parents of this `Identifier`
+to determine whether we should bind it to the scope or not.
+
+A better solution is to fully understand the specification and decide what to do.
+
+The grammar for `AssignmentExpression` and `VariableDeclaration` are defined as:
+
+```marup
+13.15 Assignment Operators
+
+AssignmentExpression[In, Yield, Await] :
+    LeftHandSideExpression[?Yield, ?Await] = AssignmentExpression[?In, ?Yield, ?Await]
+
+13.15.5 Destructuring Assignment
+
+In certain circumstances when processing an instance of the production
+AssignmentExpression : LeftHandSideExpression = AssignmentExpression
+the interpretation of LeftHandSideExpression is refined using the following grammar:
+
+AssignmentPattern[Yield, Await] :
+    ObjectAssignmentPattern[?Yield, ?Await]
+    ArrayAssignmentPattern[?Yield, ?Await]
+```
+
+```markup
+14.3.2 Variable Statement
+
+VariableDeclaration[In, Yield, Await] :
+    BindingIdentifier[?Yield, ?Await] Initializer[?In, ?Yield, ?Await]opt
+    BindingPattern[?Yield, ?Await] Initializer[?In, ?Yield, ?Await]
+```
+
+The specification distinguishes these two grammar by defining them separately with a `AssignmentPattern` and a `BindingPattern`.
+
+So in situations like this, do not be afraid to deviate from `estree` and define extra AST nodes for our parser:
+
+```rust
+enum BindingPattern {
+    BindingIdentifier,
+    ObjectBindingPattern,
+    ArrayBindingPattern,
+}
+
+enum AssignmentPattern {
+    IdentifierReference,
+    ObjectAssignmentPattern,
+    ArrayAssignmentPattern,
+}
+```
+
+I was in a super confusing state for a whole week until I finally reached enlightenment:
+we need to define an `AssignmentPattern` node and a `BindingPattern` node instead of a single `Pattern` node.
+
+- `estree` must be correct because people have been using it for years so it cannot be wrong?
+- how are we going to cleanly distinguish the `Identifier`s inside the patterns without defining two separate nodes?
+  I just cannot find where the grammar is?
+- After a whole day of navigating the specification ...
+  the grammar for `AssignmentPattern` is in the 5th subsection of the main section "13.15 Assignment Operators" with the subtitle "Supplemental Syntax" 🤯 -
+  this is really out of place because all grammar are defined on the main section, not like this one defined after the "Runtime Semantics" section
 
 ---
 

@@ -23,6 +23,7 @@ title: References
 - [estree](https://github.com/estree/estree)
 - [swc_ecma_ast](https://github.com/swc-project/swc/tree/main/crates/swc_ecma_ast/src)
 - [babel ast](https://github.com/babel/babel/blob/main/packages/babel-types/src/ast-types/generated/index.ts)
+- [jsparagus](https://gist.github.com/Boshen/0b481a058cd715576aaf1624d2c6d469)
 
 ## Rust
 
