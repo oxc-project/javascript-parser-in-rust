@@ -161,7 +161,3 @@ We can use the [Visitor Pattern](https://rust-unofficial.github.io/patterns/patt
 to separate the traversal process from the operations performed on each object.
 
 Upon visit, we can call `enter_scope` and `leave_scope` accordingly to build the scope tree.
-
-## Control Flow Graph (TODO)
-
-For checking unreachable code and various rules ...
