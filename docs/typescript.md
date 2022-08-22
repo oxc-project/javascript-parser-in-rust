@@ -16,7 +16,7 @@ let foo = <string> bar;
 ```
 
 It is a syntax error if this is `tsx` (Unterminated JSX),
-but it is correct "VariableDeclaration" with `TSTypeAssertion`.
+but it is correct `VariableDeclaration` with `TSTypeAssertion`.
 
 ## Lookahead
 

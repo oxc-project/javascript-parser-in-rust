@@ -8,7 +8,7 @@ We need to check against all the "Early Error" rules in the ECMAScript specifica
 
 ## Context
 
-For grammar contexts such as [Yield] or [Await], an error need to be raised when the grammar forbids them, for example:
+For grammar contexts such as `[Yield]` or `[Await]``, an error need to be raised when the grammar forbids them, for example:
 
 ```markup
 BindingIdentifier[Yield, Await] :
@@ -61,7 +61,7 @@ Block : { StatementList }
 
 We need to add a scope tree. A scope tree has all the `var`s and `let`s declared inside it.
 It is also a parent pointing tree where we want to navigate up the tree and search for binding identifiers in parent scopes.
-The data structure we can use is [`indextree`](https://docs.rs/indextree/latest/indextree/).
+The data structure we can use is a [`indextree`](https://docs.rs/indextree/latest/indextree/).
 
 ```rust
 use indextree::{Arena, Node, NodeId};
@@ -158,6 +158,6 @@ If we decide to build the scope tree in another pass for simplicity,
 then every node in the AST need to be visited in depth-first preorder and build the scope tree.
 
 We can use the [Visitor Pattern](https://rust-unofficial.github.io/patterns/patterns/behavioural/visitor.html)
-to separate the traversal process from the operations performed on each object.
+to separate out the traversal process from the operations performed on each object.
 
 Upon visit, we can call `enter_scope` and `leave_scope` accordingly to build the scope tree.

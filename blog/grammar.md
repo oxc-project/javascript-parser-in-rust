@@ -222,7 +222,7 @@ else function bar() {}
 
 ## Label statement is legit
 
-We probably have never ever written a single line of labelled statement, but it is actually legit in modern JavaScript and not banned by strict mode.
+We probably have never written a single line of labelled statement, but it is legit in modern JavaScript and not banned by strict mode.
 
 The following syntax is correct, it returns a labelled statement (not object literal).
 
@@ -261,7 +261,7 @@ If we have parsed to `for (let`, we need to check the peeking token is:
 - is `{`, `[` or an identifier to allow `for (let {} = foo)`, `for (let [] = foo)` and `for (let bar = foo)`
 
 Once reached the `of` or `in` keyword, the right-hand side expression needs to be passed with the correct [+In] context to disallow
-the two `in` expression in `#prod-RelationalExpression`:
+the two `in` expressions in `#prod-RelationalExpression`:
 
 ```
 RelationalExpression[In, Yield, Await] :
@@ -326,7 +326,7 @@ And toggle and check these flags accordingly by following the grammar.
 
 ## AssignmentPattern vs BindingPattern
 
-In `estree`, the left hand side of an `AssignmentExpression` is a `Pattern`:
+In `estree`, the left-hand side of an `AssignmentExpression` is a `Pattern`:
 
 ```markup
 extend interface AssignmentExpression {
@@ -334,7 +334,7 @@ extend interface AssignmentExpression {
 }
 ```
 
-and the left hand side of a `VariableDeclarator` is a `Pattern`:
+and the left-hand side of a `VariableDeclarator` is a `Pattern`:
 
 ```markup
 interface VariableDeclarator <: Node {
@@ -423,7 +423,7 @@ VariableDeclaration[In, Yield, Await] :
     BindingPattern[?Yield, ?Await] Initializer[?In, ?Yield, ?Await]
 ```
 
-The specification distinguishes these two grammar by defining them separately with a `AssignmentPattern` and a `BindingPattern`.
+The specification distinguishes this two grammar by defining them separately with an `AssignmentPattern` and a `BindingPattern`.
 
 So in situations like this, do not be afraid to deviate from `estree` and define extra AST nodes for our parser:
 
@@ -449,7 +449,7 @@ we need to define an `AssignmentPattern` node and a `BindingPattern` node instea
   I just cannot find where the grammar is?
 - After a whole day of navigating the specification ...
   the grammar for `AssignmentPattern` is in the 5th subsection of the main section "13.15 Assignment Operators" with the subtitle "Supplemental Syntax" 🤯 -
-  this is really out of place because all grammar are defined on the main section, not like this one defined after the "Runtime Semantics" section
+  this is really out of place because all grammar is defined in the main section, not like this one defined after the "Runtime Semantics" section
 
 ---
 
