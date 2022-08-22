@@ -1,7 +1,5 @@
 # Write a JavaScript Parser in Rust
 
-(This is currently work in progress)
-
 Rust, JavaScript, and parsers are all hard to learn,
 let's combine these three and challenge ourselves to write a JavaScript parser in Rust.
 
