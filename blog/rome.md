@@ -18,9 +18,11 @@ This tutorial summarizes them in learning order for better understanding.
 ## Concrete Syntax Tree
 
 - The base library is called [rowan](https://github.com/rust-analyzer/rowan), see [overview of rowan](https://github.com/rust-lang/rust-analyzer/blob/master/docs/dev/syntax.md)
+- Rowan is named after the real green [rowan tree](https://en.wikipedia.org/wiki/Rowan) that makes red berries
+- The origin of rowan is described in this [blog post](https://ericlippert.com/2012/06/08/red-green-trees/), from the authors of the C# programming language
 - The whole point of rowan is to define a lossless concrete syntax tree (CST) that describes all the details of the source code and provide a set of traversal APIs (parent, children, siblings, etc)
 - Read the advantage of having a CST over an AST: [Pure AST based linting sucks](https://rdambrosio016.github.io/rust/2020/09/18/pure-ast-based-linting-sucks.html)
-- CST provides us the ability to build a fully recoverable parser
+- CST provides the ability to build a fully recoverable parser
 
 ## Grammar
 
