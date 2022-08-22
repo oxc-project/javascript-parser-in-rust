@@ -41,30 +41,66 @@ To make this possible and efficient, the lexer requires a buffer for storing mul
 
 ### Arrow Expressions
 
-Discussed in [/blog/grammar#cover-grammar],
+Discussed in [cover grammar](/blog/grammar#cover-grammar),
 we need to convert from `Expression`s to `BindingPattern`s when the `=>` token is found after a SequenceExpression.
 
-But this approach does not work really well for TypeScript as each item inside the `()` can have TypeScript syntax, there are just too many cases to cover.
+But this approach does not work for TypeScript as each item inside the `()` can have TypeScript syntax, there are just too many cases to cover, for example:
 
 ```typescript
 <x>a, b as c, d!;
 (a?: b = {} as c!) => {};
 ```
 
-Different parsers take different approaches:
+It is recommended to study the TypeScript source code for this specific case. The relevant code are:
 
-#### TypeScript
+```typescript
+function tryParseParenthesizedArrowFunctionExpression(
+  allowReturnTypeInArrowFunction: boolean
+): Expression | undefined {
+  const triState = isParenthesizedArrowFunctionExpression();
+  if (triState === Tristate.False) {
+    // It's definitely not a parenthesized arrow function expression.
+    return undefined;
+  }
 
-TODO
+  // If we definitely have an arrow function, then we can just parse one, not requiring a
+  // following => or { token. Otherwise, we *might* have an arrow function.  Try to parse
+  // it out, but don't allow any ambiguity, and return 'undefined' if this could be an
+  // expression instead.
+  return triState === Tristate.True
+    ? parseParenthesizedArrowFunctionExpression(
+        /*allowAmbiguity*/ true,
+        /*allowReturnTypeInArrowFunction*/ true
+      )
+    : tryParse(() =>
+        parsePossibleParenthesizedArrowFunctionExpression(
+          allowReturnTypeInArrowFunction
+        )
+      );
+}
 
-#### Rome
+//  True        -> We definitely expect a parenthesized arrow function here.
+//  False       -> There *cannot* be a parenthesized arrow function here.
+//  Unknown     -> There *might* be a parenthesized arrow function here.
+//                 Speculatively look ahead to be sure, and rollback if not.
+function isParenthesizedArrowFunctionExpression(): Tristate {
+  if (
+    token() === SyntaxKind.OpenParenToken ||
+    token() === SyntaxKind.LessThanToken ||
+    token() === SyntaxKind.AsyncKeyword
+  ) {
+    return lookAhead(isParenthesizedArrowFunctionExpressionWorker);
+  }
 
-TODO
+  if (token() === SyntaxKind.EqualsGreaterThanToken) {
+    // ERROR RECOVERY TWEAK:
+    // If we see a standalone => try to parse it as an arrow function expression as that's
+    // likely what the user intended to write.
+    return Tristate.True;
+  }
+  // Definitely not a parenthesized arrow function.
+  return Tristate.False;
+}
+```
 
-#### swc
-
-TODO
-
-#### esbuild
-
-- TODO
+In summary, the TypeScript parser uses a combination of lookahead (fast path) and backtracking to parse arrow functions.
