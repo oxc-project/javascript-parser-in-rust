@@ -65,6 +65,6 @@ https://github.com/rome/tools/blob/9815467c66688773bc1bb6ef9a5b2d86ca7b3682/crat
 - Join the [Discord Server](https://discord.com/invite/rome) for inquiries
 
 :::info
-The JavaScript / TypeScript parser is 99% complete, the best way to help is to test Rome in your own codebase
+The JavaScript / TypeScript parser is 99% complete, the best way to help is to test Rome in your own codebases
 or take a look at the [issues on Github](https://github.com/rome/tools/issues).
 :::
