@@ -29,6 +29,9 @@ const config = {
             "https://github.com/Boshen/javascript-parser-in-rust/tree/main/docs/",
         },
         blog: {
+          blogSidebarTitle: "Tutorials",
+          blogSidebarCount: "ALL",
+          sortPosts: "ascending",
           editUrl:
             "https://github.com/Boshen/javascript-parser-in-rust/tree/main/blog",
           showReadingTime: true,
