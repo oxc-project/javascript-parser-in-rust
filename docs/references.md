@@ -11,8 +11,8 @@ title: References
   - [ratel](https://github.com/ratel-rust/ratel-core)
   - [boa](https://github.com/lastmjs/boa-azle)
 - JavaScript
-  - [acorn](https://babeljs.io)
-  - [babel](https://github.com/acornjs/acorn)
+  - [acorn](https://github.com/acornjs/acorn)
+  - [babel](https://babeljs.io)
 - Go
   - [esbuild](https://esbuild.github.io)
 - C++
