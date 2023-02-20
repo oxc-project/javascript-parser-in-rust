@@ -72,7 +72,7 @@ impl<'a> Parser<'a> {
         self.cur_kind() == kind
     }
 
-    /// Advance and return true if we are at `Kind`
+    /// Advance if we are at `Kind`
     fn bump(&mut self, kind: Kind) {
         if self.at(kind) {
             self.advance();
