@@ -8,7 +8,7 @@ We need to check against all the "Early Error" rules in the ECMAScript specifica
 
 ## Context
 
-For grammar contexts such as `[Yield]` or `[Await]``, an error need to be raised when the grammar forbids them, for example:
+For grammar contexts such as `[Yield]` or `[Await]`, an error need to be raised when the grammar forbids them, for example:
 
 ```markup
 BindingIdentifier[Yield, Await] :
