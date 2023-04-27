@@ -227,8 +227,8 @@ We probably have never written a single line of labelled statement, but it is le
 The following syntax is correct, it returns a labelled statement (not object literal).
 
 ```javascript
-<Foo bar={() => {baz: 'quaz'}} />
-             // ^^^^^^^^^^^^^ `LabelledStatement`
+<Foo bar={() => { baz: 'quaz' }} />
+             //   ^^^^^^^^^^^ `LabelledStatement`
 ```
 
 ---
