@@ -82,7 +82,7 @@ ModuleItem :
   StatementListItem[~Yield, +Await, ~Return]
 ```
 
-allows for top-level return.
+allows for top-level await.
 
 ## Source Text
 
