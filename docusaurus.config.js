@@ -16,7 +16,7 @@ const config = {
   projectName: "javascript-parser-in-rust", // Usually your repo name.
   i18n: {
     defaultLocale: "en",
-    locales: ["en"],
+    locales: ["en", "ja"],
   },
   presets: [
     [
@@ -62,6 +62,10 @@ const config = {
             label: "Guide",
           },
           { to: "/blog", label: "Tutorials", position: "left" },
+          {
+            type: "localeDropdown",
+            position: "right",
+          },
           {
             href: "https://github.com/Boshen/javascript-parser-in-rust",
             label: "GitHub",
