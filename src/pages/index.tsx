@@ -17,7 +17,8 @@ function HomepageHeader() {
         </p>
         <p className="hero__subtitle">
           This will be the guide for you if you are interested in learning Rust, parsers,
-          or would like to contribute to <a href="https://swc.rs" target="__blank">swc</a> or <a href="https://rome.tools" target="__blank">Rome</a> in the near future.
+          or would like to contribute to <a href="https://github.com/boshen/oxc" target="__blank">oxc</a>,
+          <a href="https://swc.rs" target="__blank">swc</a> or <a href="https://rome.tools" target="__blank">Rome</a> in the near future.
         </p>
         <p className="hero__subtitle">
           The guide will cover all the basic topics of writing a JavaScript parser in rust.
