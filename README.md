@@ -12,7 +12,7 @@ The tutorials will explain some topics in more depth.
 - [Read the guide](https://boshen.github.io/javascript-parser-in-rust/docs/intro)
 - [Read the tutorials](https://boshen.github.io/javascript-parser-in-rust/blog)
 
-Suggestions and corrections are always welcome, please feel free and create an issue, or contact me on Twitter.
+Suggestions and corrections are always welcome, please feel free to create an issue, or contact me on Twitter.
 
 <a href="https://twitter.com/boshen_c">
 <img height="20" src="https://img.shields.io/twitter/follow/boshen_c?style=social" />
