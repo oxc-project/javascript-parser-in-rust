@@ -1,46 +1,43 @@
 ---
 id: overview
-title: Overview
+title: 概要
 ---
 
-For this guide, the standard compiler front-end phases will be applied:
+このガイドでは、標準的なコンパイラーのフロントエンド工程が用いられます。
 
 ```markup
-Source Text --> Token --> Lexer --> Parser --> AST
+ソースのテキスト --> トークン --> 字句解析 --> パーサー --> AST
 ```
 
-Writing a JavaScript parser is fairly easy,
-it is 10% architectural decisions and 90% hard work on the fine-grained details.
+JavaScript のパーサーを書くことは難しくありません。
+アーキテクチャー上の意思決定が 10％、きめ細かい詳細におけるハードワークが 90%です。
 
-The architectural decisions will mostly affect two categories:
+アーキテクチャー上の意思決定は主に 2 つのカテゴリーへ影響します。
 
-- the performance of our parser
-- how nice it is to consume our AST
+- パーサーのパフォーマンス
+- AST を扱うのがどれくらい素晴らしいものか
 
-Knowing all the options and trade-offs before building a parser in Rust will make our whole journey much smoother.
+Rust でパーサーを作る前にすべての選択肢とトレードオフについて知っておくことで、私たちの旅はより快適なものになるでしょう。
 
-## Performance
+## パフォーマンス
 
-The key to a performant Rust program is to **allocate less memory** and **use fewer CPU cycles**.
+高いパフォーマンスの Rust プログラムへの鍵は、**メモリーの割り当てを減らすこと**と**CPU サイクルを減らすこと**にあります。
 
-It is mostly transparent where memory allocations are made just by looking for heap-allocated objects such as a `Vec`, `Box` or `String`.
-Reasoning about their usage will give us a sense of how fast our program will be - the more we allocate, the slower our program will be.
+`Vec`、`Box`、`String`のようなヒープに割り当てられたオブジェクトを探すだけでメモリーの割り当てがほとんど透過的に行われます。
+それらの使用量を推し量ることにより、プログラムがどれほどの速さか分かります。割り当てが増えるにつれて、プログラムは遅くなるでしょう。
 
-Rust gives us the power of zero-cost abstractions, we don't need to worry too much about abstractions causing slower performance.
-Be careful with our algorithmic complexities and we will be all good to go.
+Rust のゼロコスト抽象化のおかげで、抽象化によってパフォーマンスの低下が起こることをあまり心配する必要はありません。
+アルゴリズムの複雑性に注意すれば問題はないでしょう。
 
 :::info
-You should also read [The Rust Performance Book](https://nnethercote.github.io/perf-book/introduction.html).
+[The Rust Performance Book](https://nnethercote.github.io/perf-book/introduction.html)も読むと良いでしょう。
 :::
 
-## Rust Source Code
+## Rust のソースコード
 
-Whenever the performance of an function call cannot be deduced,
-do not be afraid to click the "source" button on the Rust documentation and read the source code,
-they are easy to understand most of the time.
+関数呼び出しのパフォーマンスについて推し量ることができない時はいつでも、Rust のドキュメントの"ソース"ボタンを恐れることなくクリックしてソースコードを読んでみると、ほとんど場合簡単に理解できるでしょう。
 
 :::info
-When navigating the Rust source code, searching for a definition is simply looking for
-`fn function_name`, `struct struct_name`, `enum enum_name` etc.
-This is one advantage of having constant grammar in Rust (compared to JavaScript 😉).
+Rust のソースコードを読むとき、シンプルに`fn function_name`、`struct struct_name`、`enum enum_name`といったものの定義箇所を探します。
+これは一貫した文法を持つ Rust(JavaScript と比べて 😉)における利点の 1 つです。
 :::
