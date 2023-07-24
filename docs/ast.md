@@ -145,7 +145,7 @@ JavaScript grammar has a lot of nuisances, read the [grammar tutorial](/blog/gra
 Back in the [Overview](./overview) chapter,
 I briefly mentioned that we need to look out for heap-allocated structs such as `Vec` and `Box` because heap allocations are not cheap.
 
-Take a look at the [real word implementation from swc](https://github.com/swc-project/swc/blob/main/crates/swc_ecma_ast/src/expr.rs),
+Take a look at the [real world implementation from swc](https://github.com/swc-project/swc/blob/main/crates/swc_ecma_ast/src/expr.rs),
 we can see that an AST can have lots of `Box`s and `Vec`s, and also note that the `Statement` and `Expression` enums contain
 a dozen of enum variants.
 
