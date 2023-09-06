@@ -348,7 +348,7 @@ storing only one copy of each distinct string value with a unique identifier in 
 There will only be one heap allocation per distinct identifier or string, and string comparisons become O(1).
 
 There are lots of string interning libraries on [crates.io](https://crates.io/search?q=string%20interning)
-with different props and cons.
+with different pros and cons.
 
 A sufficient starting point is to use [`string-cache`](https://crates.io/crates/string_cache),
 it has an `Atom` type and a compile time `atom!("string")` interface.

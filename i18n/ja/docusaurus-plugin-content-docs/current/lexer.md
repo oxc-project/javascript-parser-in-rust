@@ -1,36 +1,36 @@
 ---
 id: lexer
-title: Lexer
+title: 字句解析器
 ---
 
-## Token
+## トークン
 
-The lexer, also known as tokenizer or scanner, is responsible for transforming source text into tokens.
-The tokens will later be consumed by the parser so we don't have to worry about whitespaces and comments from the original text.
+トークナイザーやスキャナーとしても知られる字句解析器は、ソースのテキストをトークンに変換する役割を持っています。
+トークンは後でパーサーによって利用されるので、元のテキストからの空白やコメントについて気にしないで問題ありません。
 
-Let's start simple and transform a single `+` text into a token.
+まずはシンプルなものから始めて、1 つの`+`をトークンに変換しましょう。
 
 ```rust
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Token {
-    /// Token Type
+    /// トークンの型
     pub kind: Kind,
 
-    /// Start offset in source
+    /// ソースにおけるオフセットの開始位置
     pub start: usize,
 
-    /// End offset in source
+    /// ソースにおけるオフセットの終了位置
     pub end: usize,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Kind {
-    Eof, // end of file
+    Eof, // ファイルの終端
     Plus,
 }
 ```
 
-A single `+` gives us
+単独の`+`は以下のようになります。
 
 ```
 [
@@ -39,28 +39,26 @@ A single `+` gives us
 ]
 ```
 
-To loop through the string, we can either keep track of an index and pretend that we are writing C code,
-or we can take a look at the [string documentation](https://doc.rust-lang.org/std/primitive.str.html#)
-and find ourselves a [`Chars`](https://doc.rust-lang.org/std/str/struct.Chars.html) iterator to work with.
+文字列をループ処理するには、インデックスを記録して C 言語のコードを書くようにもできるし、[string のドキュメント](https://doc.rust-lang.org/std/primitive.str.html)を見れば気づくように[`Chars`](https://doc.rust-lang.org/std/str/struct.Chars.html)のイテレーターで書くこともできます。
 
 :::info
-The `Chars` iterator abstracts away the tracking index and boundary checking to make us feel truly safe.
+`Chars`のイテレーターは、インデックスをトラッキングして境界のチェックを行う抽象的な方法で、安全だと感じられます。
 
-It gives us an `Option<char>` when we call `chars.next()`.
-But please note that a `char` is not a 0-255 ASCII value,
-it is a utf8 Unicode point value with the range of 0 to 0x10FFFF.
+`chars.next()`を実行すれば`Option<char>`が返されます。
+ただし`char`が 0 から 255 の ASCII の値ではないことに留意してください。
+これは 0 から 0x10FFFF を範囲とする utf8 のユニコードポイントです。
 :::
 
-Let's define a starter lexer abstraction
+最初の字句解析器の抽象化を定義しましょう。
 
 ```rust
 use std::str::Chars;
 
 struct Lexer<'a> {
-    /// Source Text
+    /// ソースのテキスト
     source: &'a str,
 
-    /// The remaining characters
+    /// 残りの文字
     chars: Chars<'a>
 }
 
@@ -75,11 +73,10 @@ impl<'a> Lexer<'a> {
 ```
 
 :::info
-The lifetime `'a` here indicates the iterator has a reference to somewhere, it references to a `&'a str` in this case.
+ここでの`'a`のライフタイムはイテレーターがどこかを参照していることを示し、このケースであれば``&'a str`を参照します。
 :::
 
-To convert the source text to tokens, just keep calling `chars.next()` and match on the returned `char`s.
-The final token will always be `Kind::Eof`.
+ソーステキストをトークンへ変換するには、`chars.next()`を呼び続けて返される`char`にマッチさせるだけです。最後のトークンは必ず`Kind::Eof`になります。
 
 ```rust
 impl<'a> Lexer<'a> {
@@ -100,23 +97,23 @@ impl<'a> Lexer<'a> {
         Token { kind, start, end }
     }
 
-    /// Get the length offset from the source text, in UTF-8 bytes
+    /// ソーステキストからの長さのオフセットをUTF-8バイトで取得
     fn offset(&self) -> usize {
         self.source.len() - self.chars.as_str().len()
     }
 }
 ```
 
-The `.len()` and `.as_str().len()` method calls inside `fn offset` feel like O(n), so let's dig deeper.
+`fn offset`の内部で呼ばれる`.len()`と`.as_str().len()`のメソッドは O(n)のように感じられるので、より深く掘り下げてみましょう。
 
-[`.as_str()`](https://doc.rust-lang.org/src/core/str/iter.rs.html#112) returns a pointer to a string slice
+[`.as_str()`](https://doc.rust-lang.org/src/core/str/iter.rs.html#112)は文字列のスライスへのポインターを返します。
 
 ```rust reference
 https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/str/iter.rs#L112-L115
 ```
 
-A [slice](https://doc.rust-lang.org/std/slice/index.html) is a view into a block of memory represented as a pointer and a length.
-The `.len()` method returns the meta data stored inside the slice
+[スライス](https://doc.rust-lang.org/std/slice/index.html)は、ポインターと長さで表されるメモリーのブロック内のビューです。
+`.len()`メソッドはスライス内部に保持されるメタデータを返します。
 
 ```rust reference
 https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/str/mod.rs#L157-L159
@@ -130,11 +127,11 @@ https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/
 https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/slice/mod.rs#L129-L138
 ```
 
-All the above code will get compiled into a single data access, so `.as_str().len()` is actually O(1).
+上述のコード全てが単一のデータアクセスへとコンパイルされるので、`.as_str().len()`は実際のところ O(1)です。
 
-## Peek
+## peek
 
-To tokenize multi-character operators such as `++` or `+=`, a helper function `peek` is required:
+`++`や`+=`のような複数の文字の演算子をトークン化するにはヘルパー関数`peek`が必要です:
 
 ```rust
 fn peek(&self) -> Option<char> {
@@ -142,11 +139,10 @@ fn peek(&self) -> Option<char> {
 }
 ```
 
-We don't want to advance the original `chars` iterator so we clone the iterator and advance the index.
+オリジナルの`chars`のイテレーターを進めたくないので、イテレーターをクローンしてそのインデックスを進めます。
 
 :::info
-The `clone` is cheap if we dig into the [source code](https://doc.rust-lang.org/src/core/slice/iter.rs.html#148-152),
-it just copies the tracking and boundary index.
+`clone`は[ソースコード](https://doc.rust-lang.org/src/core/slice/iter.rs.html#148-152)を掘り下げてみると、追跡と境界のインデックスをコピーするだけで、コストの低いものです。
 
 ```rust reference
 https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/slice/iter.rs#L148-L152
@@ -154,52 +150,45 @@ https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/
 
 :::
 
-The difference between `peek` and `chars.next()` is the former will always return the **same** next `char`,
-while the later will move forward and return a different `char`.
+`peek`と`chars.next()`との違いは、前者が常に**同じ**次の`char`を返すのに対して、後者が前に進めて異なる`char`を返すことです。
 
-To demonstrate, consider the string `abc`:
+それを示すために、文字列`abc`で考えてみましょう:
 
-- repeated `peek()` call returns `Some(a)`, `Some(a)`, `Some(a)`, ...
-- repeated `chars.next()` call returns `Some('a')`, `Some('b')`, `Some('c')`, `None`.
+- 繰り返して`peek()`を呼ぶと`Some(a)`, `Some(a)`, `Some(a)`, ...のように返ります。
+- 繰り返して`chars.next()`を呼ぶと`Some('a')`, `Some('b')`, `Some('c')`, `None`のように返ります。
 
-Equipped with `peek`, tokenizing `++` and `+=` are just nested if statements.
+`peek`を備えてトークン化する`++`と`+=`は単なる入れ子の if 文です。
 
-Here is a real-world implementation from [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus):
+こちらが[jsparagus](https://github.com/mozilla-spidermonkey/jsparagus)による実際の実装です:
 
 ```rust reference
 https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/lexer.rs#L1769-L1791
 ```
 
-The above logic applies to all operators, so let us expand our knowledge on lexing JavaScript.
+上述のロジックは全ての演算子に当てはまるので、JavaScript の字句解析の知識を広げてみましょう。
 
 ## JavaScript
 
-A lexer written in Rust is rather boring, it feels like writing C code
-where we write long chained if statements and check for each `char` and then return the respective token.
+Rust で書かれた字句解析器は退屈で、長く連鎖した if 文と各`char`をチェックしてそれぞれのトークンを返すような C のコードを書いているかのようです。
 
-The real fun begins when we start lexing for JavaScript.
+本当の楽しさは JavaScript の字句解析を開始するところから始まります。
 
-Let's open up the [ECMAScript Language Specification](https://tc39.es/ecma262/) and re-learn JavaScript.
+[ECMAScript の言語仕様](https://tc39.es/ecma262/)を開いて JavaScript を学び直しましょう。
 
 :::caution
-I still remember the first time I opened up the specification and went into a little corner
-and cried in agony because it feels like reading foreign text with jargons everywhere.
-So head over to my [guide on reading the specification](/blog/ecma-spec) if things don't make sense.
+私は初めて仕様を開いて、専門用語で埋め尽くされた外国語を読んでいるような気分になって、すみっこで悶え泣いたことを今だに覚えています。
+なので、理解できないことがあれば私の[仕様の読み方ガイド](/blog/ecma-spec)をご覧ください。
 :::
 
-### Comments
+### コメント
 
-Comments have no semantic meaning, they can be skipped if we are writing a runtime,
-but they need to be taken into consideration if we are writing a linter or a bundler.
+コメントはセマンティックな意味を持たず、ランタイムでは記述がスキップされますが、リンターやバンドラーを書くのであればこれを考慮する必要があります。
 
-### Identifiers and Unicode
+### 識別子とユニコード
 
-We mostly code in ASCII,
-but [Chapter 11 ECMAScript Language: Source Text](https://tc39.es/ecma262/#sec-ecmascript-language-source-code)
-states the source text should be in Unicode.
-And [Chapter 12.6 Names and Keywords](https://tc39.es/ecma262/#sec-names-and-keywords)
-states the identifiers are interpreted according to the Default Identifier Syntax given in Unicode Standard Annex #31.
-In detail:
+私たちは大抵 ASCII でコードを書きますが、[Chapter 11 ECMAScript Language: Source Text](https://tc39.es/ecma262/#sec-ecmascript-language-source-code)ではソーステキストがユニコードであるべきと書かれています。
+また、[Chapter 12.6 Names and Keywords](https://tc39.es/ecma262/#sec-names-and-keywords)では識別子が Unicode Standard Annex #31 の Default Identifier Syntax に基づいて解釈されると書かれています。
+詳細には:
 
 ```markup
 IdentifierStartChar ::
@@ -209,27 +198,25 @@ IdentifierPartChar ::
     UnicodeIDContinue
 
 UnicodeIDStart ::
-    any Unicode code point with the Unicode property “ID_Start”
+    “ID_Start”のユニコードプロパティを持つ任意のユニコードのコードポイント
 
 UnicodeIDContinue ::
-    any Unicode code point with the Unicode property “ID_Continue”
+    “ID_Continue”のユニコードプロパティを持つ任意のユニコードのコードポイント
 ```
 
-This means that we can write `var ಠ_ಠ` but not `var 🦀`,
-`ಠ` has the Unicode property "ID_Start" while `🦀` does not.
+つまり、`var ಠ_ಠ`と書くことはできるが`var 🦀`と書くことは出来ず、`ಠ`がユニコードの"ID_Start"のプロパティを持っている一方で`🦀`はそうではないということです。
 
 :::info
 
-I published the [unicode-id-start](https://crates.io/crates/unicode-id-start) crate for this exact purpose.
-`unicode_id_start::is_id_start(char)` and `unicode_id_start::is_id_continue(char)` can be called to check Unicode.
+私はこの目的のために[unicode-id-start](https://crates.io/crates/unicode-id-start)という crate を公開しました。
+`unicode_id_start::is_id_start(char)` と `unicode_id_start::is_id_continue(char)`をユニコードのチェックのために呼ぶことができます。
 
 :::
 
-### Keywords
+### キーワード
 
-All the [keywords](https://tc39.es/ecma262/#sec-keywords-and-reserved-words) such as `if`, `while` and `for`
-need to be tokenized and interpreted as a whole.
-They need to be added to the token kind enum so we don't have to make string comparisons in the parser.
+`if`や`while`、`for`のような[キーワード](https://tc39.es/ecma262/#sec-keywords-and-reserved-words)はトークン化して全体として解釈する必要があります。
+パーサーにおいて文字列の比較を必要としないように、トークンの種別の列挙型に追加する必要があります。
 
 ```rust
 pub enum Kind {
@@ -241,14 +228,14 @@ pub enum Kind {
 ```
 
 :::caution
-`undefined` is not a keyword, it is unnecessary to add it here.
+`undefined`はキーワードではなく、ここで追加する必要のないものです。
 :::
 
-Tokenizing keywords will just be matching the identifier from above.
+キーワードのトークン化は上述の識別子にマッチさせるだけです。
 
 ```rust
 fn match_keyword(&self, ident: &str) -> Kind {
-    // all keywords are 1 <= length <= 10
+    // キーワードは全て 1 <= length <= 10
     if ident.len() == 1 || ident.len() > 10 {
         return Kind::Identifier;
     }
@@ -261,17 +248,15 @@ fn match_keyword(&self, ident: &str) -> Kind {
 }
 ```
 
-### Token Value
+### トークンの値
 
-We often need to compare identifiers, numbers and strings in later stages of the compiler phases,
-for example testing against identifiers inside a linter,
+例えばリンターにおける識別子に対するテストのように、コンパイラーの後の方の段階で識別子や数値、文字列を比較しなければならないことがよくあります。
 
-These values are currently in plain source text,
-let's convert them to Rust types so they are easier to work with.
+これらの値は今現在プレーンなソーステキストなので、扱いやすくするため Rust の型に変換しましょう。
 
 ```rust
 pub enum Kind {
-    Eof, // end of file
+    Eof, // ファイルの終端
     Plus,
     // highlight-start
     Identifier,
@@ -282,13 +267,13 @@ pub enum Kind {
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Token {
-    /// Token Type
+    /// トークン種別
     pub kind: Kind,
 
-    /// Start offset in source
+    /// ソースにおける開始位置
     pub start: usize,
 
-    /// End offset in source
+    /// ソースにおける終了位置
     pub end: usize,
 
     // highlight-next-line
@@ -303,26 +288,25 @@ pub enum TokenValue {
 }
 ```
 
-When an identifier `foo` or string `"bar"` is tokenized , we get
+識別子`foo`や文字列`"bar"`がトークン化されたら、以下のように返されます。
 
 ```markup
 Token { kind: Kind::Identifier, start: 0, end: 2, value: TokenValue::String("foo") }
 Token { kind: Kind::String, start: 0, end: 4, value: TokenValue::String("bar") }
 ```
 
-To convert them to Rust strings, call `let s = self.source[token.start..token.end].to_string()`
-and save it with `token.value = TokenValue::String(s)`.
+これらを Rust の文字列へ変換するには、`let s = self.source[token.start..token.end].to_string()`を呼んで`token.value = TokenValue::String(s)`として保存します。
 
-When we tokenized a number `1.23`, we get a token with `Token { start: 0, end: 3 }`.
-To convert it to Rust `f64`, we can use the string [`parse`](https://doc.rust-lang.org/std/primitive.str.html#method.parse)
-method by calling `self.source[token.start..token.end].parse::<f64>()`, and then save the value into `token.value`.
-For binary, octal and integers, an example of their parsing techniques can be found in [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/numeric_value.rs).
+数値`1.23`をトークン化すると、`Token { start: 0, end: 3 }`がトークンとして返されます。
+これを Rust の`f64`へ変換するには、`self.source[token.start..token.end].parse::<f64>()`を呼ぶことで文字列の[`parse`](https://doc.rust-lang.org/std/primitive.str.html#method.parse)メソッドを使うことが出来て、
+`token.value`へ値を保存します。
+2 進数、8 進数、整数については、[jsparagus](https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/numeric_value.rs)において解析するテクニックの例を確認できます。
 
-## Rust Optimizations
+## Rust の最適化
 
-### Smaller Tokens
+### より小さいトークン
 
-It is tempting to put the token values inside the `Kind` enum and aim for simpler and safer code:
+トークンの値を`Kind`の列挙型の中に入れて、よりシンプルで安全なコードを目指したくなります:
 
 ```rust
 pub enum Kind {
@@ -331,29 +315,25 @@ pub enum Kind {
 }
 ```
 
-But it is known that the byte size of a Rust enum is the union of all its variants.
-This enum packs a lot of bytes compared to the original enum, which has only 1 byte.
-There will be heavy usages of this `Kind` enum in the parser,
-dealing with a 1 byte enum will obviously be faster than a multi-byte enum.
+しかし、Rust の列挙型のバイトサイズはその全てのバリエーションの和であることが知られています。
+この列挙型は元々の 1 バイトしかない列挙型と比較して大量のバイトをつめ込みます。
+パーサーにおいてこの Kind の列挙型を多用する場合、マルチバイトの列挙型よりも 1 バイトの列挙型を扱う方が明らかに高速です。
 
-### String Interning
+### 文字列のインターン化
 
-It is not performant to use `String` in compilers, mainly due to:
+主に以下の理由で、コンパイラーにおいて`String`を利用するのはパフォーマンスが良くありません:
 
-- `String` is a heap allocated object
-- String comparison is an O(n) operation
+- `String`はヒープに割り当てられたオブジェクト
+- 文字列の比較は O(n)の演算
 
-[String Interning](https://en.wikipedia.org/wiki/String_interning) solves these problems by
-storing only one copy of each distinct string value with a unique identifier in a cache.
-There will only be one heap allocation per distinct identifier or string, and string comparisons become O(1).
+[文字列のインターン化](https://en.wikipedia.org/wiki/String_interning)は、各文字列の値のコピーを一意な識別子で持たせて 1 つだけキャッシュに持つことで、このような問題を解決します。
+一意な識別子か文字列ごとに 1 度だけのヒープ割り当てとなり、文字列比較は O(1)となります。
 
-There are lots of string interning libraries on [crates.io](https://crates.io/search?q=string%20interning)
-with different props and cons.
+[crates.io](https://crates.io/search?q=string%20interning)には、長所や短所も異なる文字列のインターン化のライブラリーが多くあります。
 
-A sufficient starting point is to use [`string-cache`](https://crates.io/crates/string_cache),
-it has an `Atom` type and a compile time `atom!("string")` interface.
+スタートの時点で十分なものとして[`string-cache`](https://crates.io/crates/string_cache)があり、これは`Atom`型とコンパイル時の`atom!("string")`のインターフェイスを持ちます。
 
-With `string-cache`, `TokenValue` becomes
+`string-cache`で`TokenValue`はこのようになり、
 
 ```rust
 #[derive(Debug, Clone, PartialEq)]
@@ -365,4 +345,4 @@ pub enum TokenValue {
 }
 ```
 
-and string comparison becomes `matches!(value, TokenValue::String(atom!("string")))`.
+文字列の比較は`matches!(value, TokenValue::String(atom!("string")))`となります。
