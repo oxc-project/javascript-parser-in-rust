@@ -5,7 +5,7 @@ import Layout from "@theme/Layout";
 
 import styles from "./index.module.css";
 
-import Translate, { translate } from "@docusaurus/Translate";
+import Translate from "@docusaurus/Translate";
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
@@ -14,31 +14,25 @@ function HomepageHeader() {
       <div className="container">
         <h1 className="hero__title">{siteConfig.title}</h1>
         <p className="hero__subtitle">
-          <Translate id="homepage.subtitle">
+          <Translate id="homepage.subtitle.first">
             Rust, JavaScript, and parsers are all hard to learn, let's combine
             these three and challenge ourselves to write a JavaScript parser in
             Rust.
           </Translate>
         </p>
         <p className="hero__subtitle">
-          This will be the guide for you if you are interested in learning Rust,
-          parsers, or would like to contribute to{" "}
-          <a href="https://github.com/boshen/oxc" target="__blank">
-            oxc
-          </a>
-          ,
-          <a href="https://swc.rs" target="__blank">
-            swc
-          </a>{" "}
-          or{" "}
-          <a href="https://rome.tools" target="__blank">
-            Rome
-          </a>{" "}
-          in the near future.
+          <Translate id="homepage.subtitle.second">
+            This will be the guide for you if you are interested in learning
+            Rust, parsers, or would like to contribute to oxc, swc or Rome in
+            the near future.
+          </Translate>
         </p>
         <p className="hero__subtitle">
-          The guide will cover all the basic topics of writing a JavaScript
-          parser in rust. The tutorials will explain some topics in more depth.
+          <Translate id="homepage.subtitle.third">
+            The guide will cover all the basic topics of writing a JavaScript
+            parser in rust. The tutorials will explain some topics in more
+            depth.
+          </Translate>
         </p>
         <div className={styles.buttons}>
           <Link
@@ -46,10 +40,12 @@ function HomepageHeader() {
             style={{ marginRight: "20px" }}
             to="/docs/intro"
           >
-            Read the Guide
+            <Translate id="homepage.read.guide">Read the Guide</Translate>
           </Link>
           <Link className="button button--secondary button--lg" to="/blog">
-            Read the Tutorials
+            <Translate id="homepage.read.tutorials">
+              Read the Tutorials
+            </Translate>
           </Link>
         </div>
       </div>

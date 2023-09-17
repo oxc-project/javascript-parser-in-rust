@@ -262,8 +262,24 @@
     "message": "タグ",
     "description": "The title of the tag list page"
   },
-  "homepage.subtitle": {
-    "message": "サブタイトル",
-    "description": "The subtitle of the homepage"
+  "homepage.subtitle.first": {
+    "message": "Rust、JavaScript、そしてパーサーはすべて学びにくいものですが、これら3つを組み合わせて Rust で JavaScript のパーサーを書くという挑戦をしてみましょう！",
+    "description": "The first content of subtitle in the top page"
+  },
+  "homepage.subtitle.second": {
+    "message": "このサイトは、Rustやパーサーを学びたい方、oxc、swc、Romeなどへの貢献を考えている方への助けとなります。",
+    "description": "The second content of subtitle in the top page"
+  },
+  "homepage.subtitle.third": {
+    "message": "ガイドでは、Rust で JavaScript パーサーを書くための基本的なトピックを網羅します。チュートリアルでは、いくつかのトピックをより詳しく説明します。",
+    "description": "The third content of subtitle in the top page"
+  },
+  "homepage.read.guide": {
+    "message": "ガイドを読む",
+    "description": "The text for `read the guide` button"
+  },
+  "homepage.read.tutorials": {
+    "message": "チュートリアルを読む",
+    "description": "The text for `read the tutorials` button"
   }
 }
