@@ -1,14 +1,14 @@
 {
   "title": {
-    "message": "Home",
+    "message": "ホーム",
     "description": "The title in the navbar"
   },
   "item.label.Guide": {
-    "message": "Guide",
+    "message": "ガイド",
     "description": "Navbar item with label Guide"
   },
   "item.label.Tutorials": {
-    "message": "Tutorials",
+    "message": "チュートリアル",
     "description": "Navbar item with label Tutorials"
   },
   "item.label.GitHub": {
