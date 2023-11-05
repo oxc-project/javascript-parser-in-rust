@@ -12,15 +12,19 @@ jobs:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v2
         with:
           version: 6.32.9
+
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
           cache: 'pnpm'
+
       - run: pnpm install --frozen-lockfile
+
       - run: pnpm run build
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

@@ -9,8 +9,8 @@ or would like to contribute to [oxc](https://github.com/Boshen/oxc), [swc](https
 The guide will cover all the basic topics of writing a JavaScript parser in rust.
 The tutorials will explain some topics in more depth.
 
-- [Read the guide](https://boshen.github.io/javascript-parser-in-rust/docs/intro)
-- [Read the tutorials](https://boshen.github.io/javascript-parser-in-rust/blog)
+- [Read the guide](https://oxc-project.github.io/javascript-parser-in-rust/docs/intro)
+- [Read the tutorials](https://oxc-project.github.io/javascript-parser-in-rust/blog)
 
 Suggestions and corrections are always welcome, please feel free to create an issue, or contact me on Twitter.
 
