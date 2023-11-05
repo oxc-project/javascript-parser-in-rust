@@ -26,14 +26,14 @@ const config = {
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl:
-            "https://github.com/Boshen/javascript-parser-in-rust/tree/main/docs/",
+            "https://github.com/oxc-project/javascript-parser-in-rust/tree/main/docs",
         },
         blog: {
           blogSidebarTitle: "Tutorials",
           blogSidebarCount: "ALL",
           sortPosts: "ascending",
           editUrl:
-            "https://github.com/Boshen/javascript-parser-in-rust/tree/main/blog",
+            "https://github.com/oxc-project/javascript-parser-in-rust/tree/main/blog",
           showReadingTime: true,
         },
         theme: {
@@ -67,7 +67,7 @@ const config = {
             position: "right",
           },
           {
-            href: "https://github.com/Boshen/javascript-parser-in-rust",
+            href: "https://github.com/oxc-project/javascript-parser-in-rust",
             label: "GitHub",
             position: "right",
           },
