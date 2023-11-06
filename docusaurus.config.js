@@ -7,7 +7,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Write a JavaScript Parser in Rust",
-  url: "https://boshen.github.io",
+  url: "https://oxc-project.github.io",
   baseUrl: "/javascript-parser-in-rust/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "throw",
@@ -26,14 +26,14 @@ const config = {
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl:
-            "https://github.com/oxc-project/javascript-parser-in-rust/tree/main/docs",
+            "https://github.com/oxc-project/javascript-parser-in-rust/tree/main",
         },
         blog: {
           blogSidebarTitle: "Tutorials",
           blogSidebarCount: "ALL",
           sortPosts: "ascending",
           editUrl:
-            "https://github.com/oxc-project/javascript-parser-in-rust/tree/main/blog",
+            "https://github.com/oxc-project/javascript-parser-in-rust/tree/main",
           showReadingTime: true,
         },
         theme: {
