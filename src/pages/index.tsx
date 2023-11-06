@@ -21,11 +21,9 @@ function HomepageHeader() {
           </Translate>
         </p>
         <p className="hero__subtitle">
-          <Translate id="homepage.subtitle.second">
-            This will be the guide for you if you are interested in learning
-            Rust, parsers, or would like to contribute to oxc, swc or Rome in
-            the near future.
-          </Translate>
+          This will be the guide for you if you are interested in learning Rust, parsers,
+          or would like to contribute to <a href="https://github.com/boshen/oxc" target="__blank">oxc</a>,
+          <a href="https://swc.rs" target="__blank">swc</a> or <a href="https://biomejs.dev" target="__blank">Biome</a> in the near future.
         </p>
         <p className="hero__subtitle">
           <Translate id="homepage.subtitle.third">
