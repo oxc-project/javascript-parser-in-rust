@@ -1,6 +1,10 @@
-name: Deploy to GitHub Pages
+name: CI
 
 on:
+  pull_request:
+    types: [opened, synchronize]
+    paths-ignore:
+      - 'README.md'
   push:
     branches:
       - main
@@ -16,17 +20,19 @@ jobs:
 
       - uses: pnpm/action-setup@v2
         with:
-          version: 6.32.9
+          version: 8.10.2
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
           cache: 'pnpm'
 
       - run: pnpm install --frozen-lockfile
 
       - run: pnpm run build
+
       - name: Deploy to GitHub Pages
+        if: ${{ github.ref_name == 'main' }}
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
