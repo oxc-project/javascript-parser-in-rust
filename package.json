@@ -34,6 +34,9 @@
     "prettier": "^3.0.3",
     "typescript": "~5.2.2"
   },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
+  },
   "browserslist": {
     "production": [
       ">0.5%",
@@ -45,9 +48,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "lint-staged": {
-    "*.{js,css,md}": "prettier --write"
   },
   "engines": {
     "node": ">=18.0"
