@@ -4,7 +4,7 @@
         <title>Write a JavaScript Parser in Rust Blog</title>
         <link>https://oxc-project.github.io/javascript-parser-in-rust/ja/blog</link>
         <description>Write a JavaScript Parser in Rust Blog</description>
-        <lastBuildDate>Mon, 06 Nov 2023 10:54:52 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 07 Nov 2023 06:20:37 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>ja</language>
@@ -12,7 +12,7 @@
             <title><![CDATA[Rome Tools]]></title>
             <link>https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/rome</link>
             <guid>https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/rome</guid>
-            <pubDate>Mon, 06 Nov 2023 10:54:52 GMT</pubDate>
+            <pubDate>Tue, 07 Nov 2023 06:20:37 GMT</pubDate>
             <description><![CDATA[Rome は、JavaScript と TypeScript のパースに様々な技術を使用しています。このチュートリアルでは、それらを理解しやすい順序で要約しています。]]></description>
             <content:encoded><![CDATA[<p>Rome は、JavaScript と TypeScript のパースに様々な技術を使用しています。このチュートリアルでは、それらを理解しやすい順序で要約しています。</p>
 <h2 class="anchor anchorWithStickyNavbar_otLt" id="歴史">歴史<a href="https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/rome#%E6%AD%B4%E5%8F%B2" class="hash-link" aria-label="この見出しへのリンク" title="この見出しへのリンク">​</a></h2>
@@ -61,7 +61,7 @@
             <title><![CDATA[JavaScript の文法]]></title>
             <link>https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/grammar</link>
             <guid>https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/grammar</guid>
-            <pubDate>Mon, 06 Nov 2023 10:54:52 GMT</pubDate>
+            <pubDate>Tue, 07 Nov 2023 06:20:37 GMT</pubDate>
             <description><![CDATA[JavaScript has one of the most challenging grammar to parse,]]></description>
             <content:encoded><![CDATA[<p>JavaScript has one of the most challenging grammar to parse,
 this tutorial details all the sweat and tears I had while learning it.</p>
@@ -307,7 +307,7 @@ and throw the syntax error if it does not reach <code>=</code> for <code>ObjectA
             <title><![CDATA[ECMAScript 仕様書]]></title>
             <link>https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/ecma-spec</link>
             <guid>https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/ecma-spec</guid>
-            <pubDate>Mon, 06 Nov 2023 10:54:52 GMT</pubDate>
+            <pubDate>Tue, 07 Nov 2023 06:20:37 GMT</pubDate>
             <description><![CDATA[The ECMAScript® 2023 Language Specification details everything about the JavaScript language, so anyone can implement their own JavaScript engine.]]></description>
             <content:encoded><![CDATA[<p><a href="https://tc39.es/ecma262/" target="_blank" rel="noopener noreferrer">The ECMAScript® 2023 Language Specification</a> details everything about the JavaScript language, so anyone can implement their own JavaScript engine.</p>
 <p>The following chapters need to be studied for our parser:</p>
@@ -375,7 +375,7 @@ More in-depth content can be found in <a href="https://oxc-project.github.io/jav
             <title><![CDATA[パーサーの適合試験]]></title>
             <link>https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/conformance</link>
             <guid>https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/conformance</guid>
-            <pubDate>Mon, 06 Nov 2023 10:54:52 GMT</pubDate>
+            <pubDate>Tue, 07 Nov 2023 06:20:37 GMT</pubDate>
             <description><![CDATA[この記事では、JavaScript および TypeScript の文法に対するパーサーのテストを行うための 3 つの GitHub リポジトリについて詳しく説明します。]]></description>
             <content:encoded><![CDATA[<p>この記事では、JavaScript および TypeScript の文法に対するパーサーのテストを行うための 3 つの GitHub リポジトリについて詳しく説明します。</p>
 <h2 class="anchor anchorWithStickyNavbar_otLt" id="test262">Test262<a href="https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/conformance#test262" class="hash-link" aria-label="この見出しへのリンク" title="この見出しへのリンク">​</a></h2>
