@@ -3,28 +3,26 @@ id: typescript
 title: TypeScript
 ---
 
-So you are done with JavaScript and you want to challenge parsing TypeScript?
-The bad news is that there is no specification,
-but the good news is that the TypeScript parser is in [a single file](https://github.com/microsoft/TypeScript/blob/main/src/compiler/parser.ts) 🙃.
+JavaScript を終えて、TypeScript の解析に挑戦したいと思っていますか？
+悪いニュースは、仕様が存在しないことですが、良いニュースは、TypeScript のパーサーが[ 単一のファイル](https://github.com/microsoft/TypeScript/blob/main/src/compiler/parser.ts) にあることです 🙃。
 
 ## JSX vs TSX
 
-For the following code,
+次のコードについて、
 
 ```javascript
 let foo = <string> bar;
 ```
 
-It is a syntax error if this is `tsx` (Unterminated JSX),
-but it is correct `VariableDeclaration` with `TSTypeAssertion`.
+これが `tsx` の場合は構文エラーです（Unterminated JSX）が、`VariableDeclaration` と `TSTypeAssertion` の正しいものです。
 
-## Lookahead
+## 先読み
 
-In certain places, the parser need to lookahead and peek more than one token to determine the correct grammar.
+特定の場所では、パーサーは正しい文法を判断するために、複数のトークンを先読みして覗き見る必要があります。
 
 ### TSIndexSignature
 
-For example, to parse `TSIndexSignature`, consider the following two cases:
+たとえば、`TSIndexSignature` を解析する場合、次の2つのケースを考慮してください：
 
 ```typescript
 type A = { readonly [a: number]: string }
@@ -34,28 +32,27 @@ type B = { [a]: string }
            ^_________^ TSPropertySignature
 ```
 
-For `type A` on the first `{`, we need to peek 5 tokens (`readonly`, `[`, `a`, `:` and `number`) in order to make sure
-it is a `TSIndexSignature` and not a `TSPropertySignature`.
+最初の `{` の `type A` の場合、`readonly`、`[`、`a`、`:`、`number` の5つのトークンを先読みする必要があります。
+これにより、`TSIndexSignature` であることを確認し、`TSPropertySignature` ではないことを確認します。
 
-To make this possible and efficient, the lexer requires a buffer for storing multiple tokens.
+これを可能にし、効率的にするために、字句解析器は複数のトークンを格納するバッファを必要とします。
 
 ### Arrow Expressions
 
-Discussed in [cover grammar](/blog/grammar#cover-grammar),
-we need to convert from `Expression`s to `BindingPattern`s when the `=>` token is found after a SequenceExpression.
+[Cover Grammar](/blog/grammar#cover-grammar) で議論されているように、`=>` トークンがSequenceExpressionの後に見つかった場合、`Expression` を`BindingPattern` に変換する必要があります。
 
-But this approach does not work for TypeScript as each item inside the `()` can have TypeScript syntax, there are just too many cases to cover, for example:
+しかし、これは TypeScript では機能しません。`()` 内の各アイテムには TypeScript の構文が含まれる可能性があり、対応するケースが多すぎます。例えば：
 
 ```typescript
 <x>a, b as c, d!;
 (a?: b = {} as c!) => {};
 ```
 
-It is recommended to study the TypeScript source code for this specific case. The relevant code are:
+この特定のケースについては、TypeScript のソースコードを学ぶことをお勧めします。関連するコードは次のとおりです：
 
 ```typescript
 function tryParseParenthesizedArrowFunctionExpression(
-  allowReturnTypeInArrowFunction: boolean
+  allowReturnTypeInArrowFunction: boolean,
 ): Expression | undefined {
   const triState = isParenthesizedArrowFunctionExpression();
   if (triState === Tristate.False) {
@@ -70,12 +67,12 @@ function tryParseParenthesizedArrowFunctionExpression(
   return triState === Tristate.True
     ? parseParenthesizedArrowFunctionExpression(
         /*allowAmbiguity*/ true,
-        /*allowReturnTypeInArrowFunction*/ true
+        /*allowReturnTypeInArrowFunction*/ true,
       )
     : tryParse(() =>
         parsePossibleParenthesizedArrowFunctionExpression(
-          allowReturnTypeInArrowFunction
-        )
+          allowReturnTypeInArrowFunction,
+        ),
       );
 }
 
@@ -103,4 +100,4 @@ function isParenthesizedArrowFunctionExpression(): Tristate {
 }
 ```
 
-In summary, the TypeScript parser uses a combination of lookahead (fast path) and backtracking to parse arrow functions.
+要約すると、TypeScript のパーサーは、先読み（高速パス）とバックトラッキングの組み合わせを使用して、アロー関数を解析します。
