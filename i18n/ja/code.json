@@ -270,6 +270,14 @@
     "message": "このサイトは、Rustやパーサーを学びたい方、oxc、swc、Biomeなどへの貢献を考えている方への助けとなります。",
     "description": "The second content of subtitle in the top page"
   },
+ 	"homepage.subtitle.second_1": {
+ 		"message": "このサイトは、Rustやパーサーを学びたい方",
+ 		"description": "The second content of subtitle in the top page"
+  },
+  "homepage.subtitle.second_2": {
+    "message": "などへの貢献を考えている方への助けとなります。",
+    "description": "The second content of subtitle in the top page"
+  },
   "homepage.subtitle.third": {
     "message": "ガイドでは、Rust で JavaScript パーサーを書くための基本的なトピックを網羅します。チュートリアルでは、いくつかのトピックをより詳しく説明します。",
     "description": "The third content of subtitle in the top page"

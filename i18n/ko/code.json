@@ -270,6 +270,14 @@
     "message": "Rust나 파서를 배우고 싶은 분, 조만간 oxc, swc, Biome 등에 공헌을 생각하고 있는 분에게 도움이 될 것 입니다.",
     "description": "The second content of subtitle in the top page"
   },
+  "homepage.subtitle.second_1": {
+    "message": "Rust나 파서를 배우고 싶은 분, 조만간",
+    "description": "The second content of subtitle in the top page"
+  },
+  "homepage.subtitle.second_2": {
+    "message": "등에 공헌을 생각하고 있는 분에게 도움이 될 것 입니다.",
+    "description": "The second content of subtitle in the top page"
+  },  
   "homepage.subtitle.third": {
     "message": "가이드에는, Rust로 JavaScript 파서 작성하기 위한 기본적 토픽을 망라합니다. 튜토리얼은 몇 가지 토픽을 더욱 상세히 설명합니다.",
     "description": "The third content of subtitle in the top page"
