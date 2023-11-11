@@ -42,7 +42,7 @@ JavaScript 파싱에서 유일하게 실용적인 방법은 문법 성질 상, �
 
 ## Identifiers(식별자)
 
-`#sec-identifiers` 정의된 식별자에는 세가지 유형이 있습니다.
+`#sec-identifiers` 정의된 식별자에는 세가지 타입이 있습니다.
 
 ```markup
 IdentifierReference[Yield, Await] :
