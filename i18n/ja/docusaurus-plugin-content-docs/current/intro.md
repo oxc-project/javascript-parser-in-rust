@@ -3,7 +3,7 @@ id: intro
 title: はじめに
 ---
 
-私たちは[JavaScript の第 3 の時代](https://www.swyx.io/js-third-age/)にいて、昨今の一般的な傾向として JavaScript のツールを Rust や Go で作成することによりパフォーマンス向上を図るトレンドがあります。
+私たちは [JavaScript の第 3 の時代](https://www.swyx.io/js-third-age/)にいて、昨今の一般的な傾向として JavaScript のツールを Rust や Go で作成することによりパフォーマンス向上を図るトレンドがあります。
 
 ただし JavaScript のツールを開発することは難しいことであり、それが Rust によるものであれば尚更です。
 私はこのような技術の習得をするうえで非常に多くの苦労をしましたので、同じような苦労をする人が少ないことを願っています。
