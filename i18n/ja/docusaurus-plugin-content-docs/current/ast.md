@@ -1,24 +1,24 @@
 ---
 id: ast
-title: Abstract Syntax Tree
+title: 抽象構文木 (AST)
 ---
 
-The parser in the upcoming chapter is responsible for turning Tokens into an abstract syntax tree (AST).
-It is much nicer to work on the AST compared to the source text.
+次の章のパーサーは、トークンを抽象構文木（AST）に変換する責任を持っています。
+ソーステキストと比較して、AST で作業する方がはるかに使いやすいです。
 
-All JavaScript toolings work on the AST level, for example:
+すべての JavaScript ツールはASTレベルで動作します。例えば：
 
-- A linter (e.g. eslint) checks the AST for errors
-- A formatter (e.g.prettier) prints the AST back to JavaScript text
-- A minifier (e.g. terser) transforms the AST
-- A bundler connects all import and export statements between ASTs from different files
+- リンター（例：eslint）は、ASTをエラーのためにチェックします。
+- フォーマッター（例：prettier）は、AST を JavaScript テキストに戻して表示します。
+- ミニファイア（例：terser）は、AST を変換します。
+- バンドラーは、異なるファイルの AST 間のすべてのインポートとエクスポートステートメントを接続します。
 
-In this chapter, let's construct a JavaScript AST by using Rust structs and enums.
+この章では、Rust の構造体と列挙型を使用して JavaScript の AST を構築しましょう。
 
-## Getting familiar with the AST
+## ASTに慣れる
 
-To get ourselves comfortable with an AST, let's visit [ASTExplorer](https://astexplorer.net/) and see what it looks like.
-On the top panel, select JavaScript, and then `acorn`, type in `var a` and we will see a tree view and a JSON view.
+AST に慣れるために、[ASTExplorer](https://astexplorer.net/) を訪れてどのようなものか見てみましょう。
+上部パネルで JavaScript を選択し、次に `acorn` を入力して、ツリービューと JSON ビューが表示されます。
 
 ```json
 {
@@ -51,24 +51,23 @@ On the top panel, select JavaScript, and then `acorn`, type in `var a` and we wi
 }
 ```
 
-Since this is a tree, every object is a node with a type name (e.g. `Program`, `VariableDeclaration`, `VariableDeclarator`, `Identifier`).
-`start` and `end` are the offsets from the source.
+これはツリーなので、すべてのオブジェクトはタイプ名（例：`Program`、`VariableDeclaration`、`VariableDeclarator`、`Identifier`）を持っています。
+`start` と `end` はソースからのオフセットです。
 
 ## estree
 
-[estree](https://github.com/estree/estree) is a community standard grammar specification for JavaScript,
-it defines [all the AST nodes](https://github.com/estree/estree/blob/master/es5.md) so different tools
-can be compatible with each other.
+[estree](https://github.com/estree/estree) は、JavaScript のためのコミュニティ標準の文法仕様です。
+これにより、さまざまなツールが互換性を持つことができるように、[すべてのASTノード](https://github.com/estree/estree/blob/master/es5.md) が定義されています。
 
-The basic building block for any AST node is the `Node` type:
+任意のASTノードの基本的な構築要素は、`Node` 型です。
 
 ```rust
 #[derive(Debug, Default, Clone, Copy, Serialize, PartialEq, Eq)]
 pub struct Node {
-    /// Start offset in source
+    /// ソース内の開始オフセット
     pub start: usize,
 
-    /// End offset in source
+    /// ソース内の終了オフセット
     pub end: usize,
 }
 
@@ -79,7 +78,7 @@ impl Node {
 }
 ```
 
-AST for `var a` is defined as
+`var a` のASTは次のように定義されています。
 
 ```rust
 pub struct Program {
@@ -111,9 +110,9 @@ pub enum Expression {
 }
 ```
 
-Rust does not have inheritance, so `Node` is added to each struct (this is called "composition over Inheritance").
+Rustには継承がないため、各構造体に `Node` が追加されています（これは「継承に代わるコンポジション」と呼ばれます）。
 
-`Statement`s and `Expression`s are enums because they will be expanded with a lot of other node types, for example:
+`Statement` と `Expression` は列挙型です。なぜなら、他の多くのノードタイプと拡張されるからです。例えば：
 
 ```rust
 pub enum Expression {
@@ -132,48 +131,43 @@ pub struct YieldExpression {
 }
 ```
 
-The `Box` is needed because self-referential structs are not allowed in Rust.
+`Box` が必要なのは、Rustでは自己参照する構造体は許可されていないためです。
 
 :::info
-JavaScript grammar has a lot of nuisances, read the [grammar tutorial](/blog/grammar) for amusement.
+JavaScriptの文法には多くの面倒な点があります。興味深いので、[文法チュートリアル](/blog/grammar) を読んでみてください。
 :::
 
-## Rust Optimizations
+## Rustの最適化
 
-### Memory Allocations
+### メモリ割り当て
 
-Back in the [Overview](./overview) chapter,
-I briefly mentioned that we need to look out for heap-allocated structs such as `Vec` and `Box` because heap allocations are not cheap.
+[概要](./overview) の章で、ヒープに割り当てられた `Vec` や `Box` などの構造体に注意が必要であることを簡単に述べました。なぜなら、ヒープの割り当ては安価ではないからです。
 
-Take a look at the [real world implementation from swc](https://github.com/swc-project/swc/blob/main/crates/swc_ecma_ast/src/expr.rs),
-we can see that an AST can have lots of `Box`s and `Vec`s, and also note that the `Statement` and `Expression` enums contain
-a dozen of enum variants.
+[swc](https://github.com/swc-project/swc/blob/main/crates/swc_ecma_ast/src/expr.rs) の実装を見てみると、ASTには多くの `Box` や `Vec` が含まれていることがわかります。また、`Statement` と `Expression` の列挙型には多数の列挙子が含まれていることにも注意してください。
 
-### Enum Size
+### 列挙型のサイズ
 
-The first optimization we are going to make is to reduce the size of the enums.
+最初の最適化は、列挙型のサイズを減らすことです。
 
-It is known that the byte size of a Rust enum is the union of all its variants.
-For example, the following enum will take up 56 bytes (1 byte for the tag, 48 bytes for the payload, and 8 bytes for alignment).
+Rustの列挙型のバイトサイズは、すべての列挙子の合計です。例えば、以下の列挙型は56バイト（タグに1バイト、ペイロードに48バイト、アライメントに8バイト）を使用します。
 
 ```rust
 enum Name {
-    Anonymous, // 0 byte payload
-    Nickname(String), // 24 byte payload
-    FullName{ first: String, last: String }, // 48 byte payload
+    Anonymous, // 0バイトのペイロード
+    Nickname(String), // 24バイトのペイロード
+    FullName{ first: String, last: String }, // 48バイトのペイロード
 }
 ```
 
 :::note
-This example is taken from [this blog post](https://adeschamps.github.io/enum-size)
+この例は、[このブログ記事](https://adeschamps.github.io/enum-size) から取られています。
 :::
 
-As for the `Expression` and `Statement` enums, they can take up to more than 200 bytes with our current setup.
+`Expression` と `Statement` の列挙型は、現在の設定では200バイト以上を占めることがあります。
 
-These 200 bytes need to be passed around, or accessed every time we do a `matches!(expr, Expression::AwaitExpression(_))` check,
-which is not very cache friendly for performance.
+これらの200バイトは、`matches!(expr, Expression::AwaitExpression(_))` のチェックを行うたびに渡されるか、アクセスされる必要がありますが、パフォーマンスの観点からはキャッシュに優しくありません。
 
-A better approach would be to box the enum variants and only carry 16 bytes around.
+より良いアプローチは、列挙型の列挙子をボックス化し、16バイトだけを持ち運ぶことです。
 
 ```rust
 pub enum Expression {
@@ -192,7 +186,7 @@ pub struct YieldExpression {
 }
 ```
 
-To make sure the enums are indeed 16 bytes on 64-bit systems, we can use `std::mem::size_of`.
+64 ビットシステムでは、列挙型が実際に16バイトであることを確認するために、`std::mem::size_of` を使用することができます。
 
 ```rust
 #[test]
@@ -203,19 +197,19 @@ fn no_bloat_enum_sizes() {
 }
 ```
 
-"no bloat enum sizes" test cases can often be seen in the Rust compiler source code for ensuring small enum sizes.
+「no bloat enum sizes」というテストケースは、小さな列挙型サイズを確保するためにRustコンパイラのソースコードでよく見られます。
 
 ```rust reference
 https://github.com/rust-lang/rust/blob/9c20b2a8cc7588decb6de25ac6a7912dcef24d65/compiler/rustc_ast/src/ast.rs#L3033-L3042
 ```
 
-To find other large types, we can run
+他の大きな型を見つけるためには、次のコマンドを実行します。
 
 ```bash
 RUSTFLAGS=-Zprint-type-sizes cargo +nightly build -p name_of_the_crate --release
 ```
 
-and see
+そして、次のように表示されます。
 
 ```markup
 print-type-size type: `ast::js::Statement`: 16 bytes, alignment: 8 bytes
@@ -230,27 +224,23 @@ print-type-size     variant `DebuggerStatement`: 8 bytes
 print-type-size         field `.0`: 8 bytes
 ```
 
-#### Memory Arena
+#### メモリアリーナ
 
-Using the global memory allocator for the AST is actually not really efficient.
-Every `Box` and `Vec` are allocated on demand and then dropped separately.
-What we would like to do is pre-allocate memory and drop it in wholesale.
+ASTに対してグローバルメモリアロケータを使用するのは実際には非効率です。すべての `Box` と `Vec` は要求に応じて個別に割り当てられ、個別に解放されます。私たちがしたいことは、メモリを事前に割り当てて一括で解放することです。
 
 :::info
-[This blog post](https://manishearth.github.io/blog/2021/03/15/arenas-in-rust/) explains memory arena in more detail.
+[このブログ記事](https://manishearth.github.io/blog/2021/03/15/arenas-in-rust/)では、メモリアリーナについて詳しく説明しています。
 :::
 
-[`bumpalo`](https://docs.rs/bumpalo/latest/bumpalo/) is a very good candidate for our use case, according to its documentation:
+[`bumpalo`](https://docs.rs/bumpalo/latest/bumpalo/) は、私たちのユースケースに非常に適しているとされています。ドキュメントによれば：
 
-> Bump allocation is a fast, but limited approach to allocation.
-> We have a chunk of memory, and we maintain a pointer within that memory. Whenever we allocate an object,
-> we do a quick check that we have enough capacity left in our chunk to allocate the object and then update the pointer by the object’s size. That’s it!
+> バンプアロケーションは、高速ですが制限されたアロケーション手法です。メモリのチャンクを持ち、そのメモリ内のポインタを維持します。オブジェクトを割り当てるたびに、チャンクに十分な容量が残っているかを素早くチェックし、オブジェクトのサイズによってポインタを更新します。それだけです！
 >
-> The disadvantage of bump allocation is that there is no general way to deallocate individual objects or reclaim the memory region for a no-longer-in-use object.
+> バンプアロケーションの欠点は、個々のオブジェクトを解放したり、使用されなくなったオブジェクトのメモリ領域を回収したりする一般的な方法がないことです。
 >
-> These trade offs make bump allocation well-suited for phase-oriented allocations. That is, a group of objects that will all be allocated during the same program phase, used, and then can all be deallocated together as a group.
+> これらのトレードオフにより、バンプアロケーションはフェーズ指向のアロケーションに適しています。つまり、同じプログラムフェーズ中にすべてのオブジェクトが割り当てられ、使用され、グループとして一括で解放できるオブジェクトのグループです。
 
-By using `bumpalo::collections::Vec` and `bumpalo::boxed::Box`, our AST will have lifetimes added to it:
+`bumpalo::collections::Vec` と `bumpalo::boxed::Box` を使用することで、ASTに寿命が追加されます。
 
 ```rust
 use bumpalo::collections::Vec;
@@ -273,16 +263,14 @@ pub struct YieldExpression<'a> {
 ```
 
 :::caution
-Please be cautious if we are not comfortable dealing with lifetimes at this stage.
-Our program will work fine without a memory arena.
+この段階では寿命を扱うことに慣れていない場合は注意してください。メモリアリーナを使用しなくてもプログラムは正常に動作します。
 
-Code in the following chapters does not demonstrate the use of a memory arena for simplicity.
+次の章のコードは、シンプルさのためにメモリアリーナの使用を示していません。
 :::
 
-## JSON Serialization
+## JSONシリアライゼーション
 
-[serde](https://serde.rs/) can be used serialize the AST to JSON. Some techniques are needed to make it `estree` compatible.
-Here are some examples:
+[serde](https://serde.rs/) を使用してASTをJSONにシリアライズすることができます。`estree` と互換性を持たせるためにはいくつかのテクニックが必要です。以下にいくつかの例を示します。
 
 ```rust
 use serde::Serialize;
@@ -312,6 +300,6 @@ pub enum Expression<'a> {
 }
 ```
 
-- `serde(tag = "type")` is used to make the struct name a "type" field, i.e. `{ "type" : "..." }`
-- `cfg_attr` + `serde(rename)` is used to rename different struct names to the same name, since `estree` does not distinguish different identifiers
-- `serde(untagged)` on the enum is used to not create an extra JSON object for the enum
+- `serde(tag = "type")` は、構造体名を「type」フィールドにするために使用されます。つまり、`{ "type" : "..." }` となります。
+- `cfg_attr` + `serde(rename)` は、`estree` が異なる構造体名を同じ名前にリネームするために使用されます。なぜなら、`estree` は異なる識別子を区別しないからです。
+- 列挙型の `serde(untagged)` は、列挙型のために余分な JSON オブジェクトを作成しないようにするために使用されます。
