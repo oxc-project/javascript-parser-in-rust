@@ -1,51 +1,49 @@
 ---
-title: JavaScript の文法
+title: 文法
 ---
 
-JavaScript has one of the most challenging grammar to parse,
-this tutorial details all the sweat and tears I had while learning it.
+JavaScript の文法は解析が非常に困難なものの一つであり、
+このチュートリアルでは私が学習中に経験した苦労と涙を詳細に説明します。
 
-<!--truncate-->
+## LL(1)文法
 
-## LL(1) Grammar
-
-According to [Wikipedia](https://en.wikipedia.org/wiki/LL_grammar),
+[Wikipedia](https://en.wikipedia.org/wiki/LL_grammar) によると、
 
 > an LL grammar is a context-free grammar that can be parsed by an LL parser, which parses the input from Left to right
 
-The first **L** means the scanning the source from **L**eft to right,
-and the second **L** means the construction of a **L**eftmost derivation tree.
+最初の「L」はソースを左から右にスキャンすることを意味し、
+2番目の「L」は左端導出木の構築を意味します。
 
-Context-free and the (1) in LL(1) means a tree can be constructed by just peeking at the next token and nothing else.
+文脈自由であり、LL(1) の「1」は次のトークンを覗き見るだけで木を構築できることを意味します。
 
-LL Grammars are of particular interest in academia because we are lazy human beings and we want to write programs that generate parsers automatically so we don't need to write parsers by hand.
+LL 文法は、私たちが怠惰な人間であり、パーサを手動で書く必要がないように、プログラムを自動的に生成するプログラムを書きたいという理由で、学術界で特に興味を持たれています。
 
-Unfortunately, most industrial programming languages do not have a nice LL(1) grammar,
-and this applies to JavaScript too.
+残念なことに、ほとんどの産業用プログラミング言語には素晴らしい LL(1) 文法はありません。
+JavaScript もその例外ではありません。
 
 :::info
-Mozilla started the [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus) project a few years ago
-and wrote a [LALR parser generator in Python](https://github.com/mozilla-spidermonkey/jsparagus/tree/master/jsparagus).
-They haven't updated it much in the past two years and they sent a strong message at the end of [js-quirks.md](https://github.com/mozilla-spidermonkey/jsparagus/blob/master/js-quirks.md)
+Mozillaは数年前に [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus) プロジェクトを開始し、
+[Python で LALR パーサジェネレータ](https://github.com/mozilla-spidermonkey/jsparagus/tree/master/jsparagus) を作成しました。
+彼らは過去2年間ほとんど更新しておらず、[js-quirks.md](https://github.com/mozilla-spidermonkey/jsparagus/blob/master/js-quirks.md) の最後に強いメッセージを送っています。
 
 > What have we learned today?
 >
 > - Do not write a JS parser.
-> - JavaScript has some syntactic horrors in it. But hey, you don't make the world's most widely used programming language by avoiding all mistakes. You do it by shipping a serviceable tool, in the right circumstances, for the right users.
+> - JavaScript has some syntactic horrors in it. But hey, you don't make the world's most widely used programming language by avoiding all mistakes.
 
 :::
 
 ---
 
-The only practical way to parse JavaScript is to write a recursive descent parser by hand because of the nature of its grammar,
-so let's learn all the quirks in the grammar before we shoot ourselves in the foot.
+JavaScript を解析する唯一の実用的な方法は、その文法の性質上、手動で再帰下降パーサを書くことです。
+そのため、足を撃つ前に文法の特異性をすべて学びましょう。
 
-The list below starts simple and will become difficult to grasp,
-so please take grab a coffee and take your time.
+以下のリストは簡単なものから理解が難しくなりますので、
+コーヒーを飲んでゆっくりと時間をかけてください。
 
-## Identifiers
+## 識別子
 
-There are three types of identifiers defined in `#sec-identifiers`,
+`#sec-identifiers` で定義されている識別子には3つのタイプがあります。
 
 ```markup
 IdentifierReference[Yield, Await] :
@@ -53,11 +51,10 @@ BindingIdentifier[Yield, Await] :
 LabelIdentifier[Yield, Await] :
 ```
 
-`estree` and some ASTs do not distinguish the above identifiers,
-and the specification does not explain them in plain text.
+`estree` および一部の AST では、上記の識別子を区別せず、仕様書ではそれらを平文で説明していません。
 
-`BindingIdentifier`s are declarations and `IdentifierReference`s are references to binding identifiers.
-For example in `var foo = bar`, `foo` is a `BindingIdentifier` and `bar` is a `IdentifierReference` in the grammar:
+`BindingIdentifier` は宣言であり、`IdentifierReference` はバインディング識別子への参照です。
+例えば、`var foo = bar` の場合、`foo` は文法上の `BindingIdentifier` であり、`bar` は `IdentifierReference` です。
 
 ```markup
 VariableDeclaration[In, Yield, Await] :
@@ -67,14 +64,14 @@ Initializer[In, Yield, Await] :
     = AssignmentExpression[?In, ?Yield, ?Await]
 ```
 
-follow `AssignmentExpression` into `PrimaryExpression` we get
+`AssignmentExpression` を `PrimaryExpression` にたどると、
 
 ```markup
 PrimaryExpression[Yield, Await] :
     IdentifierReference[?Yield, ?Await]
 ```
 
-Declaring these identifiers differently in the AST will greatly simply downstream tools, especially for semantic analysis.
+ASTでこれらの識別子を異なる方法で宣言すると、特に意味解析のために、下流のツールを大幅に簡素化することができます。
 
 ```rust
 pub struct BindingIdentifier {
@@ -90,13 +87,12 @@ pub struct IdentifierReference {
 
 ---
 
-## Class and Strict Mode
+## クラスと Strict モード
 
-ECMAScript Class is born after strict mode, so they decided that everything inside a class must be strict mode for simplicity.
-It is stated as such in `#sec-class-definitions` with just a `Node: A class definition is always strict mode code.`
+ECMAScript のクラスは、Strict モードの後に生まれたため、クラス内のすべての要素はシンプルさのために Strict モードである必要があります。
+`#sec-class-definitions` では、`Node: A class definition is always strict mode code.` と述べられています。
 
-It is easy to declare strict mode by associating it with function scopes, but a `class` declaration does not have a scope,
-we need to keep an extra state just for parsing classes.
+関数スコープと関連付けることで Strict モードを宣言することは簡単ですが、`class` 宣言にはスコープがないため、クラスの解析のために追加の状態を保持する必要があります。
 
 ```rust reference
 https://github.com/swc-project/swc/blob/f9c4eff94a133fa497778328fa0734aa22d5697c/crates/swc_ecma_parser/src/parser/class_and_fn.rs#L85
@@ -104,38 +100,37 @@ https://github.com/swc-project/swc/blob/f9c4eff94a133fa497778328fa0734aa22d5697c
 
 ---
 
-## Legacy Octal and Use Strict
+## レガシーオクタルと Use Strict
 
-`#sec-string-literals-early-errors` disallows escaped legacy octal inside strings `"\01"`:
+`#sec-string-literals-early-errors` では、文字列内のエスケープされたレガシーオクタル `"\01"` は許可されていません。
 
 ```markup
 EscapeSequence ::
     LegacyOctalEscapeSequence
     NonOctalDecimalEscapeSequence
 
-It is a Syntax Error if the source text matched by this production is strict mode code.
+このプロダクションにマッチするソーステキストが Strict モードコードである場合、構文エラーです。
 ```
 
-The best place to detect this is inside the lexer, it can ask the parser for strict mode state and throw errors accordingly.
+これを検出するのに最適な場所は、レキサーの内部です。レキサーはパーサーに Strict モードの状態を尋ね、それに応じてエラーをスローすることができます。
 
-But, this becomes impossible when mixed with directives:
+しかし、これはディレクティブと混在した場合には不可能になります。
 
 ```javascript reference
 https://github.com/tc39/test262/blob/747bed2e8aaafe8fdf2c65e8a10dd7ae64f66c47/test/language/literals/string/legacy-octal-escape-sequence-prologue-strict.js#L16-L19
 ```
 
-`use strict` is declared after the escaped legacy octal, yet the syntax error needs to be thrown.
-Fortunately, no real code uses directives with legacy octals ... unless you want to pass the test262 case from above.
+`use strict` はエスケープされたレガシーオクタルの後に宣言されていますが、構文エラーがスローされる必要があります。
+幸いなことに、実際のコードではディレクティブとレガシーオクタルを組み合わせることはありません...上記の test262 のケースをパスしたい場合を除いては。
 
 ---
 
-## Non-simple Parameter and Strict Mode
+## 非単純パラメータと Strict モード
 
-Identical function parameters is allowed in non-strict mode `function foo(a, a) { }`,
-and we can forbid this by adding `use strict`: `function foo(a, a) { "use strict" }`.
-Later on in es6, other grammars were added to function parameters, for example `function foo({ a }, b = c) {}`.
+非Strictモードでは、同じ関数パラメータを許可します `function foo(a, a) { }`、そして `use strict` を追加することでこれを禁止することができます：`function foo(a, a) { "use strict" }`。
+その後のes6では、関数パラメータに他の文法が追加されました。例えば `function foo({ a }, b = c) {}`。
 
-Now, what happens if we write the following where "01" is a strict mode error?
+では、次のようなコードを書いた場合、"01" は Strict モードのエラーとなるのでしょうか？
 
 ```javaScript
 function foo(value=(function() { return "\01" }())) {
@@ -144,23 +139,23 @@ function foo(value=(function() { return "\01" }())) {
 }
 ```
 
-More specifically, what should we do if there is a strict mode syntax error inside the parameters thinking from the parser perspective?
-So in `#sec-function-definitions-static-semantics-early-errors`, it just bans this by stating
+具体的には、パーサーの観点からパラメータ内に Strict モードの構文エラーがある場合、どうすべきでしょうか？
+そのため、`#sec-function-definitions-static-semantics-early-errors` では、次のように述べてこれを禁止しています。
 
 ```markup
 FunctionDeclaration :
 FunctionExpression :
 
-It is a Syntax Error if FunctionBodyContainsUseStrict of FunctionBody is true and IsSimpleParameterList of FormalParameters is false.
+FunctionBodyがFunctionBodyContainsUseStrictでtrueであり、FormalParametersがIsSimpleParameterListでfalseである場合、構文エラーです。
 ```
 
-Chrome throws this error with a mysterious message "Uncaught SyntaxError: Illegal 'use strict' directive in function with non-simple parameter list".
+Chrome は、謎めいたメッセージ「Uncaught SyntaxError: Illegal 'use strict' directive in function with non-simple parameter list」というエラーをスローします。
 
-A more in-depth explanation is described in [this blog post](https://humanwhocodes.com/blog/2016/10/the-ecmascript-2016-change-you-probably-dont-know/) by the author of ESLint.
+詳細な説明は、ESLint の作者による [このブログ記事](https://humanwhocodes.com/blog/2016/10/the-ecmascript-2016-change-you-probably-dont-know/) に記載されています。
 
 :::info
 
-Fun fact, the above rule does not apply if we are targeting `es5` in TypeScript, it transpiles to
+興味深い事実ですが、TypeScript で `es5` をターゲットにしている場合、上記のルールは適用されません。次のようにトランスパイルされます。
 
 ```javaScript
 function foo(a, b) {
@@ -173,14 +168,14 @@ function foo(a, b) {
 
 ---
 
-## Parenthesized Expression
+## ParenthesizedExpression
 
-Parenthesized expressions are supposed to not have any semantic meanings?
-For instance the AST for `((x))` can just be a single `IdentifierReference`, not `ParenthesizedExpression` -> `ParenthesizedExpression` -> `IdentifierReference`.
-And this is the case for JavaScript grammar.
+ParenthesizedExpression (パレン式)には意味がないはずですか？
+例えば、`((x))`のASTは、`ParenthesizedExpression` -> `ParenthesizedExpression` -> `IdentifierReference` ではなく、単一の `IdentifierReference` であることができます。
+そして、これは JavaScript の文法の場合です。
 
-But ... who would have thought it can have run-time meanings.
-Found in [this estree issue](https://github.com/estree/estree/issues/194), it shows that
+しかし...誰が実行時の意味を持つことができると思ったでしょうか。
+[この estree の問題](https://github.com/estree/estree/issues/194)で見つかったように、
 
 ```javascript
 > fn = function () {};
@@ -192,26 +187,25 @@ Found in [this estree issue](https://github.com/estree/estree/issues/194), it sh
 < ''
 ```
 
-So eventually acorn and babel added the `preserveParens` option for compatibility.
+結局のところ、acorn と babel は互換性のために `preserveParens` オプションを追加しました。
 
 ---
 
-## Function Declaration in If Statement
+## if文内の関数宣言
 
-If we follow the grammar precisely in `#sec-ecmascript-language-statements-and-declarations`:
+`#sec-ecmascript-language-statements-and-declarations` の文法に厳密に従うと、
 
 ```markup
 Statement[Yield, Await, Return] :
-    ... lots of statements
+    ...たくさんの文
 
 Declaration[Yield, Await] :
-    ... declarations
+    ...宣言
 ```
 
-The `Statement` node we define for our AST would obviously not contain `Declaration`,
+私たちのASTのために定義した `Statement` ノードには明らかに `Declaration` は含まれていませんが、
 
-but in Annex B `#sec-functiondeclarations-in-ifstatement-statement-clauses`,
-it allows declaration inside the statement position of `if` statements in non-strict mode:
+しかし、Annex B `#sec-functiondeclarations-in-ifstatement-statement-clauses` では、非厳密モードの `if` 文の文の位置に宣言を許可しています。
 
 ```javascript
 if (x) function foo() {}
@@ -220,11 +214,11 @@ else function bar() {}
 
 ---
 
-## Label statement is legit
+## ラベル文は正当です
 
-We probably have never written a single line of labelled statement, but it is legit in modern JavaScript and not banned by strict mode.
+おそらく私たちは一行もラベル付き文を書いたことがないでしょうが、それは現代の JavaScript では正当であり、厳密モードでは禁止されていません。
 
-The following syntax is correct, it returns a labelled statement (not object literal).
+次の構文は正しいですが、オブジェクトリテラルではなく、ラベル付き文を返します。
 
 ```javascript
 <Foo
@@ -237,10 +231,10 @@ The following syntax is correct, it returns a labelled statement (not object lit
 
 ---
 
-## `let` is not a keyword
+## `let` はキーワードではありません
 
-`let` is not a keyword so it is allowed to appear anywhere unless the grammar explicitly states `let` is not allowed in such positions.
-Parsers need to peek at the token after the `let` token and decide what it needs to be parsed into, e.g.:
+`let` はキーワードではないため、文法が明示的にそのような位置に `let` が許可されていないと述べている限り、どこにでも現れることが許されています。
+パーサーは `let` トークンの次のトークンを覗き見て、それをどのように解析するかを決定する必要があります。例えば：
 
 ```javascript
 let a;
@@ -253,59 +247,55 @@ a = let[0];
 
 ---
 
-## For-in / For-of and the [In] context
+## For-in / For-of と [In] コンテキスト
 
-If we look at the grammar for `for-in` and `for-of` in `#prod-ForInOfStatement`,
-it is immediately confusing to understand how to parse these.
+`#prod-ForInOfStatement` の `for-in` および `for-of` の文法を見ると、これらを解析する方法がすぐにわかりにくくなります。
 
-There are two major obstacles for us to understand: the `[lookahead ≠ let]` part and the `[+In]` part.
+私たちが理解するための2つの主な障害があります：`[lookahead ≠ let]` の部分と `[+In]` の部分です。
 
-If we have parsed to `for (let`, we need to check the peeking token is:
+`for (let` まで解析した場合、次のトークンを確認する必要があります：
 
-- not `in` to disallow `for (let in)`
-- is `{`, `[` or an identifier to allow `for (let {} = foo)`, `for (let [] = foo)` and `for (let bar = foo)`
+- `in` ではないこと（`for (let in` を許可しないため）
+- `{`、`[`、または識別子であること（`for (let {} = foo)`、`for (let [] = foo)`、`for (let bar = foo)` を許可するため）
 
-Once reached the `of` or `in` keyword, the right-hand side expression needs to be passed with the correct [+In] context to disallow
-the two `in` expressions in `#prod-RelationalExpression`:
+`of` または `in` キーワードに到達したら、右辺の式は正しい[+In]コンテキストで渡す必要があります。これにより、`#prod-RelationalExpression` の2つの `in` 式が許可されなくなります。
 
 ```
 RelationalExpression[In, Yield, Await] :
     [+In] RelationalExpression[+In, ?Yield, ?Await] in ShiftExpression[?Yield, ?Await]
     [+In] PrivateIdentifier in ShiftExpression[?Yield, ?Await]
 
-Note 2: The [In] grammar parameter is needed to avoid confusing the in operator in a relational expression with the in operator in a for statement.
+Note 2: [In ]文法パラメータは、関係式内のin演算子とfor文内のin演算子を混同しないために必要です。
 ```
 
-And this is the only application for the `[In]` context in the entire specification.
+これは仕様全体での [In] コンテキストの唯一の適用です。
 
-Also to note, the grammar `[lookahead ∉ { let, async of }]` forbids `for (async of ...)`,
-and it needs to be explicitly guarded against.
+また、文法 `[lookahead ∉ { let, async of }]` は `for (async of ...)` を禁止しており、明示的に防止する必要があります。
 
 ---
 
-## Block-Level Function Declarations
+## ブロックレベルの関数宣言
 
-In Annex B.3.2 `#sec-block-level-function-declarations-web-legacy-compatibility-semantics`,
-an entire page is dedicated to explain how `FunctionDeclaration` is supposed to behave in `Block` statements.
-It boils down to
+Annex B.3.2 `#sec-block-level-function-declarations-web-legacy-compatibility-semantics` では、`FunctionDeclaration` が `Block` 文でどのように動作するかを説明するために1ページが割かれています。
+要点は次のとおりです。
 
 ```javascript reference
 https://github.com/acornjs/acorn/blob/11735729c4ebe590e406f952059813f250a4cbd1/acorn/src/scope.js#L30-L35
 ```
 
-The name of a `FunctionDeclaration` needs to be treated the same as a `var` declaration if its inside a function declaration.
-This code snippet errors with a re-declaration error since `bar` is inside a block scope:
+`FunctionDeclaration` の名前は、関数宣言内にある場合には `var` 宣言と同じように扱われる必要があります。
+次のコードスニペットは、`bar` がブロックスコープ内にあるため、再宣言エラーが発生します。
 
 ```javascript
 function foo() {
   if (true) {
     var bar;
-    function bar() {} // redeclaration error
+    function bar() {} // 再宣言エラー
   }
 }
 ```
 
-meanwhile, the following does not error because it is inside a function scope, function `bar` is treated as a var declaration:
+一方、次のコードはエラーになりません。関数 `bar` は関数スコープ内にあるため、var 宣言として扱われます。
 
 ```javascript
 function foo() {
@@ -316,22 +306,22 @@ function foo() {
 
 ---
 
-## Grammar Context
+## 文法コンテキスト
 
-The syntactic grammar has 5 context parameters for allowing and disallowing certain constructs,
-namely `[In]`, `[Return]`, `[Yield]`, `[Await]` and `[Default]`.
+構文的な文法には、特定の構造を許可または禁止するための 5 つのコンテキストパラメータがあります。
+具体的には、`[In]`、`[Return]`、`[Yield]`、`[Await]`、`[Default]` です。
 
-It is best to keep a context during parsing, for example in Rome:
+解析中にコンテキストを保持することが最善です。例えば、Romeでは次のようになります。
 
 ```rust reference
 https://github.com/rome/tools/blob/5a059c0413baf1d54436ac0c149a829f0dfd1f4d/crates/rome_js_parser/src/state.rs#L404-L425
 ```
 
-And toggle and check these flags accordingly by following the grammar.
+そして、文法に従ってこれらのフラグを切り替えて確認することが重要です。
 
-## AssignmentPattern vs BindingPattern
+## AssignmentPattern と BindingPattern
 
-In `estree`, the left-hand side of an `AssignmentExpression` is a `Pattern`:
+`estree` では、`AssignmentExpression` の左辺は `Pattern` です。
 
 ```markup
 extend interface AssignmentExpression {
@@ -339,7 +329,7 @@ extend interface AssignmentExpression {
 }
 ```
 
-and the left-hand side of a `VariableDeclarator` is a `Pattern`:
+そして、`VariableDeclarator` の左辺も `Pattern` です。
 
 ```markup
 interface VariableDeclarator <: Node {
@@ -349,7 +339,7 @@ interface VariableDeclarator <: Node {
 }
 ```
 
-A `Pattern` can be a `Identifier`, `ObjectPattern`, `ArrayPattern`:
+`Pattern` は `Identifier`、`ObjectPattern`、`ArrayPattern` のいずれかです。
 
 ```markup
 interface Identifier <: Expression, Pattern {
@@ -368,7 +358,7 @@ interface ArrayPattern <: Pattern {
 }
 ```
 
-But from the specification perspective, we have the following JavaScript:
+しかし、仕様の観点からは、次のような JavaScript があります。
 
 ```javascript
 // AssignmentExpression:
@@ -384,24 +374,21 @@ var [ foo ] = bar;
       ^^^ BindingIdentifier
 ```
 
-This starts to become confusing because we now have a situation where we cannot directly distinguish whether the `Identifier` is a `BindingIdentifier` or a `IdentifierReference`
-inside a `Pattern`:
+これは混乱を招くようになります。なぜなら、`Identifier` が `BindingIdentifier` なのか `IdentifierReference` なのかを直接区別することができなくなるからです。
 
 ```rust
 enum Pattern {
-    Identifier, // Is this a `BindingIdentifier` or a `IdentifierReference`?
+    Identifier, // これは`BindingIdentifier`なのか`IdentifierReference`なのか？
     ArrayPattern,
     ObjectPattern,
 }
 ```
 
-This will lead to all sorts of unnecessary code further down the parser pipeline.
-For example, when setting up the scope for semantic analysis, we need to inspect the parents of this `Identifier`
-to determine whether we should bind it to the scope or not.
+これにより、パーサーパイプラインのさらなる不要なコードが発生します。たとえば、意味解析のスコープを設定する際に、この `Identifier` をスコープにバインドするかどうかを判断するために、この `Identifier` の親を調べる必要があります。
 
-A better solution is to fully understand the specification and decide what to do.
+より良い解決策は、仕様を完全に理解し、何をするかを決定することです。
 
-The grammar for `AssignmentExpression` and `VariableDeclaration` are defined as:
+`AssignmentExpression` と `VariableDeclaration` の文法は次のように定義されています。
 
 ```marup
 13.15 Assignment Operators
@@ -428,9 +415,9 @@ VariableDeclaration[In, Yield, Await] :
     BindingPattern[?Yield, ?Await] Initializer[?In, ?Yield, ?Await]
 ```
 
-The specification distinguishes this two grammar by defining them separately with an `AssignmentPattern` and a `BindingPattern`.
+仕様では、これらの文法を `AssignmentPattern` と `BindingPattern` として別々に定義して区別しています。
 
-So in situations like this, do not be afraid to deviate from `estree` and define extra AST nodes for our parser:
+そのため、このような状況では、`estree` から逸脱して、パーサーのために追加のASTノードを定義することを恐れないでください。
 
 ```rust
 enum BindingPattern {
@@ -446,25 +433,21 @@ enum AssignmentPattern {
 }
 ```
 
-I was in a super confusing state for a whole week until I finally reached enlightenment:
-we need to define an `AssignmentPattern` node and a `BindingPattern` node instead of a single `Pattern` node.
+私は1週間もの間、非常に混乱していましたが、ついに悟りに達しました。単一の `Pattern` ノードではなく、`AssignmentPattern` ノードと `BindingPattern` ノードを定義する必要があります。
 
-- `estree` must be correct because people have been using it for years so it cannot be wrong?
-- how are we going to cleanly distinguish the `Identifier`s inside the patterns without defining two separate nodes?
-  I just cannot find where the grammar is?
-- After a whole day of navigating the specification ...
-  the grammar for `AssignmentPattern` is in the 5th subsection of the main section "13.15 Assignment Operators" with the subtitle "Supplemental Syntax" 🤯 -
-  this is really out of place because all grammar is defined in the main section, not like this one defined after the "Runtime Semantics" section
+- `estree` は正しいはずです。何年も使われているので間違っているはずがありませんよね？
+- パターン内の `Identifier` をきれいに区別する方法はありますか？文法はどこにあるのか見つけられません。
+- 1日中仕様を調べても、`AssignmentPattern` の文法はメインセクションの5番目のサブセクションにあり、サブタイトルが「Supplemental Syntax」であることがわかりました。これは本当に場違いです。すべての文法はメインセクションで定義されているのに、この文法だけが「Runtime Semantics」セクションの後に定義されています。
 
 ---
 
 :::caution
-The following cases are really difficult to grasp. Here be dragons.
+以下のケースは非常に理解が難しいです。注意が必要です。
 :::
 
-## Ambiguous Grammar
+## 曖昧な文法
 
-Let's first think like a parser and solve the problem - given the `/` token, is it a division operator or the start of a regex expression?
+まず、パーサーのように考えて問題を解決しましょう - `/` トークンが除算演算子なのか正規表現式の開始なのかを判断します。
 
 ```javascript
 a / b;
@@ -474,20 +457,19 @@ a /= / regex /;
 /=/ / /=/;
 ```
 
-It is almost impossible, isn't it? Let's break these down and follow the grammar.
+これはほとんど不可能ですね。これらを分解して文法に従ってみましょう。
 
-The first thing we need to understand is that the syntactic grammar drives the lexical grammar as stated in `#sec-ecmascript-language-lexical-grammar`
+まず理解する必要があるのは、構文的文法が字句的文法を駆動するということです。`#sec-ecmascript-language-lexical-grammar` で述べられています。
 
 > There are several situations where the identification of lexical input elements is sensitive to the syntactic grammar context that is consuming the input elements.
 
-This means that the parser is responsible for telling the lexer which token to return next.
-The above example indicates that the lexer needs to return either a `/` token or a `RegExp` token.
-For getting the correct `/` or `RegExp` token, the specification says:
+これは、パーサーが次に返すトークンを字句解析器に指示する責任があることを意味します。
+上記の例では、字句解析器が `/` トークンまたは `RegExp` トークンのいずれかを返す必要があります。
+正しい `/` または `RegExp` トークンを取得するために、仕様は次のように述べています。
 
-> The InputElementRegExp goal symbol is used in all syntactic grammar contexts where a RegularExpressionLiteral is permitted ...
-> In all other contexts, InputElementDiv is used as the lexical goal symbol.
+> The InputElementRegExp goal symbol is used in all syntactic grammar contexts where a RegularExpressionLiteral is permitted ... In all other contexts, InputElementDiv is used as the lexical goal symbol.
 
-And the syntax for `InputElementDiv` and `InputElementRegExp` are
+そして、`InputElementDiv` と `InputElementRegExp` の構文は次のようになります。
 
 ```markup
 InputElementDiv ::
@@ -495,7 +477,7 @@ InputElementDiv ::
     LineTerminator
     Comment
     CommonToken
-    DivPunctuator <---------- the `/` and `/=` token
+    DivPunctuator <---------- `/`および`/=`トークン
     RightBracePunctuator
 
 InputElementRegExp ::
@@ -504,13 +486,13 @@ InputElementRegExp ::
     Comment
     CommonToken
     RightBracePunctuator
-    RegularExpressionLiteral <-------- the `RegExp` token
+    RegularExpressionLiteral <-------- `RegExp`トークン
 ```
 
-This means whenever the grammar reaches `RegularExpressionLiteral`, `/` need to be tokenized as a `RegExp` token (and throw an error if it does not have a matching `/`).
-All other cases we'll tokenize `/` as a slash token.
+これは、文法が `RegularExpressionLiteral` に到達するたびに、`/` を `RegExp` トークンとしてトークン化する必要があることを意味します（一致する `/` がない場合はエラーをスローします）。
+それ以外の場合は、`/` をスラッシュトークンとしてトークン化します。
 
-Let's walk through an example:
+例を見てみましょう：
 
 ```
 a / / regex /
@@ -519,44 +501,38 @@ a / / regex /
     ^^^^^^^^ - PrimaryExpression: RegularExpressionLiteral
 ```
 
-This statement does not match any other start of `Statement`,
-so it'll go down the `ExpressionStatement` route:
+この文は `Statement` の他の開始と一致しないため、`ExpressionStatement` のルートに進みます。
 
 `ExpressionStatement` --> `Expression` --> `AssignmentExpression` --> ... -->
 `MultiplicativeExpression` --> ... -->
-`MemberExpression` --> `PrimaryExpression` --> `IdentifierReference`.
+`MemberExpression` --> `PrimaryExpression` --> `IdentifierReference`。
 
-We stopped at `IdentifierReference` and not `RegularExpressionLiteral`,
-the statement "In all other contexts, InputElementDiv is used as the lexical goal symbol" applies.
-The first slash is a `DivPunctuator` token.
+`IdentifierReference` で止まり、`RegularExpressionLiteral` ではなく、文「それ以外のすべてのコンテキストでは、InputElementDivが字句ゴール記号として使用されます」が適用されます。
+最初のスラッシュは `DivPunctuator` トークンです。
 
-Since this is a `DivPunctuator` token,
-the grammar `MultiplicativeExpression: MultiplicativeExpression MultiplicativeOperator ExponentiationExpression` is matched,
-the right-hand side is expected to be an `ExponentiationExpression`.
+これが `DivPunctuator` トークンであるため、文法 `MultiplicativeExpression: MultiplicativeExpression MultiplicativeOperator ExponentiationExpression` が一致し、右辺は `ExponentiationExpression` であることが期待されます。
 
-Now we are at the second slash in `a / /`.
-By following `ExponentiationExpression`,
-we reach `PrimaryExpression: RegularExpressionLiteral` because `RegularExpressionLiteral` is the only matching grammar with a `/`:
+今度は `a / /` の2番目のスラッシュにいます。
+`ExponentiationExpression` に従っていくと、`RegularExpressionLiteral` に到達します。なぜなら、`RegularExpressionLiteral` が `/` と一致する唯一の文法だからです。
 
 ```markup
 RegularExpressionLiteral ::
     / RegularExpressionBody / RegularExpressionFlags
 ```
 
-This second `/` will be tokenized as `RegExp` because
-the specification states "The InputElementRegExp goal symbol is used in all syntactic grammar contexts where a RegularExpressionLiteral is permitted".
+この2番目の `/` は `RegExp` としてトークン化されます。なぜなら、仕様が「RegularExpressionLiteral が許可されるすべての構文的文法コンテキストで InputElementRegExp ゴール記号が使用される」と述べているからです。
 
 :::info
-As an exercise, try and follow the grammar for `/=/ / /=/`.
+練習として、`/=/ / /=/` の文法に従ってみてください。
 :::
 
 ---
 
 ## Cover Grammar
 
-Read the [V8 blog post](https://v8.dev/blog/understanding-ecmascript-part-4) on this topic first.
+まず、このトピックに関する [V8のブログ記事](https://v8.dev/blog/understanding-ecmascript-part-4) を読んでください。
 
-To summarize, the specification states the following three cover grammars:
+要約すると、仕様は次の3つの Cover Grammar を述べています：
 
 #### CoverParenthesizedExpressionAndArrowParameterList
 
@@ -564,9 +540,7 @@ To summarize, the specification states the following three cover grammars:
 PrimaryExpression[Yield, Await] :
     CoverParenthesizedExpressionAndArrowParameterList[?Yield, ?Await]
 
-When processing an instance of the production
-PrimaryExpression[Yield, Await] : CoverParenthesizedExpressionAndArrowParameterList[?Yield, ?Await]
-    the interpretation of CoverParenthesizedExpressionAndArrowParameterList is refined using the following grammar:
+PrimaryExpression[Yield, Await] : CoverParenthesizedExpressionAndArrowParameterList[?Yield, ?Await] のインスタンスを処理する際、CoverParenthesizedExpressionAndArrowParameterList の解釈は以下の文法を使用して洗練されます:
 
 ParenthesizedExpression[Yield, Await] :
     ( Expression[+In, ?Yield, ?Await] )
@@ -574,14 +548,14 @@ ParenthesizedExpression[Yield, Await] :
 
 ```markup
 ArrowFunction[In, Yield, Await] :
-    ArrowParameters[?Yield, ?Await] [no LineTerminator here] => ConciseBody[?In]
+    ArrowParameters[?Yield, ?Await] [ここには LineTerminator がない] => ConciseBody[?In]
 
 ArrowParameters[Yield, Await] :
     BindingIdentifier[?Yield, ?Await]
     CoverParenthesizedExpressionAndArrowParameterList[?Yield, ?Await]
 ```
 
-These definitions defines:
+これらの定義は以下を定義します:
 
 ```javascript
 let foo = (a, b, c); // SequenceExpression
@@ -589,16 +563,16 @@ let bar = (a, b, c) => {}; // ArrowExpression
           ^^^^^^^^^ CoverParenthesizedExpressionAndArrowParameterList
 ```
 
-A simple but cumbersome approach to solving this problem is to parse it as a `Vec<Expression>` first,
-then write a converter function to convert it to `ArrowParameters` node, i.e. each individual `Expression` need to be converted to a `BindingPattern`.
+この問題を解決するための単純で手間のかかるアプローチは、まず `Vec<Expression>` として解析し、
+それを `ArrowParameters` ノードに変換する変換関数を書くことです。つまり、各個別の `Expression` を `BindingPattern` に変換する必要があります。
 
-It should be noted that, if we are building the scope tree within the parser,
-i.e. create the scope for arrow expression during parsing,
-but do not create one for a sequence expression,
-it is not obvious how to do this. [esbuild](https://github.com/evanw/esbuild) solved this problem by creating a temporary scope first,
-and then dropping it if it is not an `ArrowExpression`.
+なお、もしパーサー内でスコープツリーを構築している場合、
+つまり、パーサー内でアロー式のスコープを作成しているが、
+シーケンス式のスコープは作成していない場合、
+これをどのように行うかは明らかではありません。[esbuild](https://github.com/evanw/esbuild) は、一時的なスコープを作成し、
+それが `ArrowExpression` でない場合には削除することで、この問題を解決しています。
 
-This is stated in its [architecture document](https://github.com/evanw/esbuild/blob/master/docs/architecture.md#symbols-and-scopes):
+これは、その [アーキテクチャドキュメント](https://github.com/evanw/esbuild/blob/master/docs/architecture.md#symbols-and-scopes) に記載されています:
 
 > This is mostly pretty straightforward except for a few places where the parser has pushed a scope and is in the middle of parsing a declaration only to discover that it's not a declaration after all. This happens in TypeScript when a function is forward-declared without a body, and in JavaScript when it's ambiguous whether a parenthesized expression is an arrow function or not until we reach the => token afterwards. This would be solved by doing three passes instead of two so we finish parsing before starting to set up scopes and declare symbols, but we're trying to do this in just two passes. So instead we call popAndDiscardScope() or popAndFlattenScope() instead of popScope() to modify the scope tree later if our assumptions turn out to be incorrect.
 
@@ -610,9 +584,7 @@ This is stated in its [architecture document](https://github.com/evanw/esbuild/b
 CallExpression :
     CoverCallExpressionAndAsyncArrowHead
 
-When processing an instance of the production
-CallExpression : CoverCallExpressionAndAsyncArrowHead
-the interpretation of CoverCallExpressionAndAsyncArrowHead is refined using the following grammar:
+CallExpression : CoverCallExpressionAndAsyncArrowHead のインスタンスを処理する際、CoverCallExpressionAndAsyncArrowHead の解釈は以下の文法を使用して洗練されます:
 
 CallMemberExpression[Yield, Await] :
     MemberExpression[?Yield, ?Await] Arguments[?Yield, ?Await]
@@ -620,20 +592,18 @@ CallMemberExpression[Yield, Await] :
 
 ```markup
 AsyncArrowFunction[In, Yield, Await] :
-    CoverCallExpressionAndAsyncArrowHead[?Yield, ?Await] [no LineTerminator here] => AsyncConciseBody[?In]
+    CoverCallExpressionAndAsyncArrowHead[?Yield, ?Await] [ここには改行文字がない] => AsyncConciseBody[?In]
 
 CoverCallExpressionAndAsyncArrowHead[Yield, Await] :
     MemberExpression[?Yield, ?Await] Arguments[?Yield, ?Await]
 
-When processing an instance of the production
-AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
-the interpretation of CoverCallExpressionAndAsyncArrowHead is refined using the following grammar:
+AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody のインスタンスを処理する際、CoverCallExpressionAndAsyncArrowHead の解釈は以下の文法を使用して洗練されます:
 
 AsyncArrowHead :
-    async [no LineTerminator here] ArrowFormalParameters[~Yield, +Await]
+    async [ここには改行文字がない] ArrowFormalParameters[~Yield, +Await]
 ```
 
-These definitions define:
+これらの定義は次のように定義されます:
 
 ```javascript
 async (a, b, c); // CallExpression
@@ -641,7 +611,7 @@ async (a, b, c) => {} // AsyncArrowFunction
 ^^^^^^^^^^^^^^^ CoverCallExpressionAndAsyncArrowHead
 ```
 
-This looks strange because `async` is not a keyword. The first `async` is a function name.
+これは奇妙に見えるかもしれませんが、`async` はキーワードではありません。最初の `async` は関数名です。
 
 ---
 
@@ -675,17 +645,16 @@ If LeftHandSideExpression is an ObjectLiteral or an ArrayLiteral, the following 
     * LeftHandSideExpression must cover an AssignmentPattern.
 ```
 
-These definitions define:
+これらの定義は次のように定義されます:
 
 ```javascript
 ({ prop = value } = {}); // ObjectAssignmentPattern
-({ prop = value }); // ObjectLiteral with SyntaxError
+({ prop = value }); // SyntaxErrorを伴うObjectLiteral
 ```
 
-Parsers need to parse `ObjectLiteral` with `CoverInitializedName`,
-and throw the syntax error if it does not reach `=` for `ObjectAssignmentPattern`.
+パーサーは `CoverInitializedName` を持つ `ObjectLiteral` を解析し、`ObjectAssignmentPattern` のための `=` に到達しない場合は構文エラーをスローする必要があります。
 
-As an exercise, which one of the following `=` should throw a syntax error?
+練習として、次の `=` のうちどれが構文エラーをスローするでしょうか？
 
 ```javascript
 let { x = 1 } = { x = 1 } = { x = 1 }
