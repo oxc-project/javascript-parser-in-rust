@@ -1,14 +1,14 @@
 ---
 id: semantics_analysis
-title: Semantic Analysis
+title: 意味解析
 ---
 
-Semantic analysis is the process of checking whether our source code is correct or not.
-We need to check against all the "Early Error" rules in the ECMAScript specification.
+意味解析は、ソースコードが正しいかどうかをチェックするプロセスです。  
+ECMAScript の仕様にあるすべての "Early Error" ルールに対してチェックする必要があります。
 
-## Context
+## コンテキスト
 
-For grammar contexts such as `[Yield]` or `[Await]`, an error need to be raised when the grammar forbids them, for example:
+`[Yield]` や `[Await]` などの文法コンテキストでは、文法が禁止している場合にエラーを発生させる必要があります。例えば：
 
 ```markup
 BindingIdentifier[Yield, Await] :
@@ -19,13 +19,13 @@ BindingIdentifier[Yield, Await] :
 13.1.1 Static Semantics: Early Errors
 
 BindingIdentifier[Yield, Await] : yield
-* It is a Syntax Error if this production has a [Yield] parameter.
+* このプロダクションに[Yield]パラメータがある場合、構文エラーです。
 
 * BindingIdentifier[Yield, Await] : await
-It is a Syntax Error if this production has an [Await] parameter.
+このプロダクションに[await]パラメータがある場合、構文エラーです。
 ```
 
-need to raise an error for
+次のコードに対してエラーを発生させる必要があります。
 
 ```javascript
 async *
@@ -34,34 +34,34 @@ async *
   };
 ```
 
-because `AsyncGeneratorDeclaration` has `[+Yield]` and `[+Await]` for `AsyncGeneratorBody`:
+なぜなら、`AsyncGeneratorDeclaration` には、`AsyncGeneratorBody` の `[+Yield]` と `[+Await]` があるからです。
 
 ```markup
 AsyncGeneratorBody :
   FunctionBody[+Yield, +Await]
 ```
 
-An example in Rome checking for the `yield` keyword:
+Romeの例では、`yield` キーワードのチェックを行っています。
 
 ```rust reference
 https://github.com/rome/tools/blob/5a059c0413baf1d54436ac0c149a829f0dfd1f4d/crates/rome_js_parser/src/syntax/expr.rs#L1368-L1377
 ```
 
-## Scope
+## スコープ
 
-For declaration errors:
+宣言エラーの場合：
 
 ```markup
 14.2.1 Static Semantics: Early Errors
 
 Block : { StatementList }
-* It is a Syntax Error if the LexicallyDeclaredNames of StatementList contains any duplicate entries.
-* It is a Syntax Error if any element of the LexicallyDeclaredNames of StatementList also occurs in the VarDeclaredNames of StatementList.
+* StatementListのLexicallyDeclaredNamesに重複するエントリが含まれている場合、構文エラーです。
+* StatementListのLexicallyDeclaredNamesの要素がStatementListのVarDeclaredNamesにも含まれている場合、構文エラーです。
 ```
 
-We need to add a scope tree. A scope tree has all the `var`s and `let`s declared inside it.
-It is also a parent pointing tree where we want to navigate up the tree and search for binding identifiers in parent scopes.
-The data structure we can use is a [`indextree`](https://docs.rs/indextree/latest/indextree/).
+スコープツリーを追加する必要があります。スコープツリーには、その中で宣言されたすべての `var` と `let` が含まれます。
+また、親を指すツリーでもあり、親のスコープでバインディング識別子を検索するためにツリーを上に移動する必要があります。
+使用できるデータ構造は [`indextree`](https://docs.rs/indextree/latest/indextree/)です。
 
 ```rust
 use indextree::{Arena, Node, NodeId};
@@ -100,9 +100,9 @@ pub struct Scope {
 }
 ```
 
-The scope tree can either be built inside the parser for performance reasons, or built in a separate AST pass.
+スコープツリーは、パフォーマンスのためにパーサー内で構築するか、別の AST パスで構築するかのいずれかです。
 
-Generally, a `ScopeBuilder` is needed:
+一般的には、`ScopeBuilder` が必要です。
 
 ```rust
 pub struct ScopeBuilder {
@@ -117,7 +117,7 @@ impl ScopeBuilder {
     }
 
     pub fn enter_scope(&mut self, flags: ScopeFlags) {
-        // Inherit strict mode for functions
+        // 関数の場合は厳密モードを継承する
         // https://tc39.es/ecma262/#sec-strict-mode-code
         let mut strict_mode = self.scopes[self.root_scope_id].get().strict_mode;
         let parent_scope = self.current_scope();
@@ -140,24 +140,20 @@ impl ScopeBuilder {
 }
 ```
 
-We then call `enter_scope` and `leave_scope` accordingly inside the parse functions, for example in acorn:
+その後、パース関数内で適切に `enter_scope` と `leave_scope` を呼び出します。例えば、acornでは：
 
 ```javascript reference
 https://github.com/acornjs/acorn/blob/11735729c4ebe590e406f952059813f250a4cbd1/acorn/src/statement.js#L425-L437
 ```
 
 :::info
-One of the downsides of this approach is that for arrow functions,
-we may need to create a temporary scope and then drop it afterwards if it is not an arrow function but a sequence expression.
-This is detailed in [cover grammar](/blog/grammar#cover-grammar).
+このアプローチの欠点の1つは、アロー関数の場合、一時的なスコープを作成し、それがアロー関数ではなくシーケンス式である場合に後で削除する必要があるかもしれないことです。これについては、[ Cover Grammar ](/blog/grammar#cover-grammar)で詳しく説明しています。
 :::
 
-### The Visitor Pattern
+### ビジターパターン
 
-If we decide to build the scope tree in another pass for simplicity,
-then every node in the AST need to be visited in depth-first preorder and build the scope tree.
+シンプルさのためにスコープツリーを別のパスで構築することを決定した場合、AST の各ノードを深さ優先の事前順序で訪れ、スコープツリーを構築する必要があります。
 
-We can use the [Visitor Pattern](https://rust-unofficial.github.io/patterns/patterns/behavioural/visitor.html)
-to separate out the traversal process from the operations performed on each object.
+[ビジターパターン](https://rust-unofficial.github.io/patterns/patterns/behavioural/visitor.html) を使用して、トラバーサルプロセスと各オブジェクトで実行される操作を分離することができます。
 
-Upon visit, we can call `enter_scope` and `leave_scope` accordingly to build the scope tree.
+訪問時には、`enter_scope` と `leave_scope` を適切に呼び出してスコープツリーを構築することができます。
