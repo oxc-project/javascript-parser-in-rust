@@ -6,7 +6,7 @@ title: Overview
 For this guide, the standard compiler front-end phases will be applied:
 
 ```markup
-Source Text --> Token --> Lexer --> Parser --> AST
+Source Text --> Lexer --> Token --> Parser --> AST
 ```
 
 Writing a JavaScript parser is fairly easy,
