@@ -41,7 +41,7 @@ The only practical way to parse JavaScript is to write a recursive descent parse
 so let's learn all the quirks in the grammar before we shoot ourselves in the foot.
 
 The list below starts simple and will become difficult to grasp,
-so please take grab a coffee and take your time.
+so please grab a coffee and take your time.
 
 ## Identifiers
 
@@ -227,8 +227,12 @@ We probably have never written a single line of labelled statement, but it is le
 The following syntax is correct, it returns a labelled statement (not object literal).
 
 ```javascript
-<Foo bar={() => { baz: 'quaz' }} />
-             //   ^^^^^^^^^^^ `LabelledStatement`
+<Foo
+  bar={() => {
+    baz: "quaz";
+  }}
+/>
+//   ^^^^^^^^^^^ `LabelledStatement`
 ```
 
 ---
