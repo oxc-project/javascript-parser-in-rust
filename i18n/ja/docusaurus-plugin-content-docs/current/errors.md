@@ -1,37 +1,36 @@
 ---
 id: errors
-title: Dealing with Errors
+title: エラー処理
 ---
 
-Quoting from the [Dragon Book](https://www.amazon.com/Compilers-Principles-Techniques-Tools-2nd/dp/0321486811)
+[Dragon Book](https://www.amazon.com/Compilers-Principles-Techniques-Tools-2nd/dp/0321486811) から引用します。
 
-> Most programming language specifications do not describe how a compiler should respond to errors; error handling is left to the compiler designer.
-> Planning the error handling right from the start can both simplify the structure of a compiler and improve its handling of errors.
+> Most programming language specifications do not describe how a compiler should respond to errors; error handling is left to the compiler designer. Planning the error handling right from the start can both simplify the structure of a compiler and improve its handling of errors.
 
-A fully recoverable parser can construct an AST no matter what we throw at it.
-For tools such as linter or formatter, one would wish for a fully recoverable parser so we can act on part of the program.
+完全に回復可能なパーサーは、何を投げても AST を構築することができます。
+リンターやフォーマッタなどのツールでは、部分的に回復可能なパーサーが望まれるため、プログラムの一部に対して操作を行うことができます。
 
-A panicking parser will abort if there is any grammar mismatch, and a partially recoverable parser will recover from deterministic grammars.
+パニックするパーサーは、文法の不一致がある場合に中断し、部分的に回復可能なパーサーは決定的な文法から回復します。
 
-For example, given a grammatically incorrect while statement `while true {}`, we know it is missing round brackets,
-and the only punctuation it can have are round brackets, so we can still return a valid AST and indicate its missing brackets.
+例えば、文法的に正しくない while 文 `while true {}` が与えられた場合、丸括弧が欠落していることがわかります。
+そして、唯一の句読点は丸括弧であるため、有効なASTを返し、欠落している括弧を示すことができます。
 
-Most JavaScript parsers out there are partially recoverable, so we'll do the same and build a partially recoverable parser.
+ほとんどの JavaScript パーサーは部分的に回復可能ですので、同じように部分的に回復可能なパーサーを構築します。
 
 :::info
-The [Rome](https://github.com/rome/tools) parser is a fully recoverable parser.
+[Rome](https://github.com/rome/tools) パーサーは完全に回復可能なパーサーです。
 :::
 
-Rust has the `Result` type for returning and propagating errors.
-In conjunction with the `?` syntax, the parse functions will remain simple and clean.
+Rustにはエラーを返して伝播させるための `Result` 型があります。
+`?` 構文と組み合わせて、パース関数はシンプルでクリーンなままになります。
 
-It is common to wrap the Result type so we can replace the error later:
+エラーを後で置き換えるために、通常は Result 型をラップします。
 
 ```rust
 pub type Result<T> = std::result::Result<T, ()>;
 ```
 
-Our parse functions will return a Result, for example:
+例えば、パース関数は Result を返します。
 
 ```rust
 pub fn parse_binding_pattern(&mut self, ctx: Context) -> Result<BindingPattern<'a>> {
@@ -39,7 +38,7 @@ pub fn parse_binding_pattern(&mut self, ctx: Context) -> Result<BindingPattern<'
         Kind::LCurly => self.parse_object_binding_pattern(ctx),
         Kind::LBrack => self.parse_array_binding_pattern(ctx),
         kind if kind.is_binding_identifier() => {
-          // ... code omitted
+          // ... コードは省略
         }
         // highlight-next-line
         _ => Err(()),
@@ -47,10 +46,10 @@ pub fn parse_binding_pattern(&mut self, ctx: Context) -> Result<BindingPattern<'
 }
 ```
 
-We can add an `expect` function for returning an error if the current token does not match the grammar:
+文法に一致しない場合にエラーを返すための `expect` 関数を追加できます。
 
 ```rust
-/// Expect a `Kind` or return error
+/// `Kind`を期待するかエラーを返す
 pub fn expect(&mut self, kind: Kind) -> Result<()> {
     if !self.at(kind) {
         return Err(())
@@ -60,7 +59,7 @@ pub fn expect(&mut self, kind: Kind) -> Result<()> {
 }
 ```
 
-And use it as such:
+以下のように使用します。
 
 ```rust
 pub fn parse_paren_expression(&mut self, ctx: Context) -> Result<Expression> {
@@ -73,14 +72,13 @@ pub fn parse_paren_expression(&mut self, ctx: Context) -> Result<Expression> {
 
 :::note
 
-For completeness, the lexer function `read_next_token` should also return `Result`
-when an unexpected `char` is found when lexing.
+完全性のために、字句解析時に予期しない `char` が見つかった場合にも、字句解析関数 `read_next_token` は `Result` を返すべきです。
 
 :::
 
-### The `Error` Trait
+### Error トレイト
 
-To return specific errors, we need to fill in the `Err` part of `Result`:
+特定のエラーを返すためには、`Result` の `Err` 部分を埋める必要があります。
 
 ```rust
 pub type Result<T> = std::result::Result<T, SyntaxError>;
@@ -93,9 +91,9 @@ pub enum SyntaxError {
 }
 ```
 
-We call it `SyntaxError` because all "early error"s defined in the grammar section of the ECMAScript specification are syntax errors.
+これを `SyntaxError` と呼びます。なぜなら、ECMAScript 仕様の文法セクションで定義されているすべての「早期エラー」は構文エラーだからです。
 
-To make this a proper `Error`, it needs to implement the [`Error` Trait](https://doc.rust-lang.org/std/error/trait.Error.html). For cleaner code, we can use macros from the [`thiserror`](https://docs.rs/thiserror/latest/thiserror) crate:
+これを正しい `Error` にするためには、[`Error` トレイト](https://doc.rust-lang.org/std/error/trait.Error.html)を実装する必要があります。よりクリーンなコードのために、[`thiserror`](https://docs.rs/thiserror/latest/thiserror) クレートのマクロを使用できます。
 
 ```rust
 #[derive(Debug, Error)]
@@ -111,10 +109,10 @@ pub enum SyntaxError {
 }
 ```
 
-We can then add an `expect` helper function for throwing an error if the token does not match:
+その後、トークンが一致しない場合にエラーをスローするための `expect` ヘルパー関数を追加できます。
 
 ```rust
-/// Expect a `Kind` or return error
+/// `Kind`を期待するかエラーを返す
 pub fn expect(&mut self, kind: Kind) -> Result<()> {
     if self.at(kind) {
         return Err(SyntaxError::UnExpectedToken);
@@ -124,7 +122,7 @@ pub fn expect(&mut self, kind: Kind) -> Result<()> {
 }
 ```
 
-The `parse_debugger_statement` can now use the `expect` function for proper error management:
+`parse_debugger_statement` は、適切なエラー管理のために `expect` 関数を使用できるようになります。
 
 ```rust
 fn parse_debugger_statement(&mut self) -> Result<Statement> {
@@ -136,25 +134,24 @@ fn parse_debugger_statement(&mut self) -> Result<Statement> {
 }
 ```
 
-Notice the `?` after the `expect`,
-it is a syntactic sugar called the ["question mark operator"](https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html#a-shortcut-for-propagating-errors-the--operator) for making the
-function return early if the `expect` function returns a `Err`.
+`expect` の後に `?` があることに注意してください。
+これは、`expect` 関数が `Err` を返した場合に関数が早期にリターンするための構文糖です。
 
 ### Fancy Error Report
 
-[`miette`](https://docs.rs/miette/latest/miette) is one of the nicest error reporting crate out there,
-it provides a fancy colored output
+[`miette`](https://docs.rs/miette/latest/miette) は最も素敵なエラーレポートクレートの 1 つであり、
+視覚的に洗練された出力を提供します。
 
 ![miette](https://raw.githubusercontent.com/zkat/miette/main/images/serde_json.png)
 
-Add `miette` to your `Cargo.toml`
+`Cargo.toml` に `miette` を追加します。
 
 ```toml
 [dependencies]
 miette = { version = "5", features = ["fancy"] }
 ```
 
-We can wrap our `Error` with `miette` and not modify the `Result` type defined in our parser:
+`Error` を `miette` でラップし、パーサーで定義された `Result` 型を変更せずにできます。
 
 ```rust
 pub fn main() -> Result<()> {
