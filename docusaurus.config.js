@@ -17,7 +17,7 @@ const config = {
   projectName: 'javascript-parser-in-rust', // Usually your repo name.
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'ja'],
+    locales: ['en', 'ja', 'ko'],
   },
   presets: [
     [
