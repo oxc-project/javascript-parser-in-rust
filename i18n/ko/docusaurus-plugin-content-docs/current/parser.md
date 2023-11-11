@@ -180,7 +180,7 @@ pub trait CoverGrammar<'a, T>: Sized {
 }
 ```
 
-이 특성은 입력 유형으로 `T`와 출력 유형으로 `Self`를 허용하므로 다음과 같이 정의할 수 있습니다:
+이 특성은 입력 타입으로 `T`와 출력 타입으로 `Self`를 허용하므로 다음과 같이 정의할 수 있습니다:
 
 ```rust
 impl<'a> CoverGrammar<'a, Expression<'a>> for BindingPattern<'a> {
