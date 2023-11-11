@@ -1,24 +1,23 @@
 ---
 id: parser
-title: Parser
+title: 構文解析器 (パーサー)
 ---
 
-The parser we are going to construct is called a [recursive descent parser](https://en.wikipedia.org/wiki/Recursive_descent_parser),
-it is the manual process of going down the grammar and building up the AST.
+私たちが構築しようとしているパーサーは、[再帰下降構文解析](https://en.wikipedia.org/wiki/Recursive_descent_parser) と呼ばれ、文法を下降して AST を構築する手法です。
 
-The parser starts simple, it holds the source code, the lexer, and the current token consumed from the lexer.
+パーサーはソースコード、レキサー、レキサーから返された現在のトークンを保持します。
 
 ```rust
 pub struct Parser<'a> {
-    /// Source Code
+    /// ソースコード
     source: &'a str,
 
     lexer: Lexer<'a>,
 
-    /// Current Token consumed from the lexer
+    /// レキサーから返された現在のトークン
     cur_token: Token,
 
-    /// The end range of the previous token
+    /// 前のトークンの終了範囲
     prev_token_end: usize,
 }
 
@@ -36,17 +35,17 @@ impl<'a> Parser<'a> {
             node: Node {
                 start: 0,
                 end: self.source.len(),
-            }
-            body: vec![]
+            },
+            body: vec![],
         })
     }
 }
 ```
 
-## Helper functions
+## ヘルパー関数
 
-The current token `cur_token: Token` holds the current token returned from the lexer.
-We'll make the parser code cleaner by adding some helper functions for navigating and inspecting this token.
+現在のトークン `cur_token: Token` は、レキサーから返された現在のトークンを保持しています。
+このトークンをナビゲートしたり調査するためのヘルパー関数を追加して、パーサーコードをよりクリーンにします。
 
 ```rust
 impl<'a> Parser<'a> {
@@ -67,24 +66,24 @@ impl<'a> Parser<'a> {
         self.cur_token.kind
     }
 
-    /// Checks if the current index has token `Kind`
+    /// 現在のインデックスが `Kind` のトークンかどうかをチェックします
     fn at(&self, kind: Kind) -> bool {
         self.cur_kind() == kind
     }
 
-    /// Advance if we are at `Kind`
+    /// `Kind` にいる場合に進めます
     fn bump(&mut self, kind: Kind) {
         if self.at(kind) {
             self.advance();
         }
     }
 
-    /// Advance any token
+    /// 任意のトークンを進めます
     fn bump_any(&mut self) {
         self.advance();
     }
 
-    /// Advance and return true if we are at `Kind`, return false otherwise
+    /// `Kind` にいる場合に進めて、true を返します。それ以外の場合は false を返します
     fn eat(&mut self, kind: Kind) -> bool {
         if self.at(kind) {
             self.advance();
@@ -93,7 +92,7 @@ impl<'a> Parser<'a> {
         false
     }
 
-    /// Move to the next token
+    /// 次のトークンに移動します
     fn advance(&mut self) {
         let token = self.lexer.next_token();
         self.prev_token_end = self.cur_token.end;
@@ -102,9 +101,9 @@ impl<'a> Parser<'a> {
 }
 ```
 
-## Parse Functions
+## parse 関数
 
-The `DebuggerStatement` is the most simple statement to parse, so let's try and parse it and return a valid program
+`DebuggerStatement` はパースするのが最も簡単な文なので、パースして有効なプログラムを返してみましょう。
 
 ```rust
 impl<'a> Parser<'a> {
@@ -115,14 +114,14 @@ impl<'a> Parser<'a> {
             node: Node {
                 start: 0,
                 end: self.source.len(),
-            }
+            },
             body,
         }
     }
 
     fn parse_debugger_statement(&mut self) -> Statement {
         let node = self.start_node();
-        // NOTE: the token returned from the lexer is `Kind::Debugger`, we'll fix this later.
+        // 注意: レキサーから返されるトークンは `Kind::Debugger` ですが、後で修正します。
         self.bump_any();
         Statement::DebuggerStatement {
             node: self.finish_node(node),
@@ -131,35 +130,34 @@ impl<'a> Parser<'a> {
 }
 ```
 
-All the other parse functions build on these primitive helper functions,
-for example parsing the `while` statement in swc:
+他のすべてのパース関数は、これらの基本的なヘルパー関数を基にして構築されます。
+たとえば、swcの `while` 文をパースする場合は次のようになります。
 
 ```rust reference
 https://github.com/swc-project/swc/blob/554b459e26b24202f66c3c58a110b3f26bbd13cd/crates/swc_ecma_parser/src/parser/stmt.rs#L952-L970
 ```
 
-## Parsing Expressions
+## 式のパース
 
-The grammar for expressions is deeply nested and recursive,
-which may cause stack overflow on long expressions (for example in [this TypeScript test](https://github.com/microsoft/TypeScript/blob/main/tests/cases/compiler/binderBinaryExpressionStressJs.ts)),
+式の文法は深くネストされており、再帰的です。
+これは、長い式（たとえば、[このTypeScriptのテスト](https://github.com/microsoft/TypeScript/blob/main/tests/cases/compiler/binderBinaryExpressionStressJs.ts)）でスタックオーバーフローを引き起こす可能性があります。
 
-To avoid recursion, we can use a technique called "Pratt Parsing". A more in-depth tutorial can be found [here](https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html), written by the author of Rust-Analyzer.
-And a Rust version here in [Rome](https://github.com/rome/tools/blob/5a059c0413baf1d54436ac0c149a829f0dfd1f4d/crates/rome_js_parser/src/syntax/expr.rs#L442).
+再帰を避けるために、Prattパーシングと呼ばれるテクニックを使用することができます。詳細なチュートリアルは、Rust-Analyzer の作者によって書かれた [こちら](https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html) で見つけることができます。
+また、Rustのバージョンは [Rome](https://github.com/rome/tools/blob/5a059c0413baf1d54436ac0c149a829f0dfd1f4d/crates/rome_js_parser/src/syntax/expr.rs#L442) で確認できます。
 
-## Lists
+## リスト
 
-There are lots of places where we need to parse a list separated by a punctuation, for example `[a, b, c]` or `{a, b, c}`.
+区切り記号で区切られたリストをパースする必要がある場所がたくさんあります。たとえば、`[a, b, c]` や `{a, b, c}` です。
 
-The code for parsing lists are all similar, we can use the [template method pattern](https://en.wikipedia.org/wiki/Template_method_pattern)
-to avoid duplication by using traits.
+リストのパースのコードはすべて似ているため、[テンプレートメソッドパターン](https://en.wikipedia.org/wiki/Template_method_pattern) を使用して重複を避けることができます。
 
 ```rust reference
 https://github.com/rome/tools/blob/85ddb4b2c622cac9638d5230dcefb6cf571677f8/crates/rome_js_parser/src/parser/parse_lists.rs#L131-L157
 ```
 
-This pattern can also prevent us from infinite loops, specifically `progress.assert_progressing(p);`.
+このパターンは、特に `progress.assert_progressing(p);` のような無限ループを防ぐこともできます。
 
-Implementation details can then be provided for different lists, for example:
+その後、異なるリストに対して実装の詳細を提供できます。たとえば：
 
 ```rust reference
 https://github.com/rome/tools/blob/85ddb4b2c622cac9638d5230dcefb6cf571677f8/crates/rome_js_parser/src/syntax/expr.rs#L1543-L1580
@@ -167,13 +165,13 @@ https://github.com/rome/tools/blob/85ddb4b2c622cac9638d5230dcefb6cf571677f8/crat
 
 ## Cover Grammar
 
-Detailed in [cover grammar](/blog/grammar#cover-grammar), there are times when we need to convert an `Expression` to a `BindingIdentifier`. Dynamic languages such as JavaScript can simply rewrite the node type:
+[Cover Grammar](/blog/grammar#cover-grammar) で詳細に説明されているように、`Expression` を `BindingIdentifier` に変換する必要がある場合があります。JavaScript のような動的言語では、ノードのタイプを単純に書き換えることができます。
 
 ```javascript reference
 https://github.com/acornjs/acorn/blob/11735729c4ebe590e406f952059813f250a4cbd1/acorn/src/lval.js#L11-L26
 ```
 
-But in Rust, we need to do a struct to struct transformation. A nice and clean way to do this is to use an trait.
+しかし、Rust では、構造体から構造体への変換を行う必要があります。これを行うためのきれいでシンプルな方法は、トレイトを使用することです。
 
 ```rust
 pub trait CoverGrammar<'a, T>: Sized {
@@ -181,7 +179,7 @@ pub trait CoverGrammar<'a, T>: Sized {
 }
 ```
 
-The trait accepts `T` as the input type, and `Self` and the output type, so we can define the following:
+このトレイトは、入力型として `T` を受け入れ、出力型として `Self` を受け入れるため、次のように定義できます。
 
 ```rust
 impl<'a> CoverGrammar<'a, Expression<'a>> for BindingPattern<'a> {
@@ -210,5 +208,4 @@ impl<'a> CoverGrammar<'a, ArrayExpression<'a>> for BindingPattern<'a> {
 }
 ```
 
-Then for anywhere we need to convert an `Expression` to `BindingPattern`,
-call `BindingPattern::cover(expression)`.
+その後、`Expression` を `BindingPattern` に変換する必要がある場所では、`BindingPattern::cover(expression)` を呼び出します。
