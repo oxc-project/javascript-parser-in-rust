@@ -113,7 +113,7 @@ pub enum Expression {
 
 Rust에는 상속이 없으므로 각 구조체에 `Node`가 추가됩니다(이를 "상속을 통한 구성"이라고 함).
 
-`Statement`와 `Expression`은 열거형인데, 예를 들어 다른 많은 노드 유형으로 확장될 것이기 때문입니다:
+`Statement`와 `Expression`은 열거형인데, 예를 들어 다른 많은 노드 타입으로 확장될 것이기 때문입니다:
 
 ```rust
 pub enum Expression {
