@@ -6,7 +6,7 @@ title: Overview
 이 가이드에서는 표준 컴파일러 프론트엔드 단계를 적용합니다:
 
 ```markup
-Source Text --> Token --> Lexer --> Parser --> AST
+Source Text --> Lexer --> Token --> Parser --> AST
 ```
 
 자바스크립트 파서를 작성하는 것은 어렵지 않습니다.

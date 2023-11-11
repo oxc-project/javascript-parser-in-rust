@@ -16,7 +16,7 @@
     "description": "The first paragraph of the 404 page"
   },
   "theme.NotFound.p2": {
-    "message": "이 페이지 링크하고 있는 소유가에 링크가 망가졌다 연락해주세요",
+    "message": "이 페이지 링크하고 있는 소유자에게 링크가 망가졌다 연락해주세요",
     "description": "The 2nd paragraph of the 404 page"
   },
   "theme.BackToTopButton.buttonAriaLabel": {
@@ -251,7 +251,7 @@
     "description": "The ARIA label and title attribute for expand button of doc sidebar"
   },
   "theme.docs.sidebar.expandButtonAriaLabel": {
-    "message": "サイドバーを開く",
+    "message": "사이드 바 열기",
     "description": "The ARIA label and title attribute for expand button of doc sidebar"
   },
   "theme.common.skipToMainContent": {
@@ -267,7 +267,7 @@
     "description": "The first content of subtitle in the top page"
   },
   "homepage.subtitle.second": {
-    "message": "이 사이트는, Rust나 파서를 배우고 싶은 분, oxc, swc, Rome 등 공헌을 생각하고 있는 분에게 도움이 될 것 입니다.",
+    "message": "Rust나 파서를 배우고 싶은 분, 조만간 oxc, swc, Biome 등에 공헌을 생각하고 있는 분에게 도움이 될 것 입니다.",
     "description": "The second content of subtitle in the top page"
   },
   "homepage.subtitle.third": {

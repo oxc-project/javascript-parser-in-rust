@@ -267,7 +267,7 @@
     "description": "The first content of subtitle in the top page"
   },
   "homepage.subtitle.second": {
-    "message": "このサイトは、Rustやパーサーを学びたい方、oxc、swc、Romeなどへの貢献を考えている方への助けとなります。",
+    "message": "このサイトは、Rustやパーサーを学びたい方、oxc、swc、Biomeなどへの貢献を考えている方への助けとなります。",
     "description": "The second content of subtitle in the top page"
   },
   "homepage.subtitle.third": {
