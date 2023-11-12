@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkjavascript_parser_in_rust=self.webpackChunkjavascript_parser_in_rust||[]).push([[184],{3219:s=>{s.exports=JSON.parse('{"permalink":"/javascript-parser-in-rust/zh/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":4,"blogDescription":"\u535a\u5ba2","blogTitle":"\u535a\u5ba2"}')}}]);
