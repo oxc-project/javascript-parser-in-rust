@@ -23,3 +23,4 @@ Suggestions and corrections are always welcome, please feel free to create an is
 - English `pnpm run start`
 - Japanese: `pnpm run start --locale ja`
 - Korean: `pnpm run start --locale ko`
+- Chinese: `pnpm run start --locale zh`
