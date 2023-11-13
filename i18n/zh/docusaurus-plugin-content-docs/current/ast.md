@@ -17,7 +17,8 @@ title: 抽象语法树 (Abstract Syntax Tree)
 ## 熟悉AST
 
 为了让我们对AST更加熟悉，让我们访问[ASTExplorer](https://astexplorer.net/)并看看它是什么样子的。
-在顶部面板上，选择JavaScript，然后选择`acorn`，输入`var a`，我们将看到一个树形视图和一个JSON视图。
+
+在顶部面板上选择JavaScript，然后选择`acorn`，输入`var a`，我们将看到一个树形视图和一个JSON视图。
 
 ```json
 {
@@ -50,7 +51,7 @@ title: 抽象语法树 (Abstract Syntax Tree)
 }
 ```
 
-由于这是一棵树，每个对象都是一个具有类型名称的节点（例如，`Program`，`VariableDeclaration`，`VariableDeclarator`，`Identifier`）。
+由于这是一棵树，每个对象都是一个节点，具有类型名称（例如`Program`，`VariableDeclaration`，`VariableDeclarator`，`Identifier`）。
 `start`和`end`是相对于源文本的偏移量。
 
 ## estree
