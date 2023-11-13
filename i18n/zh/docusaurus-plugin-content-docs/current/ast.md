@@ -163,11 +163,11 @@ enum Name {
 此示例摘自[此博文](https://adeschamps.github.io/enum-size)
 :::
 
-至于`Expression`和`Statement`枚举，它们在当前情况下可能占用超过200字节。
+至于`Expression`和`Statement`枚举，目前看来它们可能占用超过200字节。
 
 这200字节需要传来传去或在每次进行`matches!(expr, Expression::AwaitExpression(_))`判断时访问，这对性能来说并不友好。
 
-更好的方法是将枚举变体装箱，这样一来只需携带16字节。
+把枚举变体用`Box`包起来是个更好的方法，这样只需携带16字节。
 
 ```rust
 pub enum Expression {
