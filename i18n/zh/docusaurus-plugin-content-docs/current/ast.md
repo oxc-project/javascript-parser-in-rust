@@ -57,10 +57,9 @@ title: 抽象语法树 (Abstract Syntax Tree)
 ## estree
 
 [estree](https://github.com/estree/estree)是JavaScript的一个社区标准语法规范，
-它定义了[所有的AST节点](https://github.com/estree/estree/blob/master/es5.md)，以便不同的工具
-可以相互兼容。
+它定义了[所有的AST节点](https://github.com/estree/estree/blob/master/es5.md)，以便不同的工具可以彼此兼容。
 
-所有AST节点的基本构建块都是`Node`类型：
+`Node`类型是所有AST节点的基础：
 
 ```rust
 #[derive(Debug, Default, Clone, Copy, Serialize, PartialEq, Eq)]
