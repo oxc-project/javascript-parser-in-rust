@@ -5,7 +5,7 @@ title: 词法分析器 (Lexer)
 
 ## Token
 
-词法分析器 (lexer)，也称为分词器 (tokenizer) 或扫描器 (scanner)，负责将源代码文本转换为词元 (tokens)。
+词法分析器 (lexer)，也称为分词器 (tokenizer) 或扫描器 (scanner)，负责将源文本转换为词元 (tokens)。
 这些 token 稍后将被解析器消费，因此我们不必担心原始文本中的空格和注释。
 
 让我们先从简单的开始：将单个 `+` 文本转换为一个 token。
