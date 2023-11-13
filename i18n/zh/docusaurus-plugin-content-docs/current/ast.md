@@ -3,7 +3,7 @@ id: ast
 title: 抽象语法树 (Abstract Syntax Tree)
 ---
 
-在接下来的章节中，解析器负责将标记转换为抽象语法树（AST）。与源文本相比，使用AST来工作更加方便。
+在接下来的章节中，解析器负责将标记转换为抽象语法树（Abstract Syntax Tree, AST）。与源文本相比，使用AST更加方便。
 
 所有的JavaScript工具都在AST的层次上工作，例如：
 
