@@ -312,7 +312,7 @@ Token { kind: Kind::String, start: 0, end: 4, value: TokenValue::String("bar") }
 
 ### 更小的 Token
 
-若我们要获得简单和安全的代码，把 token 的值放在 `Kind` 枚举的内部是个不错的选择：
+若我们要获得简单和安全的代码，把 token 的值放在 `Kind` 枚举的内部似乎是个非常诱人的选择：
 
 ```rust
 pub enum Kind {
@@ -321,9 +321,9 @@ pub enum Kind {
 }
 ```
 
-但是我们知道，这个 Rust 枚举的字节大小是所有 variant 之联合 (union)。
+但是我们知道，这个 Rust 枚举的字节大小是所有 variant 的联合 (union)。
 相比原始枚举，这个枚举多了很多字节，而原始枚举只有 1 个字节。
-解析器中将会大量使用这个 `Kind` 枚举，处理 1 个字节的枚举显然比处理多字节枚举更快。
+解析器中将会大量使用 `Kind` 枚举，处理 1 个字节的枚举显然比处理多字节枚举更快。
 
 ### String Interning
 
