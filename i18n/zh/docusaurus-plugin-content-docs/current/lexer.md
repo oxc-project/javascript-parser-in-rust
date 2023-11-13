@@ -80,8 +80,6 @@ impl<'a> Lexer<'a> {
 要将源文本转换为 token ，只需不断调用 `chars.next()` 并对返回的 `char`进行模式匹配。
 最后一个 token 将始终是 `Kind::Eof`。
 
-网络连接超时，正在自动重试~
-
 ```rust
 impl<'a> Lexer<'a> {
     fn read_next_kind(&mut self) -> Kind {
