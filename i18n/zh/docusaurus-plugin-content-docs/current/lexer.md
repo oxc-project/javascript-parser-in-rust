@@ -330,7 +330,7 @@ pub enum Kind {
 在编译器中使用 `String` 性能并不高，主要是因为：
 
 - `String` 分配在堆上
-- 字符串比较是一个 O(n) 的操作
+- `String`的比较是一个 O(n) 的操作
 
 [String Interning](https://en.wikipedia.org/wiki/String_interning) 通过在缓存中只存储每个不同字符串值的一个副本及其唯一标识以解决这些问题。
 每个不同标识符或字符串将只有一次堆分配，并且字符串比较变为 O(1)。
