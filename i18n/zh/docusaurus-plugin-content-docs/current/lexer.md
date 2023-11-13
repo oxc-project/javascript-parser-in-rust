@@ -25,7 +25,7 @@ pub struct Token {
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Kind {
-    Eof, // 文件结束
+    Eof, // 文件结尾
     Plus,
 }
 ```
