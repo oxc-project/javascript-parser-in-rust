@@ -6,9 +6,9 @@ title: 词法分析器 (Lexer)
 ## Token
 
 词法分析器 (lexer)，也称为分词器 (tokenizer) 或扫描器 (scanner)，负责将源代码文本转换为词元 (tokens)。
-这些 token 稍后将被解析器消耗，因此我们不必担心原始文本中的空格和注释。
+这些 token 稍后将被解析器消费，因此我们不必担心原始文本中的空格和注释。
 
-让我们从简单的开始：将单个 `+` 文本转换为一个 token。
+让我们先从简单的开始：将单个 `+` 文本转换为一个 token。
 
 ```rust
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -30,7 +30,7 @@ pub enum Kind {
 }
 ```
 
-单个 `+` 会输出：
+对于单个 `+` 会输出：
 
 ```
 [
@@ -41,13 +41,13 @@ pub enum Kind {
 
 为了遍历字符串，我们可以如同写 C 代码那样维护一个索引；
 又或者我们可以查看 [字符串文档](https://doc.rust-lang.org/std/primitive.str.html#)
-并找到一个 [`Chars`](https://doc.rust-lang.org/std/str/struct.Chars.html) 迭代器来使用。
+并找到 [`Chars`](https://doc.rust-lang.org/std/str/struct.Chars.html) 迭代器来使用。
 
 :::info
 `Chars` 迭代器抽象掉了索引的维护和边界检查等细节，让我们写代码的时候充满安全感。
 
 当我们调用 `chars.next()` 时，它会返回 `Option<char>`。
-但请注意，`char` 不是 0-255 的 ASCII 值，它是一个范围在 0 到 0x10FFFF 之间的 utf8 Unicode 码点值。
+但请注意，`char` 不是 0 到 255 的 ASCII 值，而是一个范围在 0 到 0x10FFFF 之间的 UTF-8 Unicode 码点值。
 :::
 
 让我们定义一个初步的词法分析器抽象
@@ -74,7 +74,7 @@ impl<'a> Lexer<'a> {
 ```
 
 :::info
-这里的生命周期 `'a` 表示迭代器引用了某个地方。在这里，它引用了一个 `&'a str`。
+这里的生命周期 `'a` 表示迭代器持有对某个地方的引用。在这里，它引用了一个 `&'a str`。
 :::
 
 要将源文本转换为 token ，只需不断调用 `chars.next()` 并对返回的 `char`进行模式匹配。
@@ -114,7 +114,7 @@ impl<'a> Lexer<'a> {
 https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/str/iter.rs#L112-L115
 ```
 
-一个切片 ([slice](https://doc.rust-lang.org/std/slice/index.html))是作为指针和长度表示的内存块的视图。
+切片 ([slice](https://doc.rust-lang.org/std/slice/index.html))是对一块内存的视图，它通过指针和长度表示。
 `.len()` 方法返回切片内部存储的元数据
 
 ```rust reference
@@ -129,7 +129,7 @@ https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/
 https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/slice/mod.rs#L129-L138
 ```
 
-上面提到的这些方法在编译之后都会成为单次数据访问，因此 `.as_str().len()` 实际上是 O(1)的。
+上面提到的这两个方法在编译之后都会成为单次数据读取，因此 `.as_str().len()` 实际上是 O(1)的。
 
 ## Peek
 
@@ -322,7 +322,7 @@ pub enum Kind {
 }
 ```
 
-但是我们知道，这个 Rust 枚举的字节大小是所有 variant 之并。
+但是我们知道，这个 Rust 枚举的字节大小是所有 variant 之联合 (union)。
 相比原始枚举，这个枚举多了很多字节，而原始枚举只有 1 个字节。
 解析器中将会大量使用这个 `Kind` 枚举，处理 1 个字节的枚举显然比多字节枚举更快。
 
