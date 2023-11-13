@@ -1,36 +1,36 @@
 ---
 id: lexer
-title: Lexer
+title: 词法分析器 (Lexer)
 ---
 
 ## Token
 
-The lexer, also known as tokenizer or scanner, is responsible for transforming source text into tokens.
-The tokens will later be consumed by the parser so we don't have to worry about whitespaces and comments from the original text.
+词法分析器 (lexer)，也称为分词器 (tokenizer) 或扫描器 (scanner)，负责将源文本转换为词元 (tokens)。
+这些 token 稍后将被解析器消费，因此我们不必担心原始文本中的空格和注释。
 
-Let's start simple and transform a single `+` text into a token.
+让我们先从简单的开始：将单个 `+` 文本转换为一个 token。
 
 ```rust
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Token {
-    /// Token Type
+    /// token 类型
     pub kind: Kind,
 
-    /// Start offset in source
+    /// 源文本中的起始偏移量
     pub start: usize,
 
-    /// End offset in source
+    /// 源文本中的结束偏移量
     pub end: usize,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Kind {
-    Eof, // end of file
+    Eof, // 文件结尾
     Plus,
 }
 ```
 
-A single `+` gives us
+对于单个 `+` 会输出：
 
 ```
 [
@@ -39,28 +39,27 @@ A single `+` gives us
 ]
 ```
 
-To loop through the string, we can either keep track of an index and pretend that we are writing C code,
-or we can take a look at the [string documentation](https://doc.rust-lang.org/std/primitive.str.html#)
-and find ourselves a [`Chars`](https://doc.rust-lang.org/std/str/struct.Chars.html) iterator to work with.
+为了遍历字符串，我们可以如同写 C 代码那样维护一个索引；
+又或者我们可以查看 [str 的文档](https://doc.rust-lang.org/std/primitive.str.html#)
+并使用 [`Chars`](https://doc.rust-lang.org/std/str/struct.Chars.html) 迭代器。
 
 :::info
-The `Chars` iterator abstracts away the tracking index and boundary checking to make us feel truly safe.
+`Chars` 迭代器抽象掉了索引的维护和边界检查等细节，让我们写代码的时候充满安全感。
 
-It gives us an `Option<char>` when we call `chars.next()`.
-But please note that a `char` is not a 0-255 ASCII value,
-it is a utf8 Unicode point value with the range of 0 to 0x10FFFF.
+当我们调用 `chars.next()` 时，它会返回 `Option<char>`。
+但请注意，`char` 不是 0 到 255 的 ASCII 值，而是一个范围在 0 到 0x10FFFF 之间的 UTF-8 Unicode 码点值。
 :::
 
-Let's define a starter lexer abstraction
+让我们定义一个初步的词法分析器抽象：
 
 ```rust
 use std::str::Chars;
 
 struct Lexer<'a> {
-    /// Source Text
+    /// 源文本
     source: &'a str,
 
-    /// The remaining characters
+    /// 剩余的字符
     chars: Chars<'a>
 }
 
@@ -75,11 +74,11 @@ impl<'a> Lexer<'a> {
 ```
 
 :::info
-The lifetime `'a` here indicates the iterator has a reference to somewhere, it references to a `&'a str` in this case.
+这里的生命周期 `'a` 表示迭代器持有对某个地方的引用。在这里，它引用了一个 `&'a str`。
 :::
 
-To convert the source text to tokens, just keep calling `chars.next()` and match on the returned `char`s.
-The final token will always be `Kind::Eof`.
+要将源文本转换为 token ，只需不断调用 `chars.next()` 并对返回的 `char`进行模式匹配。
+最后一个 token 将始终是 `Kind::Eof`。
 
 ```rust
 impl<'a> Lexer<'a> {
@@ -100,23 +99,23 @@ impl<'a> Lexer<'a> {
         Token { kind, start, end }
     }
 
-    /// Get the length offset from the source text, in UTF-8 bytes
+    /// 获取从源文本中的偏移长度，以 UTF-8 字节表示
     fn offset(&self) -> usize {
         self.source.len() - self.chars.as_str().len()
     }
 }
 ```
 
-The `.len()` and `.as_str().len()` method calls inside `fn offset` feel like O(n), so let's dig deeper.
+在 `fn offset` 中，`.len()` 和 `.as_str().len()` 方法看起来像是 O(n) 的，所以让我们进一步看看是否如此。
 
-[`.as_str()`](https://doc.rust-lang.org/src/core/str/iter.rs.html#112) returns a pointer to a string slice
+[`.as_str()`](https://doc.rust-lang.org/src/core/str/iter.rs.html#112) 返回一个指向字符串切片的指针
 
 ```rust reference
 https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/str/iter.rs#L112-L115
 ```
 
-A [slice](https://doc.rust-lang.org/std/slice/index.html) is a view into a block of memory represented as a pointer and a length.
-The `.len()` method returns the meta data stored inside the slice
+切片 ([slice](https://doc.rust-lang.org/std/slice/index.html))是对一块内存的视图，它通过指针和长度表示。
+`.len()` 方法返回切片内部存储的元数据
 
 ```rust reference
 https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/str/mod.rs#L157-L159
@@ -130,11 +129,11 @@ https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/
 https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/slice/mod.rs#L129-L138
 ```
 
-All the above code will get compiled into a single data access, so `.as_str().len()` is actually O(1).
+上面提到的这两个方法在编译之后都会成为单次数据读取，因此 `.as_str().len()` 实际上是 O(1)的。
 
 ## Peek
 
-To tokenize multi-character operators such as `++` or `+=`, a helper function `peek` is required:
+要对`++`或`+=`等多字符运算符进行分词，需要一个名为`peek`的辅助函数：
 
 ```rust
 fn peek(&self) -> Option<char> {
@@ -142,11 +141,10 @@ fn peek(&self) -> Option<char> {
 }
 ```
 
-We don't want to advance the original `chars` iterator so we clone the iterator and advance the index.
+我们不希望直接前移 (advance) 原始的`chars`迭代器，因此我们克隆迭代器后再前移。
 
 :::info
-The `clone` is cheap if we dig into the [source code](https://doc.rust-lang.org/src/core/slice/iter.rs.html#148-152),
-it just copies the tracking and boundary index.
+如果我们深入查看[源代码](https://doc.rust-lang.org/src/core/slice/iter.rs.html#148-152)，`clone`操作是非常廉价的，它只是复制了当前索引和索引边界。
 
 ```rust reference
 https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/slice/iter.rs#L148-L152
@@ -154,52 +152,45 @@ https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/
 
 :::
 
-The difference between `peek` and `chars.next()` is the former will always return the **same** next `char`,
-while the later will move forward and return a different `char`.
+`peek`和`chars.next()`的区别在于前者总是返回**相同的**下一个`char`，而后者会前移迭代器并返回不同的`char`。
 
-To demonstrate, consider the string `abc`:
+举例来说，考虑字符串`abc`：
 
-- repeated `peek()` call returns `Some(a)`, `Some(a)`, `Some(a)`, ...
-- repeated `chars.next()` call returns `Some('a')`, `Some('b')`, `Some('c')`, `None`.
+- 重复调用`peek()`会返回`Some(a)`，`Some(a)`，`Some(a)`，...
+- 重复调用`chars.next()`会返回`Some('a')`，`Some('b')`，`Some('c')`，`None`。
 
-Equipped with `peek`, tokenizing `++` and `+=` are just nested if statements.
+有了`peek`，对`++`和`+=`进行分词只需要嵌套的if语句。
 
-Here is a real-world implementation from [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus):
+以下是来自[jsparagus](https://github.com/mozilla-spidermonkey/jsparagus)的真实实现：
 
 ```rust reference
 https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/lexer.rs#L1769-L1791
 ```
 
-The above logic applies to all operators, so let us expand our knowledge on lexing JavaScript.
+上述逻辑实际上适用于所有运算符，因此让我们将学到的知识扩展到对 JavaScript 的词法分析上试试。
 
 ## JavaScript
 
-A lexer written in Rust is rather boring, it feels like writing C code
-where we write long chained if statements and check for each `char` and then return the respective token.
+用 Rust 编写的词法分析器相当无聊，感觉就像写 C 代码一样，我们写长长的 if 语句并检查每个`char`，然后返回相应的 token。
 
-The real fun begins when we start lexing for JavaScript.
+对 JavaScript 的词法分析才是真正有趣的部分。
 
-Let's open up the [ECMAScript Language Specification](https://tc39.es/ecma262/) and re-learn JavaScript.
+让我们打开[《ECMAScript语言规范》](https://tc39.es/ecma262/)并重新学习 JavaScript。
 
 :::caution
-I still remember the first time I opened up the specification and went into a little corner
-and cried in agony because it feels like reading foreign text with jargons everywhere.
-So head over to my [guide on reading the specification](/blog/ecma-spec) if things don't make sense.
+我仍然记得第一次打开规范时，我仅仅偷瞄了几个字就陷入痛苦、泪流满面，因为这就像是阅读到处都是术语黑话的外文文本。所以当你觉得哪里不对劲，可以去看看我的[阅读规范指南](/blog/ecma-spec)。
 :::
 
-### Comments
+### 注释
 
-Comments have no semantic meaning, they can be skipped if we are writing a runtime,
-but they need to be taken into consideration if we are writing a linter or a bundler.
+注释 (comments) 没有语义意义，如果我们正在编写运行时，那可以跳过它们；但如果我们正在编写一个 linter 或 bundler，那就不可忽略。
 
-### Identifiers and Unicode
+### 标识符和 Unicode
 
-We mostly code in ASCII,
-but [Chapter 11 ECMAScript Language: Source Text](https://tc39.es/ecma262/#sec-ecmascript-language-source-code)
-states the source text should be in Unicode.
-And [Chapter 12.6 Names and Keywords](https://tc39.es/ecma262/#sec-names-and-keywords)
-states the identifiers are interpreted according to the Default Identifier Syntax given in Unicode Standard Annex #31.
-In detail:
+我们大多数时候使用 ASCII 编码，
+但是[《ECMAScript语言规范: 源代码》第11章](https://tc39.es/ecma262/#sec-ecmascript-language-source-code) 规定源代码应该使用 Unicode 编码。
+而[第 12.6 章 名称和关键字](https://tc39.es/ecma262/#sec-names-and-keywords)规定，标识符 (identifier) 的解释遵循 Unicode 标准附录 31 中给出的默认标识符语法 (Default Identifier Syntax)。
+具体来说：
 
 ```markup
 IdentifierStartChar ::
@@ -215,21 +206,21 @@ UnicodeIDContinue ::
     any Unicode code point with the Unicode property “ID_Continue”
 ```
 
-This means that we can write `var ಠ_ಠ` but not `var 🦀`,
-`ಠ` has the Unicode property "ID_Start" while `🦀` does not.
+这意味着我们可以写`var ಠ_ಠ`，但不能写`var 🦀`，
+`ಠ`具有Unicode属性"ID_Start"，而`🦀`则没有。
 
 :::info
 
-I published the [unicode-id-start](https://crates.io/crates/unicode-id-start) crate for this exact purpose.
-`unicode_id_start::is_id_start(char)` and `unicode_id_start::is_id_continue(char)` can be called to check Unicode.
+我发布了 [unicode-id-start](https://crates.io/crates/unicode-id-start) 这个 crate，用于这个特定目的。
+我们可以调用`unicode_id_start::is_id_start(char)`和`unicode_id_start::is_id_continue(char)`来检查 Unicode 。
 
 :::
 
-### Keywords
+### 关键字
 
-All the [keywords](https://tc39.es/ecma262/#sec-keywords-and-reserved-words) such as `if`, `while` and `for`
-need to be tokenized and interpreted as a whole.
-They need to be added to the token kind enum so we don't have to make string comparisons in the parser.
+所有的[关键字](https://tc39.es/ecma262/#sec-keywords-and-reserved-words) (keywords)，比如`if`、`while`和`for`，
+都需要视作一个整体进行分词。
+它们需要被添加到 token 种类的枚举中，这样我们就不必在解析器中进行字符串比较了。
 
 ```rust
 pub enum Kind {
@@ -241,14 +232,14 @@ pub enum Kind {
 ```
 
 :::caution
-`undefined` is not a keyword, it is unnecessary to add it here.
+`undefined`不是一个关键字，不需要在这里添加。
 :::
 
-Tokenizing keywords will just be matching the identifier from above.
+对关键字进行分词只需匹配上述的标识符。
 
 ```rust
 fn match_keyword(&self, ident: &str) -> Kind {
-    // all keywords are 1 <= length <= 10
+    // 所有关键字的长度都在1到10之间
     if ident.len() == 1 || ident.len() > 10 {
         return Kind::Identifier;
     }
@@ -261,17 +252,16 @@ fn match_keyword(&self, ident: &str) -> Kind {
 }
 ```
 
-### Token Value
+### Token 的值
 
-We often need to compare identifiers, numbers and strings in later stages of the compiler phases,
-for example testing against identifiers inside a linter,
+在编译器的后续阶段，我们经常需要比较标识符、数字和字符串，
+例如在 linter 中对标识符进行测试。
 
-These values are currently in plain source text,
-let's convert them to Rust types so they are easier to work with.
+这些值目前以源文本的形式存在。现在让我们将它们转换为 Rust 类型，以便更容易处理。
 
 ```rust
 pub enum Kind {
-    Eof, // end of file
+    Eof, // 文件结尾
     Plus,
     // highlight-start
     Identifier,
@@ -282,13 +272,13 @@ pub enum Kind {
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Token {
-    /// Token Type
+    /// Token 类型
     pub kind: Kind,
 
-    /// Start offset in source
+    /// 在源码中的起始偏移量
     pub start: usize,
 
-    /// End offset in source
+    /// 在源码中的结束偏移量
     pub end: usize,
 
     // highlight-next-line
@@ -303,26 +293,26 @@ pub enum TokenValue {
 }
 ```
 
-When an identifier `foo` or string `"bar"` is tokenized , we get
+当对标识符 `foo` 或字符串 `"bar"` 进行分词时，我们会得到:
 
 ```markup
 Token { kind: Kind::Identifier, start: 0, end: 2, value: TokenValue::String("foo") }
 Token { kind: Kind::String, start: 0, end: 4, value: TokenValue::String("bar") }
 ```
 
-To convert them to Rust strings, call `let s = self.source[token.start..token.end].to_string()`
-and save it with `token.value = TokenValue::String(s)`.
+要将它们转换为 Rust 字符串，先调用 `let s = self.source[token.start..token.end].to_string()`，
+然后用 `token.value = TokenValue::String(s)` 保存它。
 
-When we tokenized a number `1.23`, we get a token with `Token { start: 0, end: 3 }`.
-To convert it to Rust `f64`, we can use the string [`parse`](https://doc.rust-lang.org/std/primitive.str.html#method.parse)
-method by calling `self.source[token.start..token.end].parse::<f64>()`, and then save the value into `token.value`.
-For binary, octal and integers, an example of their parsing techniques can be found in [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/numeric_value.rs).
+当我们分词一个数字 `1.23` 时，我们得到一个类似 `Token { start: 0, end: 3 }` 的 token。
+要将它转换为 Rust 的 `f64`，我们可以使用字符串的 [`parse`](https://doc.rust-lang.org/std/primitive.str.html#method.parse) 方法，
+通过调用 `self.source[token.start..token.end].parse::<f64>()`，然后将值保存到 `token.value` 中。
+对于二进制、八进制和整数，可以在 [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/numeric_value.rs) 中找到解析它们的方法。
 
-## Rust Optimizations
+## Rust 优化
 
-### Smaller Tokens
+### 更小的 Token
 
-It is tempting to put the token values inside the `Kind` enum and aim for simpler and safer code:
+若要获得更简单安全的代码，把 token 的值放在 `Kind` 枚举的内部似乎是个非常诱人的选择：
 
 ```rust
 pub enum Kind {
@@ -331,29 +321,25 @@ pub enum Kind {
 }
 ```
 
-But it is known that the byte size of a Rust enum is the union of all its variants.
-This enum packs a lot of bytes compared to the original enum, which has only 1 byte.
-There will be heavy usages of this `Kind` enum in the parser,
-dealing with a 1 byte enum will obviously be faster than a multi-byte enum.
+但是我们知道，这个 Rust 枚举的字节大小是所有 variant 的联合 (union)。
+相比原始枚举，这个枚举多了很多字节，而原始枚举只有 1 个字节。
+解析器中将会大量使用 `Kind` 枚举，处理 1 个字节的枚举显然比处理多字节枚举更快。
 
 ### String Interning
 
-It is not performant to use `String` in compilers, mainly due to:
+在编译器中使用 `String` 性能并不高，主要是因为：
 
-- `String` is a heap allocated object
-- String comparison is an O(n) operation
+- `String` 分配在堆上
+- `String`的比较是一个 O(n) 的操作
 
-[String Interning](https://en.wikipedia.org/wiki/String_interning) solves these problems by
-storing only one copy of each distinct string value with a unique identifier in a cache.
-There will only be one heap allocation per distinct identifier or string, and string comparisons become O(1).
+[String Interning](https://en.wikipedia.org/wiki/String_interning) 通过在缓存中只存储每个不同字符串值的一个副本及其唯一标识以解决这些问题。
+每个不同标识符或字符串将只有一次堆分配，并且字符串比较变为 O(1)。
 
-There are lots of string interning libraries on [crates.io](https://crates.io/search?q=string%20interning)
-with different pros and cons.
+在 [crates.io](https://crates.io/search?q=string%20interning) 上有许多 string interning 库，具有不同的优缺点。
 
-A sufficient starting point is to use [`string-cache`](https://crates.io/crates/string_cache),
-it has an `Atom` type and a compile time `atom!("string")` interface.
+在最开始，我们使用[`string-cache`](https://crates.io/crates/string_cache)便已够用，它有一个 `Atom` 类型和一个编译时的 `atom!("string")` 接口。
 
-With `string-cache`, `TokenValue` becomes
+使用 `string-cache` 后，`TokenValue` 需改为：
 
 ```rust
 #[derive(Debug, Clone, PartialEq)]
@@ -365,4 +351,4 @@ pub enum TokenValue {
 }
 ```
 
-and string comparison becomes `matches!(value, TokenValue::String(atom!("string")))`.
+字符串比较则变为 `matches!(value, TokenValue::String(atom!("string")))`。
