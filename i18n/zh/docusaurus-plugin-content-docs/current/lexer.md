@@ -13,7 +13,7 @@ title: Lexer
 ```rust
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Token {
-    /// 标记类型
+    /// token 类型
     pub kind: Kind,
 
     /// 源文本中的起始偏移量
