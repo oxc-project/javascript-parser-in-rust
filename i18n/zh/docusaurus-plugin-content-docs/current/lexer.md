@@ -5,32 +5,32 @@ title: Lexer
 
 ## Token
 
-The lexer, also known as tokenizer or scanner, is responsible for transforming source text into tokens.
-The tokens will later be consumed by the parser so we don't have to worry about whitespaces and comments from the original text.
+词法分析器，也称为分词器 (tokenizer) 或扫描器 (scanner)，负责将源代码文本转换为词元（tokens）。
+这些 token 稍后将被解析器消耗，因此我们不必担心原始文本中的空格和注释。
 
-Let's start simple and transform a single `+` text into a token.
+让我们从简单的开始：将单个 `+` 文本转换为一个 token。
 
 ```rust
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Token {
-    /// Token Type
+    /// 标记类型
     pub kind: Kind,
 
-    /// Start offset in source
+    /// 源文本中的起始偏移量
     pub start: usize,
 
-    /// End offset in source
+    /// 源文本中的结束偏移量
     pub end: usize,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Kind {
-    Eof, // end of file
+    Eof, // 文件结束
     Plus,
 }
 ```
 
-A single `+` gives us
+单个 `+` 会输出：
 
 ```
 [
@@ -39,28 +39,27 @@ A single `+` gives us
 ]
 ```
 
-To loop through the string, we can either keep track of an index and pretend that we are writing C code,
-or we can take a look at the [string documentation](https://doc.rust-lang.org/std/primitive.str.html#)
-and find ourselves a [`Chars`](https://doc.rust-lang.org/std/str/struct.Chars.html) iterator to work with.
+为了遍历字符串，我们可以如同写 C 代码那样维护一个索引；
+又或者我们可以查看 [字符串文档](https://doc.rust-lang.org/std/primitive.str.html#)
+并找到一个 [`Chars`](https://doc.rust-lang.org/std/str/struct.Chars.html) 迭代器来使用。
 
 :::info
-The `Chars` iterator abstracts away the tracking index and boundary checking to make us feel truly safe.
+`Chars` 迭代器抽象掉了索引的维护和边界检查等细节，让我们写代码的时候充满安全感。
 
-It gives us an `Option<char>` when we call `chars.next()`.
-But please note that a `char` is not a 0-255 ASCII value,
-it is a utf8 Unicode point value with the range of 0 to 0x10FFFF.
+当我们调用 `chars.next()` 时，它会返回 `Option<char>`。
+但请注意，`char` 不是 0-255 的 ASCII 值，它是一个范围在 0 到 0x10FFFF 之间的 utf8 Unicode 码点值。
 :::
 
-Let's define a starter lexer abstraction
+让我们定义一个初步的词法分析器抽象
 
 ```rust
 use std::str::Chars;
 
 struct Lexer<'a> {
-    /// Source Text
+    /// 源文本
     source: &'a str,
 
-    /// The remaining characters
+    /// 剩余的字符
     chars: Chars<'a>
 }
 
@@ -75,11 +74,13 @@ impl<'a> Lexer<'a> {
 ```
 
 :::info
-The lifetime `'a` here indicates the iterator has a reference to somewhere, it references to a `&'a str` in this case.
+这里的生命周期 `'a` 表示迭代器引用了某个地方。在这里，它引用了一个 `&'a str`。
 :::
 
-To convert the source text to tokens, just keep calling `chars.next()` and match on the returned `char`s.
-The final token will always be `Kind::Eof`.
+要将源文本转换为 token ，只需不断调用 `chars.next()` 并对返回的 `char`进行模式匹配。
+最后一个 token 将始终是 `Kind::Eof`。
+
+网络连接超时，正在自动重试~
 
 ```rust
 impl<'a> Lexer<'a> {
@@ -100,23 +101,23 @@ impl<'a> Lexer<'a> {
         Token { kind, start, end }
     }
 
-    /// Get the length offset from the source text, in UTF-8 bytes
+    /// 获取从源文本中的偏移长度，以 UTF-8 字节表示
     fn offset(&self) -> usize {
         self.source.len() - self.chars.as_str().len()
     }
 }
 ```
 
-The `.len()` and `.as_str().len()` method calls inside `fn offset` feel like O(n), so let's dig deeper.
+在 `fn offset` 中，`.len()` 和 `.as_str().len()` 方法看起来像是 O(n) 的，所以让我们进一步看看是否如此。
 
-[`.as_str()`](https://doc.rust-lang.org/src/core/str/iter.rs.html#112) returns a pointer to a string slice
+[`.as_str()`](https://doc.rust-lang.org/src/core/str/iter.rs.html#112) 返回一个指向字符串切片的指针
 
 ```rust reference
 https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/str/iter.rs#L112-L115
 ```
 
-A [slice](https://doc.rust-lang.org/std/slice/index.html) is a view into a block of memory represented as a pointer and a length.
-The `.len()` method returns the meta data stored inside the slice
+一个切片 ([slice](https://doc.rust-lang.org/std/slice/index.html))是作为指针和长度表示的内存块的视图。
+`.len()` 方法返回切片内部存储的元数据
 
 ```rust reference
 https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/str/mod.rs#L157-L159
@@ -130,7 +131,7 @@ https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/
 https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/library/core/src/slice/mod.rs#L129-L138
 ```
 
-All the above code will get compiled into a single data access, so `.as_str().len()` is actually O(1).
+上面提到的这些方法在编译之后都会成为单次数据访问，因此 `.as_str().len()` 实际上是 O(1)的。
 
 ## Peek
 
