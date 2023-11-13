@@ -5,18 +5,18 @@ title: 抽象语法树 (Abstract Syntax Tree)
 
 在接下来的章节中，解析器负责将标记转换为抽象语法树（AST）。与源文本相比，使用AST来工作更加方便。
 
-所有的JavaScript工具都在AST级别上工作，例如：
+所有的JavaScript工具都在AST的层次上工作，例如：
 
-- 一个代码检查工具（如eslint）检查AST中的错误
-- 一个代码格式化工具（如prettier）将AST打印回JavaScript文本
-- 一个代码压缩工具（如terser）转换AST
-- 一个打包工具连接不同文件的AST中的导入和导出语句
+- 代码检查工具（如eslint）检查AST中的错误
+- 代码格式化工具（如prettier）将AST打印回JavaScript文本
+- 代码压缩工具（如terser）转换AST
+- 打包工具连接不同文件的AST中的导入和导出语句
 
 在本章中，我们将使用Rust的结构体和枚举来构建一个JavaScript的AST。
 
 ## 熟悉AST
 
-为了让我们对AST感到舒适，让我们访问[ASTExplorer](https://astexplorer.net/)并看看它是什么样子的。
+为了让我们对AST更加熟悉，让我们访问[ASTExplorer](https://astexplorer.net/)并看看它是什么样子的。
 在顶部面板上，选择JavaScript，然后选择`acorn`，输入`var a`，我们将看到一个树形视图和一个JSON视图。
 
 ```json
@@ -50,7 +50,7 @@ title: 抽象语法树 (Abstract Syntax Tree)
 }
 ```
 
-由于这是一棵树，每个对象都是一个节点，具有类型名称（例如`Program`，`VariableDeclaration`，`VariableDeclarator`，`Identifier`）。
+由于这是一棵树，每个对象都是一个具有类型名称的节点（例如，`Program`，`VariableDeclaration`，`VariableDeclarator`，`Identifier`）。
 `start`和`end`是相对于源文本的偏移量。
 
 ## estree
@@ -59,7 +59,7 @@ title: 抽象语法树 (Abstract Syntax Tree)
 它定义了[所有的AST节点](https://github.com/estree/estree/blob/master/es5.md)，以便不同的工具
 可以相互兼容。
 
-任何AST节点的基本构建块是`Node`类型：
+所有AST节点的基本构建块都是`Node`类型：
 
 ```rust
 #[derive(Debug, Default, Clone, Copy, Serialize, PartialEq, Eq)]
@@ -78,7 +78,7 @@ impl Node {
 }
 ```
 
-`var a`的AST定义如下：
+`var a`的AST可定义如下：
 
 ```rust
 pub struct Program {
@@ -110,7 +110,7 @@ pub enum Expression {
 }
 ```
 
-Rust没有继承，因此在每个结构体中添加了`Node`（这称为“组合而非继承”）。
+Rust没有继承，因此每个结构体需要添加`Node`（这称为"组合优于继承"）。
 
 `Statement`和`Expression`是枚举类型，因为它们将会扩展为许多其他节点类型，例如：
 
@@ -131,31 +131,31 @@ pub struct YieldExpression {
 }
 ```
 
-需要使用`Box`，因为在Rust中不允许自引用结构体。
+因为在Rust中不允许自引用结构体，所以需要使用`Box`。
 
 :::info
-JavaScript语法有很多细微之处，请阅读[语法教程](/blog/grammar)以获得乐趣。
+JavaScript语法有很多细微而玄妙之处，请阅读[语法教程](/blog/grammar)以获得乐趣。
 :::
 
-## Rust优化
+## Rust 优化
 
 ### 内存分配
 
-在[概述](./overview)章节中提到，我们需要注意堆分配的结构体，如`Vec`和`Box`，因为堆分配并不廉价。
+在[概述](./overview)章节中提到，我们需要额外注意分配在堆上的结构体，如`Vec`和`Box`。这是因为堆分配并不廉价。
 
-看一下[swc项目的真实实现](https://github.com/swc-project/swc/blob/main/crates/swc_ecma_ast/src/expr.rs)，我们可以看到AST可能有很多`Box`和`Vec`，还要注意`Statement`和`Expression`枚举包含很多枚举变体。
+看一下[来自 swc 项目的真实实现](https://github.com/swc-project/swc/blob/main/crates/swc_ecma_ast/src/expr.rs)，我们可以看到AST可能有很多`Box`和`Vec`，还要注意`Statement`和`Expression`枚举包含很多枚举变体。
 
 ### 枚举大小
 
 我们将要做的第一个优化是减小枚举的大小。
 
-众所周知，Rust枚举的字节大小是其所有变体的总和。例如，以下枚举将占用56字节（1字节用于标签，48字节用于有效载荷，8字节用于对齐）。
+众所周知，Rust枚举的字节大小是其所有变体的联合 (union)。例如，以下枚举将占用56字节（1字节用于标签，48字节用于实际数据 (payload)，8字节用于对齐）。
 
 ```rust
 enum Name {
-    Anonymous, // 0字节有效载荷
-    Nickname(String), // 24字节有效载荷
-    FullName{ first: String, last: String }, // 48字节有效载荷
+    Anonymous, // 0字节实际数据
+    Nickname(String), // 24字节实际数据
+    FullName{ first: String, last: String }, // 48字节实际数据
 }
 ```
 
@@ -163,11 +163,11 @@ enum Name {
 此示例摘自[此博文](https://adeschamps.github.io/enum-size)
 :::
 
-至于`Expression`和`Statement`枚举，它们在当前设置下可能占用超过200字节。
+至于`Expression`和`Statement`枚举，它们在当前情况下可能占用超过200字节。
 
-这200字节需要传递或在每次进行`matches!(expr, Expression::AwaitExpression(_))`检查时访问，这对性能来说并不是很友好。
+这200字节需要传来传去或在每次进行`matches!(expr, Expression::AwaitExpression(_))`判断时访问，这对性能来说并不友好。
 
-更好的方法是将枚举变体装箱，并且只携带16字节。
+更好的方法是将枚举变体装箱，这样一来只需携带16字节。
 
 ```rust
 pub enum Expression {
@@ -197,13 +197,13 @@ fn no_bloat_enum_sizes() {
 }
 ```
 
-“无膨胀的枚举大小”测试用例经常出现在Rust编译器源代码中，用于确保枚举大小合理。
+"无膨胀的枚举大小 (no bloat enum sizes)" 测试用例经常出现在Rust编译器源代码中，用于确保枚举足够小。
 
 ```rust reference
 https://github.com/rust-lang/rust/blob/9c20b2a8cc7588decb6de25ac6a7912dcef24d65/compiler/rustc_ast/src/ast.rs#L3033-L3042
 ```
 
-要找到其他大型类型，我们可以运行
+要找到其他比较大的类型，我们可以运行
 
 ```bash
 RUSTFLAGS=-Zprint-type-sizes cargo +nightly build -p name_of_the_crate --release
@@ -224,11 +224,10 @@ print-type-size     variant `DebuggerStatement`: 8 bytes
 print-type-size         field `.0`: 8 bytes
 ```
 
-#### 内存区域
+#### 内存区域 (Memory Arena)
 
-对于 AST 使用全局内存分配器实际上并不是非常高效的。
-每个 `Box` 和 `Vec` 都是按需分配然后单独丢弃的。
-我们希望做的是预先分配内存然后一次性丢弃它。
+对于 AST 使用全局内存分配器实际上并不是非常高效的，这是因为每个 `Box` 和 `Vec` 都是按需分配然后单独 drop 的。
+我们希望做的是预先分配内存然后一次性 drop。
 
 :::info
 [这篇博客文章](https://manishearth.github.io/blog/2021/03/15/arenas-in-rust/) 更详细地解释了内存区域。
@@ -236,15 +235,15 @@ print-type-size         field `.0`: 8 bytes
 
 根据其文档，[`bumpalo`](https://docs.rs/bumpalo/latest/bumpalo/) 是我们使用的一个非常好的选择：
 
-> Bump 分配是一种快速但有限的分配方法。
-> 我们有一块内存，然后在该内存中维护一个指针。每当我们分配一个对象时，
-> 我们快速检查一下我们的块中是否还有足够的容量来分配该对象，然后通过对象的大小更新指针。就是这样！
+> Bump 分配虽快，但有其局限。
+> 我们有一块内存，然后为这块内存维护一个指针。每当我们分配一个对象时，
+> 我们快速检查一下我们的块中是否还有足够的容量来分配该对象，若是，则根据对象的大小更新指针。就这么简单！
 >
-> Bump 分配的缺点是没有一般方法来释放单个对象或为不再使用的对象回收内存区域。
+> Bump 分配的缺点是一般没有方法来释放单个对象或为不再使用的对象回收内存区域。
 >
-> 这些权衡使得 Bump 分配非常适合阶段性分配。也就是说，在同一程序阶段将分配一组对象，然后可以一起作为一组进行释放。
+> 这些权衡使得 Bump 分配非常适合阶段性分配。也就是说，在同一程序阶段将分配一组对象，使用后，以组为单位一起释放。
 
-通过使用 `bumpalo::collections::Vec` 和 `bumpalo::boxed::Box`，我们的 AST 将添加生命周期：
+通过使用 `bumpalo::collections::Vec` 和 `bumpalo::boxed::Box`，我们的 AST 需要添加生命周期：
 
 ```rust
 use bumpalo::collections::Vec;
@@ -270,12 +269,12 @@ pub struct YieldExpression<'a> {
 如果我们在这个阶段不熟悉处理生命周期，请谨慎。
 我们的程序在没有内存区域的情况下也可以正常工作。
 
-在接下来的章节中的代码示例中，为了简单起见，并未展示使用内存区域的情况。
+在接下来的章节中的代码示例中，为了简单起见，并未演示内存区域的使用。
 :::
 
 ## JSON 序列化
 
-[serde](https://serde.rs/) 可以用于将 AST 序列化为 JSON。需要一些技巧使其与 `estree` 兼容。
+[serde](https://serde.rs/) 可以用于将 AST 序列化为 JSON。我们需要一些额外技巧使其与 `estree` 兼容。
 以下是一些示例：
 
 ```rust
