@@ -140,7 +140,7 @@ https://github.com/swc-project/swc/blob/554b459e26b24202f66c3c58a110b3f26bbd13cd
 
 表达式的语法嵌套深且递归，这可能会导致长表达式时出现堆栈溢出（例如[这个 TypeScript 测试](https://github.com/microsoft/TypeScript/blob/main/tests/cases/compiler/binderBinaryExpressionStressJs.ts)）。
 
-为了避免递归，我们可以使用一种称为"Pratt Parsing"的技术。可以在这里找到更深入的教程[Pratt Parsing](https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html)，此文作者同时也是Rust-Analyzer的作者。
+为了避免递归，我们可以使用"Pratt Parsing"。可以在这里找到更深入的教程[Pratt Parsing](https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html)，此文作者同时也是Rust-Analyzer的作者。
 Rome中的Rust版本在[Rome](https://github.com/rome/tools/blob/5a059c0413baf1d54436ac0c149a829f0dfd1f4d/crates/rome_js_parser/src/syntax/expr.rs#L442)。
 
 ## 列表
