@@ -312,7 +312,7 @@ Token { kind: Kind::String, start: 0, end: 4, value: TokenValue::String("bar") }
 
 ### 更小的 Token
 
-若我们要获得简单和安全的代码，把 token 的值放在 `Kind` 枚举的内部似乎是个非常诱人的选择：
+若要获得更简单安全的代码，把 token 的值放在 `Kind` 枚举的内部似乎是个非常诱人的选择：
 
 ```rust
 pub enum Kind {
