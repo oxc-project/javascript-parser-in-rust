@@ -141,7 +141,7 @@ fn peek(&self) -> Option<char> {
 }
 ```
 
-我们不希望直接向前移动 (advance) 原始的`chars`迭代器，因此我们克隆迭代器后再向前移动。
+我们不希望直接前移 (advance) 原始的`chars`迭代器，因此我们克隆迭代器后再前移。
 
 :::info
 如果我们深入查看[源代码](https://doc.rust-lang.org/src/core/slice/iter.rs.html#148-152)，`clone`操作是非常廉价的，它只是复制了当前索引和索引边界。
@@ -152,7 +152,7 @@ https://github.com/rust-lang/rust/blob/b998821e4c51c44a9ebee395c91323c374236bbb/
 
 :::
 
-`peek`和`chars.next()`的区别在于前者总是返回**相同的**下一个`char`，而后者会向前移动迭代器并返回不同的`char`。
+`peek`和`chars.next()`的区别在于前者总是返回**相同的**下一个`char`，而后者会前移迭代器并返回不同的`char`。
 
 举例来说，考虑字符串`abc`：
 
