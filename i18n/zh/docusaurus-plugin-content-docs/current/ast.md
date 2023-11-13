@@ -14,7 +14,7 @@ title: 抽象语法树 (Abstract Syntax Tree)
 
 在本章中，我们将使用Rust的结构体和枚举来构建一个JavaScript的AST。
 
-## 初识AST
+## 熟悉AST
 
 为了让我们对AST更加熟悉，让我们访问[ASTExplorer](https://astexplorer.net/)并看看它是什么样子的。
 
