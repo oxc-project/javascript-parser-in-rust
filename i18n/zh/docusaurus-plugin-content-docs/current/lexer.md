@@ -40,8 +40,8 @@ pub enum Kind {
 ```
 
 为了遍历字符串，我们可以如同写 C 代码那样维护一个索引；
-又或者我们可以查看 [字符串文档](https://doc.rust-lang.org/std/primitive.str.html#)
-并找到 [`Chars`](https://doc.rust-lang.org/std/str/struct.Chars.html) 迭代器来使用。
+又或者我们可以查看 [str 的文档](https://doc.rust-lang.org/std/primitive.str.html#)
+并使用 [`Chars`](https://doc.rust-lang.org/std/str/struct.Chars.html) 迭代器。
 
 :::info
 `Chars` 迭代器抽象掉了索引的维护和边界检查等细节，让我们写代码的时候充满安全感。
@@ -50,7 +50,7 @@ pub enum Kind {
 但请注意，`char` 不是 0 到 255 的 ASCII 值，而是一个范围在 0 到 0x10FFFF 之间的 UTF-8 Unicode 码点值。
 :::
 
-让我们定义一个初步的词法分析器抽象
+让我们定义一个初步的词法分析器抽象：
 
 ```rust
 use std::str::Chars;
@@ -183,12 +183,12 @@ https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/
 
 ### 注释
 
-注释没有语义意义，如果我们正在编写运行时，那可以跳过它们；但如果我们正在编写一个 linter 或 bundler，就不可以忽略它们。
+注释 (comments) 没有语义意义，如果我们正在编写运行时，那可以跳过它们；但如果我们正在编写一个 linter 或 bundler，那就不可忽略。
 
 ### 标识符和 Unicode
 
 我们大多数时候使用 ASCII 编码，
-但是[《ECMAScript语言规范: 源代码》第11章](https://tc39.es/ecma262/#sec-ecmascript-language-source-code)规定源代码应该使用 Unicode 编码。
+但是[《ECMAScript语言规范: 源代码》第11章](https://tc39.es/ecma262/#sec-ecmascript-language-source-code) 规定源代码应该使用 Unicode 编码。
 而[第 12.6 章 名称和关键字](https://tc39.es/ecma262/#sec-names-and-keywords)规定标识符的解释遵循 Unicode 标准附录 31 中给出的默认标识符语法 (Default Identifier Syntax)。
 具体来说：
 
@@ -211,14 +211,14 @@ UnicodeIDContinue ::
 
 :::info
 
-我发布了[unicode-id-start](https://crates.io/crates/unicode-id-start) 这个 crate，用于这个特定目的。
+我发布了 [unicode-id-start](https://crates.io/crates/unicode-id-start) 这个 crate，用于这个特定目的。
 我们可以调用`unicode_id_start::is_id_start(char)`和`unicode_id_start::is_id_continue(char)`来检查 Unicode 。
 
 :::
 
 ### 关键字
 
-所有的[关键字](https://tc39.es/ecma262/#sec-keywords-and-reserved-words)，比如`if`、`while`和`for`，
+所有的[关键字](https://tc39.es/ecma262/#sec-keywords-and-reserved-words) (keywords)，比如`if`、`while`和`for`，
 都需要视作一个整体进行分词。
 它们需要被添加到 token 种类的枚举中，这样我们就不必在解析器中进行字符串比较了。
 
