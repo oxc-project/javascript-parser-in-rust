@@ -189,7 +189,7 @@ https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/
 
 我们大多数时候使用 ASCII 编码，
 但是[《ECMAScript语言规范: 源代码》第11章](https://tc39.es/ecma262/#sec-ecmascript-language-source-code) 规定源代码应该使用 Unicode 编码。
-而[第 12.6 章 名称和关键字](https://tc39.es/ecma262/#sec-names-and-keywords)规定标识符的解释遵循 Unicode 标准附录 31 中给出的默认标识符语法 (Default Identifier Syntax)。
+而[第 12.6 章 名称和关键字](https://tc39.es/ecma262/#sec-names-and-keywords)规定，标识符 (identifier) 的解释遵循 Unicode 标准附录 31 中给出的默认标识符语法 (Default Identifier Syntax)。
 具体来说：
 
 ```markup
