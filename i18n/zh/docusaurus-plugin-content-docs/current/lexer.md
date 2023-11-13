@@ -303,7 +303,7 @@ Token { kind: Kind::String, start: 0, end: 4, value: TokenValue::String("bar") }
 要将它们转换为 Rust 字符串，先调用 `let s = self.source[token.start..token.end].to_string()`，
 然后用 `token.value = TokenValue::String(s)` 保存它。
 
-当我们分词一个数字 `1.23` 时，我们得到一个带有 `Token { start: 0, end: 3 }` 的 token。
+当我们分词一个数字 `1.23` 时，我们得到一个类似 `Token { start: 0, end: 3 }` 的 token。
 要将它转换为 Rust 的 `f64`，我们可以使用字符串的 [`parse`](https://doc.rust-lang.org/std/primitive.str.html#method.parse) 方法，
 通过调用 `self.source[token.start..token.end].parse::<f64>()`，然后将值保存到 `token.value` 中。
 对于二进制、八进制和整数，可以在 [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/numeric_value.rs) 中找到解析它们的方法。
