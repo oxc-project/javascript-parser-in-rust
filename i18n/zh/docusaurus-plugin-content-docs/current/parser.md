@@ -3,7 +3,7 @@ id: parser
 title: 解析器 (Parser)
 ---
 
-我们将要构建的解析器称为[递归下降解析器](https://en.wikipedia.org/wiki/Recursive_descent_parser)，它是一个手动过程，按照语法逐步构建AST。
+我们将要构建的解析器称为[递归下降解析器](https://en.wikipedia.org/wiki/Recursive_descent_parser)，它是一个手动过程，顺着语法逐步构建AST。
 
 解析器起初很简单，它持有源代码、词法分析器和从词法分析器中获取的当前 token。
 
