@@ -254,11 +254,10 @@ fn match_keyword(&self, ident: &str) -> Kind {
 
 ### Token 的值
 
-在编译器后续阶段，我们经常需要比较标识符、数字和字符串，
-例如在 linter 中对标识符进行测试，
+在编译器的后续阶段，我们经常需要比较标识符、数字和字符串，
+例如在 linter 中对标识符进行测试。
 
-这些值目前以纯源文本的形式存在，
-让我们将它们转换为 Rust 类型，以便更容易处理。
+这些值目前以源文本的形式存在。现在让我们将它们转换为 Rust 类型，以便更容易处理。
 
 ```rust
 pub enum Kind {
@@ -307,7 +306,7 @@ Token { kind: Kind::String, start: 0, end: 4, value: TokenValue::String("bar") }
 当我们分词一个数字 `1.23` 时，我们得到一个带有 `Token { start: 0, end: 3 }` 的 token。
 要将它转换为 Rust 的 `f64`，我们可以使用字符串的 [`parse`](https://doc.rust-lang.org/std/primitive.str.html#method.parse) 方法，
 通过调用 `self.source[token.start..token.end].parse::<f64>()`，然后将值保存到 `token.value` 中。
-对于二进制、八进制和整数，可以在 [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/numeric_value.rs) 找到解析它们的方法。
+对于二进制、八进制和整数，可以在 [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus/blob/master/crates/parser/src/numeric_value.rs) 中找到解析它们的方法。
 
 ## Rust 优化
 
@@ -324,23 +323,23 @@ pub enum Kind {
 
 但是我们知道，这个 Rust 枚举的字节大小是所有 variant 之联合 (union)。
 相比原始枚举，这个枚举多了很多字节，而原始枚举只有 1 个字节。
-解析器中将会大量使用这个 `Kind` 枚举，处理 1 个字节的枚举显然比多字节枚举更快。
+解析器中将会大量使用这个 `Kind` 枚举，处理 1 个字节的枚举显然比处理多字节枚举更快。
 
-### 字符串内部化
+### String Interning
 
 在编译器中使用 `String` 性能并不高，主要是因为：
 
-- `String` 是一个堆分配对象
-- 字符串比较是一个 O(n) 操作
+- `String` 分配在堆上
+- 字符串比较是一个 O(n) 的操作
 
-[String Interning](https://en.wikipedia.org/wiki/String_interning) 通过在缓存中只存储每个不同字符串值的一个副本及其唯一标识符以解决这些问题。
+[String Interning](https://en.wikipedia.org/wiki/String_interning) 通过在缓存中只存储每个不同字符串值的一个副本及其唯一标识以解决这些问题。
 每个不同标识符或字符串将只有一次堆分配，并且字符串比较变为 O(1)。
 
 在 [crates.io](https://crates.io/search?q=string%20interning) 上有许多 string interning 库，具有不同的优缺点。
 
 在最开始，我们使用[`string-cache`](https://crates.io/crates/string_cache)便已够用，它有一个 `Atom` 类型和一个编译时的 `atom!("string")` 接口。
 
-使用 `string-cache` 后，`TokenValue` 变成了
+使用 `string-cache` 后，`TokenValue` 需改为：
 
 ```rust
 #[derive(Debug, Clone, PartialEq)]
