@@ -1,14 +1,14 @@
 ---
 id: semantics_analysis
-title: Semantic Analysis
+title: 语义分析 (Semantic Analysis)
 ---
 
-Semantic analysis is the process of checking whether our source code is correct or not.
-We need to check against all the "Early Error" rules in the ECMAScript specification.
+语义分析是检查我们的源代码是否正确的过程。
+我们需要根据ECMAScript规范中的所有"早期错误"规则进行检查。
 
-## Context
+## 上下文
 
-For grammar contexts such as `[Yield]` or `[Await]`, an error need to be raised when the grammar forbids them, for example:
+对于语法上下文，如`[Yield]`或`[Await]`，当语法禁止它们时，需要引发错误，例如：
 
 ```markup
 BindingIdentifier[Yield, Await] :
@@ -16,16 +16,16 @@ BindingIdentifier[Yield, Await] :
   yield
   await
 
-13.1.1 Static Semantics: Early Errors
+13.1.1 静态语义：早期错误
 
 BindingIdentifier[Yield, Await] : yield
-* It is a Syntax Error if this production has a [Yield] parameter.
+* 如果此产生式具有[Yield]参数，则为语法错误。
 
 * BindingIdentifier[Yield, Await] : await
-It is a Syntax Error if this production has an [Await] parameter.
+如果此产生式具有[Await]参数，则为语法错误。
 ```
 
-need to raise an error for
+需要对以下代码引发错误：
 
 ```javascript
 async *
@@ -34,34 +34,34 @@ async *
   };
 ```
 
-because `AsyncGeneratorDeclaration` has `[+Yield]` and `[+Await]` for `AsyncGeneratorBody`:
+因为`AsyncGeneratorDeclaration`对于`AsyncGeneratorBody`带有`[+Yield]`和`[+Await]`：
 
 ```markup
 AsyncGeneratorBody :
   FunctionBody[+Yield, +Await]
 ```
 
-An example in Rome checking for the `yield` keyword:
+在Rome中检查`yield`关键字的示例：
 
 ```rust reference
 https://github.com/rome/tools/blob/5a059c0413baf1d54436ac0c149a829f0dfd1f4d/crates/rome_js_parser/src/syntax/expr.rs#L1368-L1377
 ```
 
-## Scope
+## 作用域
 
-For declaration errors:
+对于声明错误 (declaration errors)：
 
 ```markup
-14.2.1 Static Semantics: Early Errors
+14.2.1 静态语义：早期错误
 
 Block : { StatementList }
-* It is a Syntax Error if the LexicallyDeclaredNames of StatementList contains any duplicate entries.
-* It is a Syntax Error if any element of the LexicallyDeclaredNames of StatementList also occurs in the VarDeclaredNames of StatementList.
+* 如果StatementList的LexicallyDeclaredNames包含任何重复条目，则为语法错误。
+* 如果StatementList的LexicallyDeclaredNames中的任何元素也出现在StatementList的VarDeclaredNames中，则为语法错误。
 ```
 
-We need to add a scope tree. A scope tree has all the `var`s and `let`s declared inside it.
-It is also a parent pointing tree where we want to navigate up the tree and search for binding identifiers in parent scopes.
-The data structure we can use is a [`indextree`](https://docs.rs/indextree/latest/indextree/).
+我们需要添加一个作用域树 (scope tree)。作用域树包含在其中声明的所有`var`和`let`。
+这棵树的节点有指向父级节点的指针，我们希望以此在树上向上移动并在父级作用域之中搜索绑定标识符。
+我们可以使用`indextree`作为数据结构（https://docs.rs/indextree/latest/indextree/）。
 
 ```rust
 use indextree::{Arena, Node, NodeId};
@@ -100,9 +100,9 @@ pub struct Scope {
 }
 ```
 
-The scope tree can either be built inside the parser for performance reasons, or built in a separate AST pass.
+出于性能原因，作用域树可以在解析器内部构建，也可以在单独的AST遍历中构建。
 
-Generally, a `ScopeBuilder` is needed:
+通常情况下，需要一个`ScopeBuilder`：
 
 ```rust
 pub struct ScopeBuilder {
@@ -117,7 +117,7 @@ impl ScopeBuilder {
     }
 
     pub fn enter_scope(&mut self, flags: ScopeFlags) {
-        // Inherit strict mode for functions
+        // 继承一下函数的严格模式
         // https://tc39.es/ecma262/#sec-strict-mode-code
         let mut strict_mode = self.scopes[self.root_scope_id].get().strict_mode;
         let parent_scope = self.current_scope();
@@ -140,24 +140,22 @@ impl ScopeBuilder {
 }
 ```
 
-We then call `enter_scope` and `leave_scope` accordingly inside the parse functions, for example in acorn:
+然后在解析函数中相应地调用`enter_scope`和`leave_scope`，例如在acorn中：
 
 ```javascript reference
 https://github.com/acornjs/acorn/blob/11735729c4ebe590e406f952059813f250a4cbd1/acorn/src/statement.js#L425-L437
 ```
 
 :::info
-One of the downsides of this approach is that for arrow functions,
-we may need to create a temporary scope and then drop it afterwards if it is not an arrow function but a sequence expression.
-This is detailed in [cover grammar](/blog/grammar#cover-grammar).
+这种方法的一个缺点是，对于箭头函数，我们可能需要创建一个临时作用域，若是在不是箭头函数而是序列表达式 (sequence expression)时则将其 drop。
+这在[cover grammar](/blog/grammar#cover-grammar)中有详细说明。
 :::
 
-### The Visitor Pattern
+### 访问者模式 (The Visitor Pattern)
 
-If we decide to build the scope tree in another pass for simplicity,
-then every node in the AST need to be visited in depth-first preorder and build the scope tree.
+如果我们决定在一个新的遍历中构建作用域树以求简单，
+那么需要按照深度优先的前序 (preorder)来访问AST中的每个节点并构建作用域树。
 
-We can use the [Visitor Pattern](https://rust-unofficial.github.io/patterns/patterns/behavioural/visitor.html)
-to separate out the traversal process from the operations performed on each object.
+我们可以使用[访问者模式](https://rust-unofficial.github.io/patterns/patterns/behavioural/visitor.html)将遍历过程与对每个对象执行的操作分离开来。
 
-Upon visit, we can call `enter_scope` and `leave_scope` accordingly to build the scope tree.
+在访问时，我们可以相应地调用`enter_scope`和`leave_scope`来构建作用域树。
