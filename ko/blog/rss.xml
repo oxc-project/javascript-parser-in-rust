@@ -4,7 +4,7 @@
         <title>Write a JavaScript Parser in Rust Blog</title>
         <link>https://oxc-project.github.io/javascript-parser-in-rust/ko/blog</link>
         <description>Write a JavaScript Parser in Rust Blog</description>
-        <lastBuildDate>Tue, 14 Nov 2023 06:01:31 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 14 Nov 2023 06:06:22 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>ko</language>
@@ -12,7 +12,7 @@
             <title><![CDATA[Rome Tools]]></title>
             <link>https://oxc-project.github.io/javascript-parser-in-rust/ko/blog/rome</link>
             <guid>https://oxc-project.github.io/javascript-parser-in-rust/ko/blog/rome</guid>
-            <pubDate>Tue, 14 Nov 2023 06:01:31 GMT</pubDate>
+            <pubDate>Tue, 14 Nov 2023 06:06:22 GMT</pubDate>
             <description><![CDATA[Rome은, JavaScript와 TypeScript 파서의 여러 기술을 사용합니다. 이 튜토리얼은 이를 이해하기 쉽게 순서를 요약합니다.]]></description>
             <content:encoded><![CDATA[<p>Rome은, JavaScript와 TypeScript 파서의 여러 기술을 사용합니다. 이 튜토리얼은 이를 이해하기 쉽게 순서를 요약합니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_otLt" id="역사">역사<a href="https://oxc-project.github.io/javascript-parser-in-rust/ko/blog/rome#%EC%97%AD%EC%82%AC" class="hash-link" aria-label="관련 링크" title="관련 링크">​</a></h2>
@@ -61,7 +61,7 @@
             <title><![CDATA[JavaScript 문법]]></title>
             <link>https://oxc-project.github.io/javascript-parser-in-rust/ko/blog/grammar</link>
             <guid>https://oxc-project.github.io/javascript-parser-in-rust/ko/blog/grammar</guid>
-            <pubDate>Tue, 14 Nov 2023 06:01:31 GMT</pubDate>
+            <pubDate>Tue, 14 Nov 2023 06:06:22 GMT</pubDate>
             <description><![CDATA[자바스크립트는 파싱이 가장 어려운 문법 중 하나입니다, 이 튜토리얼에서는 제가 이 문법을 배우면서 흘린 땀과 눈물을 설명해드리겠습니다.]]></description>
             <content:encoded><![CDATA[<p>자바스크립트는 파싱이 가장 어려운 문법 중 하나입니다, 이 튜토리얼에서는 제가 이 문법을 배우면서 흘린 땀과 눈물을 설명해드리겠습니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_otLt" id="ll1-문법">LL(1) 문법<a href="https://oxc-project.github.io/javascript-parser-in-rust/ko/blog/grammar#ll1-%EB%AC%B8%EB%B2%95" class="hash-link" aria-label="관련 링크" title="관련 링크">​</a></h2>
@@ -298,7 +298,7 @@ inside a <code>Pattern</code>:</p>
             <title><![CDATA[ECMAScript 사양서]]></title>
             <link>https://oxc-project.github.io/javascript-parser-in-rust/ko/blog/ecma-spec</link>
             <guid>https://oxc-project.github.io/javascript-parser-in-rust/ko/blog/ecma-spec</guid>
-            <pubDate>Tue, 14 Nov 2023 06:01:31 GMT</pubDate>
+            <pubDate>Tue, 14 Nov 2023 06:06:22 GMT</pubDate>
             <description><![CDATA[The ECMAScript® 2023 Language Specification는 자바스크립트에 대한 모든 것을 자세히 설명하므로 누구나 자바스크립트를 구현할 수 있습니다.]]></description>
             <content:encoded><![CDATA[<p><a href="https://tc39.es/ecma262/" target="_blank" rel="noopener noreferrer">The ECMAScript® 2023 Language Specification</a>는 자바스크립트에 대한 모든 것을 자세히 설명하므로 누구나 자바스크립트를 구현할 수 있습니다.</p>
 <p>구문 분석기를 위해 다음 챕터를 따라 공부해야 합니다
@@ -367,7 +367,7 @@ jsparagus는 이에 대해 <a href="https://github.com/mozilla-spidermonkey/jspa
             <title><![CDATA[파서 적합 시험]]></title>
             <link>https://oxc-project.github.io/javascript-parser-in-rust/ko/blog/conformance</link>
             <guid>https://oxc-project.github.io/javascript-parser-in-rust/ko/blog/conformance</guid>
-            <pubDate>Tue, 14 Nov 2023 06:01:31 GMT</pubDate>
+            <pubDate>Tue, 14 Nov 2023 06:06:22 GMT</pubDate>
             <description><![CDATA[이 글에서는 JavaScript 혹은 TypeScript 문법에 파서 테스트를 하기 위한 3개의 GitHub 레포지토리에 대해 상세히 설명합니다.]]></description>
             <content:encoded><![CDATA[<p>이 글에서는 JavaScript 혹은 TypeScript 문법에 파서 테스트를 하기 위한 3개의 GitHub 레포지토리에 대해 상세히 설명합니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_otLt" id="test262">Test262<a href="https://oxc-project.github.io/javascript-parser-in-rust/ko/blog/conformance#test262" class="hash-link" aria-label="관련 링크" title="관련 링크">​</a></h2>

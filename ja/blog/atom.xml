@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://oxc-project.github.io/javascript-parser-in-rust/ja/blog</id>
     <title>Write a JavaScript Parser in Rust Blog</title>
-    <updated>2023-11-14T06:01:31.000Z</updated>
+    <updated>2023-11-14T06:06:22.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://oxc-project.github.io/javascript-parser-in-rust/ja/blog"/>
     <subtitle>Write a JavaScript Parser in Rust Blog</subtitle>
@@ -10,7 +10,7 @@
         <title type="html"><![CDATA[Rome Tools]]></title>
         <id>https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/rome</id>
         <link href="https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/rome"/>
-        <updated>2023-11-14T06:01:31.000Z</updated>
+        <updated>2023-11-14T06:06:22.000Z</updated>
         <summary type="html"><![CDATA[Rome は、JavaScript と TypeScript のパースに様々な技術を使用しています。このチュートリアルでは、それらを理解しやすい順序で要約しています。]]></summary>
         <content type="html"><![CDATA[<p>Rome は、JavaScript と TypeScript のパースに様々な技術を使用しています。このチュートリアルでは、それらを理解しやすい順序で要約しています。</p>
 <h2 class="anchor anchorWithStickyNavbar_otLt" id="歴史">歴史<a href="https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/rome#%E6%AD%B4%E5%8F%B2" class="hash-link" aria-label="この見出しへのリンク" title="この見出しへのリンク">​</a></h2>
@@ -59,7 +59,7 @@
         <title type="html"><![CDATA[文法]]></title>
         <id>https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/grammar</id>
         <link href="https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/grammar"/>
-        <updated>2023-11-14T06:01:31.000Z</updated>
+        <updated>2023-11-14T06:06:22.000Z</updated>
         <summary type="html"><![CDATA[JavaScript の文法は解析が非常に困難なものの一つであり、]]></summary>
         <content type="html"><![CDATA[<p>JavaScript の文法は解析が非常に困難なものの一つであり、
 このチュートリアルでは私が学習中に経験した苦労と涙を詳細に説明します。</p>
@@ -282,7 +282,7 @@ JavaScript もその例外ではありません。</p>
         <title type="html"><![CDATA[ECMAScript の仕様]]></title>
         <id>https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/ecma-spec</id>
         <link href="https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/ecma-spec"/>
-        <updated>2023-11-14T06:01:31.000Z</updated>
+        <updated>2023-11-14T06:06:22.000Z</updated>
         <summary type="html"><![CDATA[ECMAScript® 2023言語仕様書 は、JavaScript についてのすべての詳細を記載しており、誰でも独自の JavaScript エンジンを実装することができます。]]></summary>
         <content type="html"><![CDATA[<p><a href="https://tc39.es/ecma262/" target="_blank" rel="noopener noreferrer">ECMAScript® 2023言語仕様書</a> は、JavaScript についてのすべての詳細を記載しており、誰でも独自の JavaScript エンジンを実装することができます。</p>
 <p>以下の章を私たちのパーサーのために学習する必要があります：</p>
@@ -346,7 +346,7 @@ HTMLでは <code>&lt;script type="module" src="main.mjs"&gt;&lt;/script&gt;</cod
         <title type="html"><![CDATA[パーサーの適合試験]]></title>
         <id>https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/conformance</id>
         <link href="https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/conformance"/>
-        <updated>2023-11-14T06:01:31.000Z</updated>
+        <updated>2023-11-14T06:06:22.000Z</updated>
         <summary type="html"><![CDATA[この記事では、JavaScript および TypeScript の文法に対するパーサーのテストを行うための 3 つの GitHub リポジトリについて詳しく説明します。]]></summary>
         <content type="html"><![CDATA[<p>この記事では、JavaScript および TypeScript の文法に対するパーサーのテストを行うための 3 つの GitHub リポジトリについて詳しく説明します。</p>
 <h2 class="anchor anchorWithStickyNavbar_otLt" id="test262">Test262<a href="https://oxc-project.github.io/javascript-parser-in-rust/ja/blog/conformance#test262" class="hash-link" aria-label="この見出しへのリンク" title="この見出しへのリンク">​</a></h2>

@@ -4,7 +4,7 @@
         <title>Write a JavaScript Parser in Rust Blog</title>
         <link>https://oxc-project.github.io/javascript-parser-in-rust/blog</link>
         <description>Write a JavaScript Parser in Rust Blog</description>
-        <lastBuildDate>Tue, 14 Nov 2023 06:01:31 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 14 Nov 2023 06:06:22 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
@@ -12,7 +12,7 @@
             <title><![CDATA[Rome Tools]]></title>
             <link>https://oxc-project.github.io/javascript-parser-in-rust/blog/rome</link>
             <guid>https://oxc-project.github.io/javascript-parser-in-rust/blog/rome</guid>
-            <pubDate>Tue, 14 Nov 2023 06:01:31 GMT</pubDate>
+            <pubDate>Tue, 14 Nov 2023 06:06:22 GMT</pubDate>
             <description><![CDATA[Rome uses a different set of techniques for parsing JavaScript and TypeScript.]]></description>
             <content:encoded><![CDATA[<p><a href="https://github.com/rome/tools" target="_blank" rel="noopener noreferrer">Rome</a> uses a different set of techniques for parsing JavaScript and TypeScript.
 This tutorial summarizes them in learning order for better understanding.</p>
@@ -63,7 +63,7 @@ or take a look at the <a href="https://github.com/rome/tools/issues" target="_bl
             <title><![CDATA[Grammar]]></title>
             <link>https://oxc-project.github.io/javascript-parser-in-rust/blog/grammar</link>
             <guid>https://oxc-project.github.io/javascript-parser-in-rust/blog/grammar</guid>
-            <pubDate>Tue, 14 Nov 2023 06:01:31 GMT</pubDate>
+            <pubDate>Tue, 14 Nov 2023 06:06:22 GMT</pubDate>
             <description><![CDATA[JavaScript has one of the most challenging grammar to parse,]]></description>
             <content:encoded><![CDATA[<p>JavaScript has one of the most challenging grammar to parse,
 this tutorial details all the sweat and tears I had while learning it.</p>
@@ -309,7 +309,7 @@ and throw the syntax error if it does not reach <code>=</code> for <code>ObjectA
             <title><![CDATA[The ECMAScript Specification]]></title>
             <link>https://oxc-project.github.io/javascript-parser-in-rust/blog/ecma-spec</link>
             <guid>https://oxc-project.github.io/javascript-parser-in-rust/blog/ecma-spec</guid>
-            <pubDate>Tue, 14 Nov 2023 06:01:31 GMT</pubDate>
+            <pubDate>Tue, 14 Nov 2023 06:06:22 GMT</pubDate>
             <description><![CDATA[The ECMAScript® 2023 Language Specification details everything about the JavaScript language, so anyone can implement their own JavaScript engine.]]></description>
             <content:encoded><![CDATA[<p><a href="https://tc39.es/ecma262/" target="_blank" rel="noopener noreferrer">The ECMAScript® 2023 Language Specification</a> details everything about the JavaScript language, so anyone can implement their own JavaScript engine.</p>
 <p>The following chapters need to be studied for our parser:</p>
@@ -377,7 +377,7 @@ More in-depth content can be found in <a href="https://oxc-project.github.io/jav
             <title><![CDATA[Conformance Tests]]></title>
             <link>https://oxc-project.github.io/javascript-parser-in-rust/blog/conformance</link>
             <guid>https://oxc-project.github.io/javascript-parser-in-rust/blog/conformance</guid>
-            <pubDate>Tue, 14 Nov 2023 06:01:31 GMT</pubDate>
+            <pubDate>Tue, 14 Nov 2023 06:06:22 GMT</pubDate>
             <description><![CDATA[This article details three github repositories for testing our parser against JavaScript and TypeScript grammar.]]></description>
             <content:encoded><![CDATA[<p>This article details three github repositories for testing our parser against JavaScript and TypeScript grammar.</p>
 <h2 class="anchor anchorWithStickyNavbar_otLt" id="test262">Test262<a href="https://oxc-project.github.io/javascript-parser-in-rust/blog/conformance#test262" class="hash-link" aria-label="Direct link to Test262" title="Direct link to Test262">​</a></h2>
