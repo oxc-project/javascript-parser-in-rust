@@ -8,7 +8,7 @@ Rome は、JavaScript と TypeScript のパースに様々な技術を使用し�
 
 ## 歴史
 
-- Rome のコードベースは TypeScript から Rust に書き直されました。詳細は [Rome will be rewritten in Rust](https://rome.tools/blog/2021/09/21/rome-will-be-rewritten-in-rust) をご覧ください。
+- Rome のコードベースは TypeScript から Rust に書き直されました。詳細は [Rome will be rewritten in Rust](https://web.archive.org/web/20230401084626/https://rome.tools/blog/2021/09/21/rome-will-be-rewritten-in-rust/) をご覧ください。
 - この決定は、[rslint](https://github.com/rslint/rslint) と [rust-analyzer](https://github.com/rust-lang/rust-analyzer) の作者との話し合いの結果行われました。
 - rust-analyzer は、IDE のようなツールを具象構文木をベースに構築できることを証明しました。
 - rslint は、rust-analyzer で使用されているライブラリを用いて、 Rust で JavaScript のパーサーを実装できることを証明しました。

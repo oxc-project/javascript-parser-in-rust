@@ -9,7 +9,7 @@ This tutorial summarizes them in learning order for better understanding.
 
 ## History
 
-- The Rome codebase was rewritten from TypeScript to Rust, see [Rome will be rewritten in Rust](https://rome.tools/blog/2021/09/21/rome-will-be-rewritten-in-rust)
+- The Rome codebase was rewritten from TypeScript to Rust, see [Rome will be rewritten in Rust](https://web.archive.org/web/20230401084626/https://rome.tools/blog/2021/09/21/rome-will-be-rewritten-in-rust/)
 - The decision was made after talking to the author of [rslint](https://github.com/rslint/rslint) and [rust-analyzer](https://github.com/rust-lang/rust-analyzer)
 - rust-analyzer proved that IDE-centric tools built around concrete syntax tree are possible
 - rslint proved that it is possible to write a JavaScript parser in Rust, with the same base libraries as rust-analyzer
