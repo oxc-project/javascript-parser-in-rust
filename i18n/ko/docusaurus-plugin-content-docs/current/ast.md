@@ -142,7 +142,7 @@ Rust에서는 self-referential struct가 허용되지 않기 때문에 `Box`가 
 
 ### Memory Allocations
 
-[Overview](./overview) 장으로 돌아갑니다,
+[Overview](./overview.md) 장으로 돌아갑니다,
 힙 할당 비용이 저렴하지 않기 때문에 `Vec`, `Box`와 같은 힙 할당 구조체를 주의해야 한다고 간략하게 언급했습니다.
 
 [swc의 실제 구현](https://github.com/swc-project/swc/blob/main/crates/swc_ecma_ast/src/expr.rs)을 살펴보세요,

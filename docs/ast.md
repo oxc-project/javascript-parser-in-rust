@@ -142,7 +142,7 @@ JavaScript grammar has a lot of nuisances, read the [grammar tutorial](/blog/gra
 
 ### Memory Allocations
 
-Back in the [Overview](./overview) chapter,
+Back in the [Overview](./overview.md) chapter,
 I briefly mentioned that we need to look out for heap-allocated structs such as `Vec` and `Box` because heap allocations are not cheap.
 
 Take a look at the [real world implementation from swc](https://github.com/swc-project/swc/blob/main/crates/swc_ecma_ast/src/expr.rs),
