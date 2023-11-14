@@ -2,7 +2,7 @@
 title: 参考文献
 ---
 
-## Parsers (更新中)
+## 解析器 (更新中)
 
 - Rust
   - [swc](https://swc.rs)
