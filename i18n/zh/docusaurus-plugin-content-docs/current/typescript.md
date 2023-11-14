@@ -3,28 +3,25 @@ id: typescript
 title: TypeScript
 ---
 
-So you are done with JavaScript and you want to challenge parsing TypeScript?
-The bad news is that there is no specification,
-but the good news is that the TypeScript parser is in [a single file](https://github.com/microsoft/TypeScript/blob/main/src/compiler/parser.ts) 🙃.
+所以你已经完成了JavaScript，现在想要挑战解析TypeScript了？坏消息是没有规范，但好消息是TypeScript解析器在[一个单一文件](https://github.com/microsoft/TypeScript/blob/main/src/compiler/parser.ts)中 🙃。
 
 ## JSX vs TSX
 
-For the following code,
+对于以下代码，
 
 ```javascript
 let foo = <string> bar;
 ```
 
-It is a syntax error if this is `tsx` (Unterminated JSX),
-but it is correct `VariableDeclaration` with `TSTypeAssertion`.
+如果这是`tsx`，那么这是一个语法错误（未终止的JSX），但如果是`VariableDeclaration`和`TSTypeAssertion`，那么这是正确的。
 
-## Lookahead
+## 前向查找 (lookahead)
 
-In certain places, the parser need to lookahead and peek more than one token to determine the correct grammar.
+在某些地方，解析器需要向前查找并查看多个 token 以决定正确的语法。
 
 ### TSIndexSignature
 
-For example, to parse `TSIndexSignature`, consider the following two cases:
+例如，为了解析`TSIndexSignature`，考虑以下两种情况：
 
 ```typescript
 type A = { readonly [a: number]: string }
@@ -34,24 +31,22 @@ type B = { [a]: string }
            ^_________^ TSPropertySignature
 ```
 
-For `type A` on the first `{`, we need to peek 5 tokens (`readonly`, `[`, `a`, `:` and `number`) in order to make sure
-it is a `TSIndexSignature` and not a `TSPropertySignature`.
+对于第一个`type A`中的`{`，我们需要向前查看5个 token （`readonly`、`[`、`a`、`:` 和 `number`）以确保它是`TSIndexSignature`而不是`TSPropertySignature`。
 
-To make this possible and efficient, the lexer requires a buffer for storing multiple tokens.
+为了实现这一点并提高效率，词法分析器需要一个缓冲区来存储多个 token 。
 
-### Arrow Expressions
+### 箭头表达式
 
-Discussed in [cover grammar](/blog/grammar#cover-grammar),
-we need to convert from `Expression`s to `BindingPattern`s when the `=>` token is found after a SequenceExpression.
+在[cover grammar](/blog/grammar#cover-grammar)中讨论过，当在 SequenceExpression 后面找到`=>` token 时，我们需要将`Expression`转换为`BindingPattern`。
 
-But this approach does not work for TypeScript as each item inside the `()` can have TypeScript syntax, there are just too many cases to cover, for example:
+但是对于TypeScript来说，这种方法不适用，因为`()`中的每个项目都可能有TypeScript语法，有太多情况需要考虑，例如：
 
 ```typescript
 <x>a, b as c, d!;
 (a?: b = {} as c!) => {};
 ```
 
-It is recommended to study the TypeScript source code for this specific case. The relevant code are:
+建议研究TypeScript源代码来处理这个问题。相关代码如下：
 
 ```typescript
 function tryParseParenthesizedArrowFunctionExpression(
@@ -103,4 +98,4 @@ function isParenthesizedArrowFunctionExpression(): Tristate {
 }
 ```
 
-In summary, the TypeScript parser uses a combination of lookahead (fast path) and backtracking to parse arrow functions.
+总之，TypeScript解析器结合了先行查找（快速路径）和回溯来解析箭头函数。
