@@ -32,6 +32,6 @@ jobs:
           # Exclude twitter links, see https://github.com/lycheeverse/lychee/issues/1108.
           # Ideally this is built in, by https://github.com/lycheeverse/lychee/pull/1147.
           # Not sure why it doesn't work, exclude it manually.
-          args: --accept 200,429 --verbose --no-progress --exclude 'https://twitter\.com/*' .
+          args: --accept 200,429 --verbose --no-progress --exclude 'https://twitter\.com/*' 'https://web\.archive\.org/*' .
           # Fail action on broken links
           fail: true
