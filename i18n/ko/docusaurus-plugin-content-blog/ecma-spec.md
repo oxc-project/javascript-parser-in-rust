@@ -147,6 +147,6 @@ jsparagus는 이에 대해 [언급](https://github.com/mozilla-spidermonkey/jspa
 ## Expressions, Statements, Functions, Classes, Scripts and Modules(표현식, 문법, 함수, 클래스, 스크립트와 모듈)
 
 구문 문법을 이해한 다음 구문 분석기를 작성하는 데 적용하려면 시간이 필요합니다.
-보다 심층적 내용은 More in-depth content can be found in [문법 튜토리얼](./blog/grammar)에서 확인해주세요.
+보다 심층적 내용은 More in-depth content can be found in [문법 튜토리얼](./grammar.md)에서 확인해주세요.
 
 ## Annex B

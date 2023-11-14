@@ -145,6 +145,6 @@ The author of jsparagus made a rant about this [here](https://github.com/mozilla
 ## Expressions, Statements, Functions, Classes, Scripts and Modules
 
 It takes a while to understand the syntactic grammar, then apply them to writing a parser.
-More in-depth content can be found in [the grammar tutorial](./blog/grammar).
+More in-depth content can be found in [the grammar tutorial](./grammar.md).
 
 ## Annex B

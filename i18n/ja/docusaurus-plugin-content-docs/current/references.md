@@ -6,7 +6,7 @@ title: 参考文献
 
 - Rust
   - [swc](https://swc.rs)
-  - [Rome](https://rome.tools)
+  - [Biome](https://biomejs.dev)
   - [jsparagus](https://github.com/mozilla-spidermonkey/jsparagus)
   - [ratel](https://github.com/ratel-rust/ratel-core)
   - [boa](https://github.com/lastmjs/boa-azle)

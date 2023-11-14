@@ -61,7 +61,7 @@ Block : { StatementList }
 
 我们需要添加一个作用域树 (scope tree)。作用域树包含在其中声明的所有`var`和`let`。
 这棵树的节点有指向父级节点的指针，我们希望以此在树上向上移动并在父级作用域之中搜索绑定标识符。
-我们可以使用`indextree`作为数据结构（https://docs.rs/indextree/latest/indextree/）。
+我们可以使用[`indextree`](https://docs.rs/indextree/latest/indextree/)作为数据结构。
 
 ```rust
 use indextree::{Arena, Node, NodeId};

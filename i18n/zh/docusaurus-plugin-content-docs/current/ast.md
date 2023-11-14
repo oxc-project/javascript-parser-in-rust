@@ -141,7 +141,7 @@ JavaScript语法有很多细微而玄妙之处，请阅读[语法教程](/blog/g
 
 ### 内存分配
 
-在[概述](./overview)章节中提到，我们需要额外注意分配在堆上的结构体，如`Vec`和`Box`。这是因为堆分配并不廉价。
+在[概述](./overview.md)章节中提到，我们需要额外注意分配在堆上的结构体，如`Vec`和`Box`。这是因为堆分配并不廉价。
 
 看一下[来自 swc 项目的真实实现](https://github.com/swc-project/swc/blob/main/crates/swc_ecma_ast/src/expr.rs)，我们可以看到AST可能有很多`Box`和`Vec`，还要注意`Statement`和`Expression`枚举包含很多枚举变体。
 
