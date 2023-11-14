@@ -1,8 +1,8 @@
 ---
-title: References
+title: 参考文献
 ---
 
-## Parsers (in active development)
+## Parsers (更新中)
 
 - Rust
   - [swc](https://swc.rs)
@@ -29,7 +29,7 @@ title: References
 
 - [The Rust Performance Book](https://nnethercote.github.io/perf-book/introduction.html)
 
-## Blog Posts
+## 博文
 
 - [Blazingly fast parsing, part 1: optimizing the scanner](https://v8.dev/blog/scanner)
 - [Blazingly fast parsing, part 2: lazy parsing](https://v8.dev/blog/preparser)
