@@ -8,7 +8,7 @@ Rome은, JavaScript와 TypeScript 파서의 여러 기술을 사용합니다. �
 
 ## 역사
 
-- Rome 코드 기반은 TypeScript에서 Rust로 재작성되었습니다. 상세한 내용은 [Rome will be rewritten in Rust](https://rome.tools/blog/2021/09/21/rome-will-be-rewritten-in-rust) 를 통해 확인 가능합니다.
+- Rome 코드 기반은 TypeScript에서 Rust로 재작성되었습니다. 상세한 내용은 [Rome will be rewritten in Rust](https://web.archive.org/web/20230401084626/https://rome.tools/blog/2021/09/21/rome-will-be-rewritten-in-rust/) 를 통해 확인 가능합니다.
 - 이 결정은, [rslint](https://github.com/rslint/rslint)와 [rust-analyzer](https://github.com/rust-lang/rust-analyzer) 저자와 대화 후의 결과입니다.
 - rust-analyzer는, IDE 같은 도구를 추상 구문 트리 기반으로 구축하다는 것을 증명했습니다.
 - rslint는, rust-analyzer에 사용되어 있던 라이브러리를 사용해,  Rust에서 JavaScript 파서를 구현 가능하다는 것을 증명했습니다.
