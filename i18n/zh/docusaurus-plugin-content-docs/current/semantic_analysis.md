@@ -8,7 +8,7 @@ title: 语义分析 (Semantic Analysis)
 
 ## 上下文
 
-对于语法上下文，如`[Yield]`或`[Await]`，当语法禁止它们时，需要引发错误，例如：
+对于语法上下文，如`[Yield]`或`[Await]`，若语法禁止它们出现，需要引发错误，例如：
 
 ```markup
 BindingIdentifier[Yield, Await] :
@@ -100,7 +100,7 @@ pub struct Scope {
 }
 ```
 
-出于性能原因，作用域树可以在解析器内部构建，也可以在单独的AST遍历中构建。
+我们可以在解析器内部构建作用域树以追求性能，也可以在一次单独的AST遍历中构建。
 
 通常情况下，需要一个`ScopeBuilder`：
 
@@ -153,7 +153,7 @@ https://github.com/acornjs/acorn/blob/11735729c4ebe590e406f952059813f250a4cbd1/a
 
 ### 访问者模式 (The Visitor Pattern)
 
-如果我们决定在一个新的遍历中构建作用域树以求简单，
+如果我们选择在一个单独的遍历中构建作用域树以追求简单，
 那么需要按照深度优先的前序 (preorder)来访问AST中的每个节点并构建作用域树。
 
 我们可以使用[访问者模式](https://rust-unofficial.github.io/patterns/patterns/behavioural/visitor.html)将遍历过程与对每个对象执行的操作分离开来。
