@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://oxc-project.github.io/javascript-parser-in-rust/blog</id>
     <title>Write a JavaScript Parser in Rust Blog</title>
-    <updated>2023-11-14T06:06:22.000Z</updated>
+    <updated>2023-11-15T03:08:26.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://oxc-project.github.io/javascript-parser-in-rust/blog"/>
     <subtitle>Write a JavaScript Parser in Rust Blog</subtitle>
@@ -10,13 +10,13 @@
         <title type="html"><![CDATA[Rome Tools]]></title>
         <id>https://oxc-project.github.io/javascript-parser-in-rust/blog/rome</id>
         <link href="https://oxc-project.github.io/javascript-parser-in-rust/blog/rome"/>
-        <updated>2023-11-14T06:06:22.000Z</updated>
+        <updated>2023-11-15T03:08:26.000Z</updated>
         <summary type="html"><![CDATA[Rome uses a different set of techniques for parsing JavaScript and TypeScript.]]></summary>
         <content type="html"><![CDATA[<p><a href="https://github.com/rome/tools" target="_blank" rel="noopener noreferrer">Rome</a> uses a different set of techniques for parsing JavaScript and TypeScript.
 This tutorial summarizes them in learning order for better understanding.</p>
 <h2 class="anchor anchorWithStickyNavbar_otLt" id="history">History<a href="https://oxc-project.github.io/javascript-parser-in-rust/blog/rome#history" class="hash-link" aria-label="Direct link to History" title="Direct link to History">​</a></h2>
 <ul>
-<li>The Rome codebase was rewritten from TypeScript to Rust, see <a href="https://rome.tools/blog/2021/09/21/rome-will-be-rewritten-in-rust" target="_blank" rel="noopener noreferrer">Rome will be rewritten in Rust</a></li>
+<li>The Rome codebase was rewritten from TypeScript to Rust, see <a href="https://web.archive.org/web/20230401084626/https://rome.tools/blog/2021/09/21/rome-will-be-rewritten-in-rust/" target="_blank" rel="noopener noreferrer">Rome will be rewritten in Rust</a></li>
 <li>The decision was made after talking to the author of <a href="https://github.com/rslint/rslint" target="_blank" rel="noopener noreferrer">rslint</a> and <a href="https://github.com/rust-lang/rust-analyzer" target="_blank" rel="noopener noreferrer">rust-analyzer</a></li>
 <li>rust-analyzer proved that IDE-centric tools built around concrete syntax tree are possible</li>
 <li>rslint proved that it is possible to write a JavaScript parser in Rust, with the same base libraries as rust-analyzer</li>
@@ -49,7 +49,6 @@ This tutorial summarizes them in learning order for better understanding.</p>
 <h2 class="anchor anchorWithStickyNavbar_otLt" id="contributing">Contributing<a href="https://oxc-project.github.io/javascript-parser-in-rust/blog/rome#contributing" class="hash-link" aria-label="Direct link to Contributing" title="Direct link to Contributing">​</a></h2>
 <ul>
 <li><a href="https://github.com/rome/tools/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">CONTRIBUTING.md</a> has instructions on how to contribute</li>
-<li><a href="https://rome.github.io/tools/rome_js_parser/index.html" target="_blank" rel="noopener noreferrer">rome_js_parser crate doc</a> has some more details on the parser</li>
 <li>See <a href="https://github.com/rome/tools/tree/main/xtask/codegen#cargo-codegen-test" target="_blank" rel="noopener noreferrer"><code>cargo codegen test</code></a> for working with parser tests</li>
 <li>See <a href="https://github.com/rome/tools/tree/main/xtask/coverage" target="_blank" rel="noopener noreferrer"><code>cargo coverage</code></a> for working with conformance tests</li>
 <li>Join the <a href="https://discord.com/invite/rome" target="_blank" rel="noopener noreferrer">Discord Server</a> for inquiries</li>
@@ -61,7 +60,7 @@ or take a look at the <a href="https://github.com/rome/tools/issues" target="_bl
         <title type="html"><![CDATA[Grammar]]></title>
         <id>https://oxc-project.github.io/javascript-parser-in-rust/blog/grammar</id>
         <link href="https://oxc-project.github.io/javascript-parser-in-rust/blog/grammar"/>
-        <updated>2023-11-14T06:06:22.000Z</updated>
+        <updated>2023-11-15T03:08:26.000Z</updated>
         <summary type="html"><![CDATA[JavaScript has one of the most challenging grammar to parse,]]></summary>
         <content type="html"><![CDATA[<p>JavaScript has one of the most challenging grammar to parse,
 this tutorial details all the sweat and tears I had while learning it.</p>
@@ -307,7 +306,7 @@ and throw the syntax error if it does not reach <code>=</code> for <code>ObjectA
         <title type="html"><![CDATA[The ECMAScript Specification]]></title>
         <id>https://oxc-project.github.io/javascript-parser-in-rust/blog/ecma-spec</id>
         <link href="https://oxc-project.github.io/javascript-parser-in-rust/blog/ecma-spec"/>
-        <updated>2023-11-14T06:06:22.000Z</updated>
+        <updated>2023-11-15T03:08:26.000Z</updated>
         <summary type="html"><![CDATA[The ECMAScript® 2023 Language Specification details everything about the JavaScript language, so anyone can implement their own JavaScript engine.]]></summary>
         <content type="html"><![CDATA[<p><a href="https://tc39.es/ecma262/" target="_blank" rel="noopener noreferrer">The ECMAScript® 2023 Language Specification</a> details everything about the JavaScript language, so anyone can implement their own JavaScript engine.</p>
 <p>The following chapters need to be studied for our parser:</p>
@@ -368,14 +367,14 @@ The author of jsparagus made a rant about this <a href="https://github.com/mozil
 </blockquote></div></div>
 <h2 class="anchor anchorWithStickyNavbar_otLt" id="expressions-statements-functions-classes-scripts-and-modules">Expressions, Statements, Functions, Classes, Scripts and Modules<a href="https://oxc-project.github.io/javascript-parser-in-rust/blog/ecma-spec#expressions-statements-functions-classes-scripts-and-modules" class="hash-link" aria-label="Direct link to Expressions, Statements, Functions, Classes, Scripts and Modules" title="Direct link to Expressions, Statements, Functions, Classes, Scripts and Modules">​</a></h2>
 <p>It takes a while to understand the syntactic grammar, then apply them to writing a parser.
-More in-depth content can be found in <a href="https://oxc-project.github.io/javascript-parser-in-rust/blog/blog/grammar">the grammar tutorial</a>.</p>
+More in-depth content can be found in <a href="https://oxc-project.github.io/javascript-parser-in-rust/blog/grammar">the grammar tutorial</a>.</p>
 <h2 class="anchor anchorWithStickyNavbar_otLt" id="annex-b">Annex B<a href="https://oxc-project.github.io/javascript-parser-in-rust/blog/ecma-spec#annex-b" class="hash-link" aria-label="Direct link to Annex B" title="Direct link to Annex B">​</a></h2>]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[Conformance Tests]]></title>
         <id>https://oxc-project.github.io/javascript-parser-in-rust/blog/conformance</id>
         <link href="https://oxc-project.github.io/javascript-parser-in-rust/blog/conformance"/>
-        <updated>2023-11-14T06:06:22.000Z</updated>
+        <updated>2023-11-15T03:08:26.000Z</updated>
         <summary type="html"><![CDATA[This article details three github repositories for testing our parser against JavaScript and TypeScript grammar.]]></summary>
         <content type="html"><![CDATA[<p>This article details three github repositories for testing our parser against JavaScript and TypeScript grammar.</p>
 <h2 class="anchor anchorWithStickyNavbar_otLt" id="test262">Test262<a href="https://oxc-project.github.io/javascript-parser-in-rust/blog/conformance#test262" class="hash-link" aria-label="Direct link to Test262" title="Direct link to Test262">​</a></h2>
