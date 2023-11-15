@@ -58,7 +58,6 @@ https://github.com/rome/tools/blob/9815467c66688773bc1bb6ef9a5b2d86ca7b3682/crat
 ## コントリビューション
 
 - [CONTRIBUTING.md](https://github.com/rome/tools/blob/main/CONTRIBUTING.md) には、コントリビューションの方法の説明があります。
-- [rome_js_parser crate doc](https://rome.github.io/tools/rome_js_parser/index.html) には、パーサーに関する実装の説明があります。
 - パーサーのテストについては、[`cargo codegen test`](https://github.com/rome/tools/tree/main/xtask/codegen#cargo-codegen-test) をご確認ください。
 - 適合テストについては、 [`cargo coverage`](https://github.com/rome/tools/tree/main/xtask/coverage) をご覧ください。
 - 分からないことがあれば、[Discord サーバー](https://discord.com/invite/rome) で自由に質問できます。

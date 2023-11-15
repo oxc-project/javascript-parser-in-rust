@@ -58,7 +58,6 @@ https://github.com/rome/tools/blob/9815467c66688773bc1bb6ef9a5b2d86ca7b3682/crat
 ## 공헌
 
 - [CONTRIBUTING.md](https://github.com/rome/tools/blob/main/CONTRIBUTING.md)에는, 공헌 방법에 대해 설명되어 있습니다.
-- [rome_js_parser crate doc](https://rome.github.io/tools/rome_js_parser/index.html) 에는, 파서와 관련된 구현 설명이 있습니다.
 - 파서 테스트에 대해서는, [`cargo codegen test`](https://github.com/rome/tools/tree/main/xtask/codegen#cargo-codegen-test) 확인해주세요.
 - 적합 테스트에 관해서는,  [`cargo coverage`](https://github.com/rome/tools/tree/main/xtask/coverage) 확인해주세요.
 - 잘 모르는 부분이 있다면, [Discord 서버](https://discord.com/invite/rome) 에서 자유로히 질문 가능합니다.
