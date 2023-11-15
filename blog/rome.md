@@ -59,7 +59,6 @@ https://github.com/rome/tools/blob/9815467c66688773bc1bb6ef9a5b2d86ca7b3682/crat
 ## Contributing
 
 - [CONTRIBUTING.md](https://github.com/rome/tools/blob/main/CONTRIBUTING.md) has instructions on how to contribute
-- [rome_js_parser crate doc](https://rome.github.io/tools/rome_js_parser/index.html) has some more details on the parser
 - See [`cargo codegen test`](https://github.com/rome/tools/tree/main/xtask/codegen#cargo-codegen-test) for working with parser tests
 - See [`cargo coverage`](https://github.com/rome/tools/tree/main/xtask/coverage) for working with conformance tests
 - Join the [Discord Server](https://discord.com/invite/rome) for inquiries
