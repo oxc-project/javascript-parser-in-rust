@@ -271,15 +271,15 @@
     "description": "The second content of subtitle in the top page"
   },
   "homepage.subtitle.second_1": {
-    "message": "本网站将为想要学习 Rust 和解析器的人",
+    "message": "本网站将为想要学习 Rust 和解析器的人，或者想要贡献",
     "description": "The second content of subtitle in the top page"
   },
   "homepage.subtitle.second_2": {
-    "message": "以及考虑为 oxc、swc、Biome 等做出贡献的人提供帮助。",
+    "message": "的人提供指导 。",
     "description": "The second content of subtitle in the top page"
   },
   "homepage.subtitle.third": {
-    "message": "本指南涵盖了编写 Rust 中的 JavaScript 解析器所需的基本主题。本教程将更详细地介绍一些主题。",
+    "message": "指南部分涵盖了编写 Rust 中的 JavaScript 解析器所需的基本主题，教程部分将更详细地介绍一些主题。",
     "description": "The third content of subtitle in the top page"
   },
   "homepage.read.guide": {
