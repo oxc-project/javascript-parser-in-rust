@@ -13,7 +13,7 @@ dependencies:
     version: 3.0.0(@algolia/client-search@4.24.0)(@types/react@18.3.3)(react-dom@18.2.0)(react@18.3.1)(search-insights@2.16.0)(typescript@5.2.2)
   '@mdx-js/react':
     specifier: ^3.0.0
-    version: 3.0.0(@types/react@18.3.3)(react@18.3.1)
+    version: 3.0.1(@types/react@18.3.3)(react@18.3.1)
   '@vegaprotocol/docusaurus-theme-github-codeblock':
     specifier: ^0.1.8
     version: 0.1.8
@@ -2117,7 +2117,7 @@ packages:
       '@docusaurus/utils': 3.0.0(@docusaurus/types@3.0.0)
       '@docusaurus/utils-common': 3.0.0(@docusaurus/types@3.0.0)
       '@docusaurus/utils-validation': 3.0.0(@docusaurus/types@3.0.0)
-      '@mdx-js/react': 3.0.0(@types/react@18.3.3)(react@18.3.1)
+      '@mdx-js/react': 3.0.1(@types/react@18.3.3)(react@18.3.1)
       clsx: 1.2.1
       copy-text-to-clipboard: 3.2.0
       infima: 0.2.0-alpha.43
@@ -2409,7 +2409,7 @@ packages:
       '@types/estree': 1.0.4
       '@types/estree-jsx': 1.0.2
       '@types/hast': 3.0.2
-      '@types/mdx': 2.0.9
+      '@types/mdx': 2.0.13
       collapse-white-space: 2.1.0
       devlop: 1.1.0
       estree-util-build-jsx: 3.0.1
@@ -2433,13 +2433,13 @@ packages:
       - supports-color
     dev: false
 
-  /@mdx-js/react@3.0.0(@types/react@18.3.3)(react@18.3.1):
-    resolution: {integrity: sha512-nDctevR9KyYFyV+m+/+S4cpzCWHqj+iHDHq3QrsWezcC+B17uZdIWgCguESUkwFhM3n/56KxWVE3V6EokrmONQ==}
+  /@mdx-js/react@3.0.1(@types/react@18.3.3)(react@18.3.1):
+    resolution: {integrity: sha512-9ZrPIU4MGf6et1m1ov3zKf+q9+deetI51zprKB1D/z3NOb+rUxxtEl3mCjW5wTGh6VhRdwPueh1oRzi6ezkA8A==}
     peerDependencies:
       '@types/react': '>=16'
       react: '>=16'
     dependencies:
-      '@types/mdx': 2.0.9
+      '@types/mdx': 2.0.13
       '@types/react': 18.3.3
       react: 18.3.1
     dev: false
@@ -2847,8 +2847,8 @@ packages:
       '@types/unist': 3.0.1
     dev: false
 
-  /@types/mdx@2.0.9:
-    resolution: {integrity: sha512-OKMdj17y8Cs+k1r0XFyp59ChSOwf8ODGtMQ4mnpfz5eFDk1aO41yN3pSKGuvVzmWAkFp37seubY1tzOVpwfWwg==}
+  /@types/mdx@2.0.13:
+    resolution: {integrity: sha512-+OWZQfAYyio6YkJb3HLxDrvnx6SWWDbC0zVPfBRzUk0/nqoDyf6dNxQi3eArPe8rJ473nobTMQ/8Zk+LxJ+Yuw==}
     dev: false
 
   /@types/mime@1.3.4:
